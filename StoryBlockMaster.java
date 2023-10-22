@@ -10,7 +10,7 @@ public class StoryBlockMaster {
 
         int tempStoryID = 0;
         List<String> tempChoices = new ArrayList<String>();
-        List<StoryBlock> tempDestinationBlocks = new ArrayList<StoryBlock>();
+        List<Integer> tempDestinationBlocks = new ArrayList<Integer>();
         List<String[]> tempCombatant = new ArrayList<String[]>();
         List<Boolean> tempIsEnding = new ArrayList<Boolean>();
         for (ArrayList<String> tempStoryBit : tempStoryBits)
@@ -26,12 +26,19 @@ public class StoryBlockMaster {
                 tempCombatant.clear();
                 tempIsEnding.clear();
             }
-            StoryBlock nextStoryBlock = getNextStoryStep(tempStoryBit.get(1)) == -1 ? null : this.storyObj.get(getNextStoryStep(tempStoryBit.get(1)));
-            tempDestinationBlocks.add(nextStoryBlock);
+            // StoryBlock nextStoryBlock = getNextStoryStep(tempStoryBit.get(1)) == -1 ? null : this.storyObj.get(getNextStoryStep(tempStoryBit.get(1)));
+            tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1)));
             tempChoices.add(tempStoryBit.get(thisTempStorySize-1)); // Last element is always text to guide player
             tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
             tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
         }
+        storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks, tempCombatant, tempIsEnding);
+        // init results of last iteration
+    }
+
+    public ArrayList<StoryBlock> getStoryObj()
+    {
+        return storyObj;
     }
     public void showMeSomeStories()
     {

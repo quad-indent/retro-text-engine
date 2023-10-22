@@ -11,11 +11,10 @@ public class Main {
         System.out.print("Hello and welcome!");
 
         StoryBlockMaster bard = new StoryBlockMaster(null);
-        bard.showMeSomeStories();
+        // bard.showMeSomeStories();
 
-        StoryDisplayer inputHandler = new StoryDisplayer();
-        int[] inputz = {1, 2, 3};
-        inputHandler.awaitChoiceInput(inputz);
+        StoryDisplayer storyDisp = new StoryDisplayer();
+        storyDisp.storyLoop(bard.getStoryObj(), 0);
 
 //        List<String> myStory = StoryParser.parseFile(null);
 //        for(String storyBit : myStory)
