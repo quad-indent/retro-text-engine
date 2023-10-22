@@ -14,8 +14,10 @@ public class Main {
         // bard.showMeSomeStories();
 
         StoryDisplayer storyDisp = new StoryDisplayer();
-        storyDisp.storyLoop(bard.getStoryObj(), 0);
 
+        PlayerClass character = new PlayerClass(null, storyDisp);
+
+        storyDisp.storyLoop(bard.getStoryObj(), 0);
 //        List<String> myStory = StoryParser.parseFile(null);
 //        for(String storyBit : myStory)
 //        {

@@ -86,7 +86,7 @@ public class StoryBlockMaster {
     public ArrayList<String> stringSplitter(String line)
     {
         ArrayList<String> splits = new ArrayList<String>(List.of(line.split("]")));
-        splits.replaceAll(e -> e.replaceAll("\\s+", " "));
+        splits.replaceAll(String::trim);
         // breaks up the initial line by ]
         // also removes trailing whitespace
 
