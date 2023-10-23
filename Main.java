@@ -2,8 +2,6 @@
 // then press Enter. You can now see whitespace characters in your code.
 // import StoryBlockHandler;
 
-import java.util.List;
-
 public class Main {
     public static void main(String[] args) {
         // Press Alt+Enter with your caret at the highlighted text to see how
@@ -13,11 +11,11 @@ public class Main {
         StoryBlockMaster bard = new StoryBlockMaster(null);
         // bard.showMeSomeStories();
 
-        StoryDisplayer storyDisp = new StoryDisplayer();
+        // StoryDisplayer storyDisp = new StoryDisplayer();
 
-        PlayerClass character = new PlayerClass(null, storyDisp);
+        PlayerClass character = new PlayerClass(null);
 
-        storyDisp.storyLoop(bard.getStoryObj(), 0);
+        StoryDisplayer.storyLoop(bard.getStoryObj(), 0);
 //        List<String> myStory = StoryParser.parseFile(null);
 //        for(String storyBit : myStory)
 //        {

@@ -1,27 +1,16 @@
-import java.awt.desktop.PreferencesEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Scanner;
+import java.util.*;
 
-interface inputVerificator
-{
+interface inputVerificator {
     Boolean checkInput(int i, int[] x);
 }
-public class StoryDisplayer {
-    private final Scanner scannerObj = new Scanner(System.in);
-    public StoryDisplayer()
-    {
 
-    }
-    public void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt)
-    {
+public class StoryDisplayer {
+    private static final Scanner scannerObj = new Scanner(System.in);
+    public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt) {
         int curIndex = beginAt;
         StoryBlock curObj = storyObj.get(curIndex);
         int nextChoice = -1;
-        while (curIndex < storyObj.size())
-        {
+        while (curIndex < storyObj.size()) {
             curObj = storyObj.get(curIndex);
             System.out.println(">> " + curObj.getPromptText());
             printChoiceOptions(curObj.getChoices());
@@ -32,54 +21,50 @@ public class StoryDisplayer {
             curIndex = nextChoice;
         }
     }
-    public int[] getChoiceOptions(List<String> choicez)
-    {
+
+    public static int[] getChoiceOptions(List<String> choicez) {
         int choiceLen = choicez.size();
         int[] options = new int[choiceLen];
-        for (int i=0; i<choiceLen; i++)
-            options[i] = i+1;
+        for (int i = 0; i < choiceLen; i++)
+            options[i] = i + 1;
         return options;
     }
-    public void printChoiceOptions(List<String> choicez)
-    {
+
+    public static void printChoiceOptions(List<String> choicez) {
         int choiceLen = 1;
-        for (String choice: choicez)
-        {
+        for (String choice : choicez) {
             System.out.println(">> [" + choiceLen++ + "] " + choice);
         }
     }
-    public int awaitChoiceInput(int highestOptionVal)
-    {
+
+    public static int awaitChoiceInput(int highestOptionVal) {
         int[] options = genOptionsArr(highestOptionVal);
         inputVerificator checker = (input, arr) -> {
             return Arrays.stream(arr).anyMatch(e -> e == input);
         };
-        while (true)
-        {
+        while (true) {
             String playerInput = getRawPlayerInput();
 //            if (highestOptionVal == -1)
 //                return -1;
             int parsedInput = -1;
             try {
                 parsedInput = Integer.parseInt(playerInput);
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 continue;
             }
             if (checker.checkInput(parsedInput, options))
                 return Integer.parseInt(playerInput) - 1;
         }
     }
-    public String awaitChoiceInput(boolean canBeEmpty, boolean promptConfirmation)
-    {
-        while (true)
-        {
+
+    public static String awaitChoiceInput(boolean canBeEmpty, boolean promptConfirmation) {
+        while (true) {
             String playerInput = getRawPlayerInput();
 
             // Here, else-ifs are redundant as each check either continues the loop or returns
             // My skipping of "else" is a conscious and personal choice
             // that does not affect runtime
-            if (playerInput.isEmpty()  && !canBeEmpty)
+            if (playerInput.isEmpty() && !canBeEmpty)
                 continue;
             if (!promptConfirmation)
                 return playerInput;
@@ -90,13 +75,19 @@ public class StoryDisplayer {
                 return playerInput;
         }
     }
-    public int[] awaitChoiceInputWithIncrement(int highestOptionVal, String breakWord)
-    {
+
+    public static int awaitChoiceInputFromOptions(String[] optionz) {
+        ListIterator<String> listOptionz = Arrays.asList(optionz).listIterator();
+        while (listOptionz.hasNext()) {
+            System.out.println(">> [" + (listOptionz.nextIndex() + 1) + "] " + listOptionz.next());
+        }
+        return awaitChoiceInput(optionz.length);
+    }
+    public static int[] awaitChoiceInputWithIncrement(int highestOptionVal, String breakWord) {
         int[] options = genOptionsArr(highestOptionVal);
         String playerInput = "";
         int lastCharID = -1;
-        while (true)
-        {
+        while (true) {
             playerInput = getRawPlayerInput().replaceAll(" ", "");
             if (playerInput.replaceAll("[\\[\\]]+", "").equalsIgnoreCase(breakWord))
                 return new int[]{-1, -1};
@@ -112,26 +103,25 @@ public class StoryDisplayer {
                     continue;
                 int statVal = lastChar == '+' ? 1 : -1;
                 return new int[]{statChoicer, statVal};
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 continue;
             }
         }
     }
-    public int[] genOptionsArr(int highestOptionVal)
-    {
+
+    public static int[] genOptionsArr(int highestOptionVal) {
         int[] options = new int[highestOptionVal];
-        for (int i=0; i<highestOptionVal; i++)
-            options[i] = i+1;
+        for (int i = 0; i < highestOptionVal; i++)
+            options[i] = i + 1;
         return options;
     }
-    public String getRawPlayerInput()
-    {
+
+    public static String getRawPlayerInput() {
         String playerInput = scannerObj.nextLine();
         return removeWhiteSpace(playerInput);
     }
-    public String removeWhiteSpace(String input)
-    {
+
+    public static String removeWhiteSpace(String input) {
         return input.trim();
     }
 }
