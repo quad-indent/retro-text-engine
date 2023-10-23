@@ -1,18 +1,11 @@
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class PlayerClass {
+    private static final String DEFAULT_PLAYER_FILE_NAME = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
     private String playerName = "";
-    private int playerLevel = 1;
-    private int curXP = 0;
-    private int neededXP = LevelEnums.XPArray[2];
-    private int maxHealth = 50;
-    private int curHealth = 50;
-    private int maxMana = 20;
-    private int curMana = 20;
-    private int Armour = 0;
+    private int armour = 0;
+    Map<String, Integer> playerBaseVals = new LinkedHashMap<>();
     Map<String, Integer> playerAtts = new LinkedHashMap<>();
     StoryDisplayer dispObj;
     PlayerClass(String characterSheetPath, StoryDisplayer dispObjRef)
@@ -20,15 +13,27 @@ public class PlayerClass {
         dispObj = dispObjRef;
         // Json would be better, but dependencies. This will be some funky .txt parsing instead
         if (characterSheetPath == null)
-            characterSheetPath = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
+            characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
         File playerFile = new File(characterSheetPath);
         if (!playerFile.isFile())
         {
             characterCreator();
+            saveCharacter(characterSheetPath);
+        }
+        else
+        {
+            loadCharacter(characterSheetPath);
         }
     }
-    void defaultPlayerInit()
+    public void defaultPlayerInit()
     {
+        playerBaseVals.put("playerLevel", 1);
+        playerBaseVals.put("curXP", 0);
+        playerBaseVals.put("neededXP", LevelEnums.XPArray[2]);
+        playerBaseVals.put("maxHealth", 50);
+        playerBaseVals.put("curHealth", 50);
+        playerBaseVals.put("maxMana", 20);
+        playerBaseVals.put("curMana", 20);
         playerAtts.put("Strength", 10);
         playerAtts.put("Dexterity", 10);
         playerAtts.put("Intellect", 10);
@@ -38,7 +43,7 @@ public class PlayerClass {
         playerAtts.put("Willpower", 0);
         playerAtts.put("Keen Eye", 0);
     }
-    void characterCreator()
+    public void characterCreator()
     {
         defaultPlayerInit();
         System.out.println(">> Hello, and welcome to this story. I am your Narrator.\n>> I will always guide you through " +
@@ -55,12 +60,58 @@ public class PlayerClass {
             case 0:
                 break;
             case 1:
-                preciseStatPicker(10, 10);
+                preciseStatPicker(6, 4);
         }
     }
-    void preciseStatPicker(int majorPoints, int minorPoints)
+
+    public int saveCharacter(String playerFile)
     {
-        Map<String, Integer> playerAttsOld = playerAtts;
+        try {
+            if (playerFile == null)
+                playerFile = DEFAULT_PLAYER_FILE_NAME;
+            FileWriter fileWriter = new FileWriter(playerFile);
+            PrintWriter printWriter = getPrintWriter(fileWriter);
+            printWriter.close();
+            return 0;
+        }
+        catch (IOException e) {
+            System.out.println("Error! Could not create player save file \"" + playerFile + "\"");
+            return 1;
+        }
+    }
+    private PrintWriter getPrintWriter(FileWriter fileWriter) {
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.println(playerName);
+        for (Integer baseLv: playerBaseVals.values())
+            printWriter.println(baseLv);
+        printWriter.println(armour);
+        for (Integer statLv: playerAtts.values())
+            printWriter.println(statLv);
+        return printWriter;
+    }
+
+    public int loadCharacter(String playerFile)
+    {
+        if (playerFile == null)
+            playerFile = DEFAULT_PLAYER_FILE_NAME;
+        try {
+            FileReader infoReader = new FileReader(playerFile);
+            Scanner storyReader = new Scanner(infoReader);
+            playerName = storyReader.nextLine();
+            playerBaseVals.replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+            armour = Integer.parseInt(storyReader.nextLine());
+            playerAtts.replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+            storyReader.close();
+            return 0;
+        }
+        catch (IOException e) {
+            System.out.println("Error! Could not open player save file \"" + playerFile + "\"");
+            return 1;
+        }
+    }
+    public void preciseStatPicker(int majorPoints, int minorPoints)
+    {
+        Map<String, Integer> playerAttsOld = new LinkedHashMap<>(playerAtts);
         System.out.println(">> Your stats are as follows:");
         int printCtr = 1;
         Map<Integer, String> tempStatIDMap = new LinkedHashMap<>();
@@ -107,7 +158,7 @@ public class PlayerClass {
             }
             else
             {
-                if (playerAttsOld.get(curChoicePicked) <= playerAtts.get(curChoicePicked))
+                if (playerAttsOld.get(curChoicePicked) >= playerAtts.get(curChoicePicked))
                     continue;
                 // if player attempts to decrement below what they already had, continues
                 playerAtts.put(curChoicePicked, curChoiceLevel-1);

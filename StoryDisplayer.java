@@ -108,6 +108,8 @@ public class StoryDisplayer {
                 continue;
             try {
                 int statChoicer = Integer.parseInt(playerInput.substring(0, lastCharID));
+                if (statChoicer > highestOptionVal)
+                    continue;
                 int statVal = lastChar == '+' ? 1 : -1;
                 return new int[]{statChoicer, statVal};
             }
