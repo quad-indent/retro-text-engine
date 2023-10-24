@@ -2,18 +2,24 @@
 // then press Enter. You can now see whitespace characters in your code.
 // import StoryBlockHandler;
 
+import java.util.Collections;
+
 public class Main {
     public static void main(String[] args) {
         // Press Alt+Enter with your caret at the highlighted text to see how
         // IntelliJ IDEA suggests fixing it.
-        System.out.print("Hello and welcome!");
+//        System.out.print("Hello and welcome!");
+//        String a = "cock";
+//        String b = "bollocks";
+//        System.out.println(Collections.disjoint(a.toCharArray().asl, b.toCharArray()));
+//        return;
 
         StoryBlockMaster bard = new StoryBlockMaster(null);
         // bard.showMeSomeStories();
 
         // StoryDisplayer storyDisp = new StoryDisplayer();
 
-        PlayerClass character = new PlayerClass(null);
+        PlayerClass.initPlayer(null); // character = new PlayerClass(null);
 
         StoryDisplayer.storyLoop(bard.getStoryObj(), 0);
 //        List<String> myStory = StoryParser.parseFile(null);

@@ -14,7 +14,8 @@ public class StoryDisplayer {
             curObj = storyObj.get(curIndex);
             System.out.println(">> " + curObj.getPromptText());
             printChoiceOptions(curObj.getChoices());
-            nextChoice = curObj.getChoiceDestinationAtID(awaitChoiceInput(getChoiceOptions(curObj.getChoices()).length));
+            nextChoice = curObj.getChoiceDestinationAtID(
+                    awaitChoiceInput(getChoiceOptions(curObj.getChoices()).length));
             if (nextChoice == -1)
                 return;
             // curObj = curObj.getChoiceDestinationAtID(nextChoice);

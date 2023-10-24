@@ -1,4 +1,6 @@
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StoryBlockMaster {
@@ -17,24 +19,64 @@ public class StoryBlockMaster {
         List<Integer> tempDestinationBlocks = new ArrayList<Integer>();
         List<String[]> tempCombatant = new ArrayList<String[]>();
         List<Boolean> tempIsEnding = new ArrayList<Boolean>();
+        List<Boolean> tempIsHiddenCheck = new ArrayList<Boolean>();
+        List<Integer> tempStatValue = new ArrayList<Integer>();
+        List<String> tempRelevantStat = new ArrayList<String>();
+
         for (ArrayList<String> tempStoryBit : tempStoryBits) {
             int thisTempStorySize = tempStoryBit.size();
             int thisTempStoryID = Integer.parseInt(tempStoryBit.get(0));
             if (thisTempStoryID != tempStoryID) {
-                storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks, tempCombatant, tempIsEnding);
+                storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
+                        tempCombatant, tempIsEnding, tempIsHiddenCheck,
+                        tempStatValue, tempRelevantStat);
                 tempStoryID = thisTempStoryID;
                 tempChoices.clear();
                 tempDestinationBlocks.clear();
                 tempCombatant.clear();
                 tempIsEnding.clear();
+                tempIsHiddenCheck.clear();
+                tempStatValue.clear();
+                tempRelevantStat.clear();
             }
             // StoryBlock nextStoryBlock = getNextStoryStep(tempStoryBit.get(1)) == -1 ? null : this.storyObj.get(getNextStoryStep(tempStoryBit.get(1)));
             tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1)));
             tempChoices.add(tempStoryBit.get(thisTempStorySize - 1)); // Last element is always text to guide player
             tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
-            tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
+            if (!stringContainsAny(tempStoryBit.get(1), new char[]{'+', '-', '<', '>'})) {
+                tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
+                tempIsHiddenCheck.add(false);
+                tempRelevantStat.add("");
+                tempStatValue.add(0);
+                continue;
+            }
+            String[] statsInfo = tempStoryBit.get(2).split("[<>+-]");
+            int statValModifier = -1;
+            if (stringContainsAny(tempStoryBit.get(1), new char[]{'>', '<'})) {
+                // is a stat check
+                if (tempStoryBit.size() == 5) {
+                    // if specifies hidden/plain stat check
+                    tempIsHiddenCheck.add(tempStoryBit.get(3).equalsIgnoreCase("hidden"));
+                } else {
+                    tempIsHiddenCheck.add(false);
+                }
+                statValModifier = tempStoryBit.get(2).charAt(statsInfo.length) == '>' ? 1 : -1;
+                tempStatValue.add(Integer.parseInt(statsInfo[1]) * statValModifier);
+            } else {
+                // is a stat boost
+                statValModifier = tempStoryBit.get(2).charAt(statsInfo.length) == '+' ? 1 : -1;
+                if (statsInfo[1].equals("max")) {
+                    tempStatValue.add(statValModifier == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE);
+                } else {
+                    tempStatValue.add(Integer.parseInt(statsInfo[1]) * statValModifier);
+                }
+            }
+            tempRelevantStat.add(statsInfo[0]);
+            tempCombatant.add(null);
         }
-        storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks, tempCombatant, tempIsEnding);
+        storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
+                tempCombatant, tempIsEnding, tempIsHiddenCheck,
+                tempStatValue, tempRelevantStat);
         // init results of last iteration
     }
 
@@ -96,6 +138,14 @@ public class StoryBlockMaster {
         return rawNodeData;
     }
 
+    public boolean stringContainsAny(String sourceStr, char[] charsToMatch) {
+        for (char i: sourceStr.toCharArray()) {
+            for (char j: charsToMatch) {
+                if (Character.compare(i, j) == 0) { return true; }
+            }
+        }
+        return false;
+    }
     public int getNextStoryStep(String storyStepID) {
         if (storyStepID.equals("END"))
             return -1;

@@ -3,13 +3,32 @@ import java.util.*;
 
 public class PlayerClass {
     private static final String DEFAULT_PLAYER_FILE_NAME = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
-    private Map<String, Integer> playerBaseVals = new LinkedHashMap<>();
-    private Map<String, Integer> playerAtts = new LinkedHashMap<>();
-    private String playerName = "";
-    private int armour = 0;
+    private static Map<String, Integer> playerBaseVals = new LinkedHashMap<>();
+    private static Map<String, Integer> playerAtts = new LinkedHashMap<>();
+    private static String playerName = "";
+    private static int armour = 0;
 
-    PlayerClass(String characterSheetPath) {
+    public static String getPlayerName() { return playerName; }
+    public static int getPlayerStat(String stat) {
+        if (stat.equalsIgnoreCase("Armour")) { return armour; }
+        return playerBaseVals.containsKey(stat) ?
+                playerBaseVals.get(stat) : playerAtts.get(stat);
+    }
+
+    static {
         // Json would be better, but dependencies. This will be some funky .txt parsing instead
+//        if (characterSheetPath == null)
+//            characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
+//        File playerFile = new File(characterSheetPath);
+//        if (!playerFile.isFile()) {
+//            characterCreator();
+//            saveCharacter(characterSheetPath);
+//        } else {
+//            loadCharacter(characterSheetPath);
+//        }
+    }
+
+    public static void initPlayer(String characterSheetPath) {
         if (characterSheetPath == null)
             characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
         File playerFile = new File(characterSheetPath);
@@ -20,8 +39,7 @@ public class PlayerClass {
             loadCharacter(characterSheetPath);
         }
     }
-
-    public void defaultPlayerInit() {
+    public static void defaultPlayerInit() {
         playerBaseVals.put("playerLevel", 1);
         playerBaseVals.put("curXP", 0);
         playerBaseVals.put("neededXP", LevelEnums.XPArray[2]);
@@ -39,7 +57,7 @@ public class PlayerClass {
         playerAtts.put("Keen Eye", 0);
     }
 
-    public void characterCreator() {
+    public static void characterCreator() {
         defaultPlayerInit();
         System.out.println(">> Hello, and welcome to this story. I am your Narrator.\n>> I will always guide you through " +
                 "this beginning, and who knows, maybe we will meet again down the line!");
@@ -61,7 +79,7 @@ public class PlayerClass {
         }
     }
 
-    public int saveCharacter(String playerFile) {
+    public static int saveCharacter(String playerFile) {
         try {
             if (playerFile == null)
                 playerFile = DEFAULT_PLAYER_FILE_NAME;
@@ -75,7 +93,7 @@ public class PlayerClass {
         }
     }
 
-    private PrintWriter getPrintWriter(FileWriter fileWriter) {
+    private static PrintWriter getPrintWriter(FileWriter fileWriter) {
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.println(playerName);
         for (Integer baseLv : playerBaseVals.values())
@@ -86,7 +104,7 @@ public class PlayerClass {
         return printWriter;
     }
 
-    public int loadCharacter(String playerFile) {
+    public static int loadCharacter(String playerFile) {
         if (playerFile == null)
             playerFile = DEFAULT_PLAYER_FILE_NAME;
         try {
@@ -104,7 +122,7 @@ public class PlayerClass {
         }
     }
 
-    public void storyStatPicker() { // 6 major, 4 minor points to assign
+    public static void storyStatPicker() { // 6 major, 4 minor points to assign
         Map<String, Integer> playerAttsOld = new LinkedHashMap<>(playerAtts);
         System.out.println(">> How kind of you to humour me. Tell me, then: what is mightier? " +
                 "The pen or the sword?");
@@ -193,7 +211,7 @@ public class PlayerClass {
             default -> "Oh dear, something terrible has happened";
         };
         incrementStatWithSass(valToIncr, 3, sassRemark);
-        this.playerAtts.put(secondaryIncr, this.playerAtts.get(secondaryIncr) + 1);
+        playerAtts.put(secondaryIncr, playerAtts.get(secondaryIncr) + 1);
         System.out.println(">> And now, pick a trinket that you would like to be buried with");
         ans = StoryDisplayer.awaitChoiceInputFromOptions(new String[]{
                 "A coin", "An opulent ring", "A silver needle", "A feather", "A candle"
@@ -225,17 +243,17 @@ public class PlayerClass {
             default -> "Oh dear, something terrible has happened";
         };
         incrementStatWithSass(valToIncr, 1, sassRemark);
-        System.out.println(">> What a curious soul you are, " + this.playerName +
+        System.out.println(">> What a curious soul you are, " + playerName +
                 ". I do look forward to seeing you navigate what lies ahead.");
         System.out.println(">> But, for now, do take a look at what you've wound up with");
         System.out.println(">> Oh, and do feel free to adjust before you embark on your journey!");
         preciseStatPicker(0, 0, playerAttsOld);
     }
-    public void incrementStatWithSass(String statToIncr, int valToIncrBy, String sassRemark) {
-        this.playerAtts.put(statToIncr, this.playerAtts.get(statToIncr) + valToIncrBy);
+    public static void incrementStatWithSass(String statToIncr, int valToIncrBy, String sassRemark) {
+        playerAtts.put(statToIncr, playerAtts.get(statToIncr) + valToIncrBy);
         System.out.println(">> " + sassRemark);
     }
-    public void preciseStatPicker(int majorPoints, int minorPoints, Map<String, Integer> playerAttsOld) {
+    public static void preciseStatPicker(int majorPoints, int minorPoints, Map<String, Integer> playerAttsOld) {
         if (playerAttsOld == null)
             playerAttsOld = new LinkedHashMap<>(playerAtts);
         System.out.println(">> Your stats are as follows:");
@@ -286,7 +304,7 @@ public class PlayerClass {
         }
     }
 
-    public void spamStatDescriptions(int majorPoints, int minorPoints) {
+    public static void spamStatDescriptions(int majorPoints, int minorPoints) {
         System.out.println("\n>> You have [" + majorPoints + "] major trait points, and [" + minorPoints + "] minor trait points");
         int printCtr = 1;
         for (Map.Entry<String, Integer> curStat : playerAtts.entrySet()) {
@@ -305,5 +323,15 @@ public class PlayerClass {
         System.out.println(">> You can increase or decrease (so as to undo assignment of what you currently have) your stats by\n" +
                 "writing the trait's corresponding number and a + or -, for instance 1+ to increase strength");
         System.out.println(">> Once you're happy with the distribution and have spent all points, write [done]");
+    }
+
+    public static boolean statComparer(int compareAgainst, String statName) {
+        boolean shouldBeGreater = compareAgainst >= 0;
+        int statValInQuestion = playerAtts.containsKey(statName) ?
+                playerAtts.get(statName) : playerBaseVals.get(statName);
+        if (shouldBeGreater) {
+            return statValInQuestion > compareAgainst;
+        }
+        return statValInQuestion < compareAgainst;
     }
 }
