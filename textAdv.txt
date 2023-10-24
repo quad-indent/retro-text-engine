@@ -19,4 +19,9 @@
 [7] The match is struck, a blazing starlight ahead!
 [7.END] Woo!
 [8] What a fight that was!
-[8.END] Woo!
+[8.9] Woo!
+[9] Reward time
+[9.10][Intellect+1] Take a scroll
+[9.10][curHealth+5] Take a sip from the fountain
+[9.10][curHealth+max] Jump into the fountain
+[9.11][Subterfuge>1][hidden] Find out what powers up the fountain
