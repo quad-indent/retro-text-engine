@@ -11,6 +11,8 @@ public class StoryBlock {
     private List<Integer> statVal = new ArrayList<>();
     private List<String> relevantStat = new ArrayList<>();
 
+    public List<Integer> getStatVals() { return statVal; }
+    public List<String> getRelevantStat() { return relevantStat; }
     public StoryBlock(String tempPromptText) {
         promptText = tempPromptText;
         choices = new ArrayList<String>();
@@ -67,7 +69,7 @@ public class StoryBlock {
                         Math.abs(this.statVal.get(i)) + this.choices.get(i));
             }
         }
-        return this.choices;
+        return returnChoices;
     }
 
 }

@@ -10,16 +10,25 @@ public class StoryDisplayer {
         int curIndex = beginAt;
         StoryBlock curObj = storyObj.get(curIndex);
         int nextChoice = -1;
+        int rawChoicePicked = -1;
         while (curIndex < storyObj.size()) {
-            curObj = storyObj.get(curIndex);
             System.out.println(">> " + curObj.getPromptText());
             printChoiceOptions(curObj.getChoices());
-            nextChoice = curObj.getChoiceDestinationAtID(
-                    awaitChoiceInput(getChoiceOptions(curObj.getChoices()).length));
+            rawChoicePicked = awaitChoiceInput(getChoiceOptions(curObj.getChoices()).length);
+            nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked);
             if (nextChoice == -1)
                 return;
             // curObj = curObj.getChoiceDestinationAtID(nextChoice);
             curIndex = nextChoice;
+            curObj = storyObj.get(curIndex);
+            if (curObj.getStatVals().get(rawChoicePicked) == 0) {
+                continue;
+            }
+            PlayerClass.incrementPlayerStat(curObj.getRelevantStat().get(rawChoicePicked),
+                    curObj.getStatVals().get(rawChoicePicked));
+            if (PlayerClass.checkForDeath(true)) {
+                return;
+            }
         }
     }
 

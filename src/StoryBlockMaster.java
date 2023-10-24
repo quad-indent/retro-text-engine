@@ -43,7 +43,7 @@ public class StoryBlockMaster {
             tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1)));
             tempChoices.add(tempStoryBit.get(thisTempStorySize - 1)); // Last element is always text to guide player
             tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
-            if (!stringContainsAny(tempStoryBit.get(1), new char[]{'+', '-', '<', '>'})) {
+            if (!stringContainsAny(tempStoryBit.get(2), new char[]{'+', '-', '<', '>'})) {
                 tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
                 tempIsHiddenCheck.add(false);
                 tempRelevantStat.add("");
@@ -70,6 +70,7 @@ public class StoryBlockMaster {
                 } else {
                     tempStatValue.add(Integer.parseInt(statsInfo[1]) * statValModifier);
                 }
+                tempIsHiddenCheck.add(false);
             }
             tempRelevantStat.add(statsInfo[0]);
             tempCombatant.add(null);

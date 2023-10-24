@@ -15,6 +15,58 @@ public class PlayerClass {
                 playerBaseVals.get(stat) : playerAtts.get(stat);
     }
 
+    public static void incrementPlayerStat(String stat, int byHowMuch) {
+        if (byHowMuch == 0)
+            return;
+        if (stat.equalsIgnoreCase("armour")) {
+            armour += byHowMuch;
+            return;
+        }
+        if (byHowMuch == Integer.MAX_VALUE || byHowMuch == Integer.MIN_VALUE ||
+            stat.equalsIgnoreCase("curhealth") ||
+                stat.equalsIgnoreCase("curmana")) {
+            // Hideous double-switch, too lazy rn to be fancy
+            if (byHowMuch == Integer.MIN_VALUE) {
+                switch (stat.toLowerCase()) {
+                    case ("curhealth") -> {
+                        playerBaseVals.put("curHealth", 0);
+                    }
+                    case ("curmana") -> {
+                        playerBaseVals.put("curMana", 0);
+                    }
+                    default -> {
+                        return;
+                    }
+                }
+            } else if (byHowMuch == Integer.MAX_VALUE) {
+                switch (stat.toLowerCase()) {
+                    case ("curhealth") -> {
+                        playerBaseVals.put("curHealth", playerBaseVals.get("maxHealth"));
+                    }
+                    case ("curmana") -> {
+                        playerBaseVals.put("curMana", playerBaseVals.get("maxMana"));
+                    }
+                    default -> {
+                        return;
+                    }
+                }
+            } else {
+                playerBaseVals.put(stat, playerBaseVals.get(stat) + byHowMuch);
+                if (playerBaseVals.get(stat) > playerBaseVals.
+                        get(stat.replace("cur", "max"))) {
+                    playerBaseVals.put(stat, playerBaseVals.get(stat.replace("cur", "max")));
+                }
+            }
+        } else {
+            if (playerBaseVals.containsKey(stat)) {
+                playerBaseVals.put(stat, playerBaseVals.get(stat) + byHowMuch);
+                return;
+            } else {
+                playerAtts.put(stat, playerAtts.get(stat) + byHowMuch);
+            }
+        }
+    }
+
     static {
         // Json would be better, but dependencies. This will be some funky .txt parsing instead
 //        if (characterSheetPath == null)
@@ -36,6 +88,7 @@ public class PlayerClass {
             characterCreator();
             saveCharacter(characterSheetPath);
         } else {
+            defaultPlayerInit();
             loadCharacter(characterSheetPath);
         }
     }
@@ -333,5 +386,21 @@ public class PlayerClass {
             return statValInQuestion > compareAgainst;
         }
         return statValInQuestion < compareAgainst;
+    }
+
+    public static boolean checkForDeath(boolean handleEulogy) {
+        boolean isDead = playerBaseVals.get("curHealth") <= 0;
+        if (isDead) {
+            if (handleEulogy) {
+                displayEulogy();
+            }
+        }
+        return isDead;
+    }
+
+    public static void displayEulogy() {
+        System.out.println(">> And so ends the story of " + playerName);
+        System.out.println(">> There was so much more in store for you, you poor soul");
+        System.out.println(">> May we meet again");
     }
 }
