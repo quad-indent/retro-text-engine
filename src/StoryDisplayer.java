@@ -28,6 +28,7 @@ public class StoryDisplayer {
                         curObj.getStatVals().get(rawChoicePicked));
             }
             curObj = storyObj.get(curIndex);
+            PlayerClass.saveCharacter(curIndex);
             if (PlayerClass.checkForDeath(true)) {
                 return;
             }

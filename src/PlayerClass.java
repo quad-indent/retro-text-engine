@@ -3,6 +3,7 @@ import java.util.*;
 
 public class PlayerClass {
     private static final String DEFAULT_PLAYER_FILE_NAME = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
+    private static String desiredSaveDest = "";
     private static Map<String, Integer> playerBaseVals = new LinkedHashMap<>();
     private static Map<String, Integer> playerAtts = new LinkedHashMap<>();
     private static String playerName = "";
@@ -80,17 +81,20 @@ public class PlayerClass {
 //        }
     }
 
-    public static void initPlayer(String characterSheetPath) {
+    public static int initPlayer(String characterSheetPath) {
         if (characterSheetPath == null)
             characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
-        File playerFile = new File(characterSheetPath);
+        desiredSaveDest = characterSheetPath;
+        File playerFile = new File(desiredSaveDest);
+        int playerStoryPage = 0;
         if (!playerFile.isFile()) {
             characterCreator();
-            saveCharacter(characterSheetPath);
+            saveCharacter(0);
         } else {
             defaultPlayerInit();
-            loadCharacter(characterSheetPath);
+            playerStoryPage = loadCharacter();
         }
+        return playerStoryPage;
     }
     public static void defaultPlayerInit() {
         playerBaseVals.put("playerLevel", 1);
@@ -132,21 +136,19 @@ public class PlayerClass {
         }
     }
 
-    public static int saveCharacter(String playerFile) {
+    public static int saveCharacter(int curPage) {
         try {
-            if (playerFile == null)
-                playerFile = DEFAULT_PLAYER_FILE_NAME;
-            FileWriter fileWriter = new FileWriter(playerFile);
-            PrintWriter printWriter = getPrintWriter(fileWriter);
+            FileWriter fileWriter = new FileWriter(desiredSaveDest);
+            PrintWriter printWriter = getPrintWriter(fileWriter, curPage);
             printWriter.close();
             return 0;
         } catch (IOException e) {
-            System.out.println("Error! Could not create player save file \"" + playerFile + "\"");
+            System.out.println("Error! Could not create player save file \"" + desiredSaveDest + "\"");
             return 1;
         }
     }
 
-    private static PrintWriter getPrintWriter(FileWriter fileWriter) {
+    private static PrintWriter getPrintWriter(FileWriter fileWriter, int curPage) {
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.println(playerName);
         for (Integer baseLv : playerBaseVals.values())
@@ -154,23 +156,24 @@ public class PlayerClass {
         printWriter.println(armour);
         for (Integer statLv : playerAtts.values())
             printWriter.println(statLv);
+        printWriter.println(curPage); // starts at story index 0
         return printWriter;
     }
 
-    public static int loadCharacter(String playerFile) {
-        if (playerFile == null)
-            playerFile = DEFAULT_PLAYER_FILE_NAME;
+    public static int loadCharacter() {
+        int playerStoryPage = 0;
         try {
-            FileReader infoReader = new FileReader(playerFile);
+            FileReader infoReader = new FileReader(desiredSaveDest);
             Scanner storyReader = new Scanner(infoReader);
             playerName = storyReader.nextLine();
             playerBaseVals.replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
             armour = Integer.parseInt(storyReader.nextLine());
             playerAtts.replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+            playerStoryPage = Integer.parseInt(storyReader.nextLine());
             storyReader.close();
-            return 0;
+            return playerStoryPage;
         } catch (IOException e) {
-            System.out.println("Error! Could not open player save file \"" + playerFile + "\"");
+            System.out.println("Error! Could not open player save file \"" + desiredSaveDest + "\"");
             return 1;
         }
     }

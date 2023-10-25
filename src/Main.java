@@ -19,9 +19,9 @@ public class Main {
 
         // StoryDisplayer storyDisp = new StoryDisplayer();
 
-        PlayerClass.initPlayer(null); // character = new PlayerClass(null);
+        int playerStoryPage = PlayerClass.initPlayer(null); // character = new PlayerClass(null);
 
-        StoryDisplayer.storyLoop(bard.getStoryObj(), 0);
+        StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);
 //        List<String> myStory = StoryParser.parseFile(null);
 //        for(String storyBit : myStory)
 //        {
