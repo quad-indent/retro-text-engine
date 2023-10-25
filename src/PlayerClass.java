@@ -16,6 +16,14 @@ public class PlayerClass {
                 playerBaseVals.get(stat) : playerAtts.get(stat);
     }
 
+    public static void incrementHealth(int incrementBy) {
+        playerBaseVals.put("curHealth", playerBaseVals.get("curHealth") + incrementBy);
+        if (playerBaseVals.get("curHealth") > playerBaseVals.get("maxHealth")) {
+            playerBaseVals.put("curHealth", playerBaseVals.get("curHealth"));
+        } else if (playerBaseVals.get("curHealth") < 0){
+            playerBaseVals.put("curHealth", 0);
+        }
+    }
     public static void incrementPlayerStat(String stat, int byHowMuch) {
         if (byHowMuch == 0)
             return;

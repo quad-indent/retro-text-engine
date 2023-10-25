@@ -6,11 +6,12 @@ interface inputVerificator {
 
 public class StoryDisplayer {
     private static final Scanner scannerObj = new Scanner(System.in);
+    private static final int HP_BAR_LEN = 16;
     public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt) {
         int curIndex = beginAt;
         StoryBlock curObj = storyObj.get(curIndex);
-        int nextChoice = -1;
-        int rawChoicePicked = -1;
+        int nextChoice;
+        int rawChoicePicked;
         while (curIndex < storyObj.size()) {
             System.out.println(">> " + curObj.getPromptText());
             printChoiceOptions(curObj.getChoices());
@@ -59,7 +60,7 @@ public class StoryDisplayer {
             String playerInput = getRawPlayerInput();
 //            if (highestOptionVal == -1)
 //                return -1;
-            int parsedInput = -1;
+            int parsedInput;
             try {
                 parsedInput = Integer.parseInt(playerInput);
             } catch (NumberFormatException e) {
@@ -97,9 +98,9 @@ public class StoryDisplayer {
         return awaitChoiceInput(optionz.length);
     }
     public static int[] awaitChoiceInputWithIncrement(int highestOptionVal, String breakWord) {
-        int[] options = genOptionsArr(highestOptionVal);
-        String playerInput = "";
-        int lastCharID = -1;
+        // int[] options = genOptionsArr(highestOptionVal);
+        String playerInput;
+        int lastCharID;
         while (true) {
             playerInput = getRawPlayerInput().replaceAll(" ", "");
             if (playerInput.replaceAll("[\\[\\]]+", "").equalsIgnoreCase(breakWord))
@@ -120,6 +121,49 @@ public class StoryDisplayer {
                 continue;
             }
         }
+    }
+
+    public static <T> String genHealthBar(T character) {
+        int curHealth;
+        int maxHealth;
+        double scale;
+        if (!(character instanceof Foe)) {
+            curHealth = PlayerClass.getPlayerStat("curHealth");
+            maxHealth = PlayerClass.getPlayerStat("maxHealth");
+        } else {
+            curHealth = ((Foe) character).getCurHealth();
+            maxHealth = ((Foe) character).getMaxHealth();
+        }
+        StringBuilder healthBar = new StringBuilder("[");
+        scale = ((double) HP_BAR_LEN / maxHealth);
+        scale *= curHealth;
+        for (int i = 0; i < HP_BAR_LEN; i++) {
+            healthBar.append(i < scale ? "=" : " ");
+        }
+        healthBar.append("]");
+        return healthBar.toString();
+    }
+    public static void displayCombatants(Foe combatant) {
+        System.out.println(combatant.getName() + " (Level " + combatant.getLevel() + ")");
+        System.out.println(genHealthBar(combatant));
+        System.out.println(combatant.getCurHealth() + " / " + combatant.getMaxHealth() + " HP\tSTR: " +
+                combatant.getStrength());
+        System.out.println(combatant.getcurMana() + " / " + combatant.getMaxMana() + " Mana\tDEX: " +
+                combatant.getDexterity());
+        System.out.println("Armour: " + combatant.getArmour() + "\tINT: " + combatant.getIntellect());
+        System.out.println("\n>>>>>>>>>> VS <<<<<<<<<<\n");
+        System.out.println(PlayerClass.getPlayerName() + " (Level " + PlayerClass.getPlayerStat("playerLevel") +
+                ", " + PlayerClass.getPlayerStat("curXP") + " / " + PlayerClass.getPlayerStat("neededXP") +
+                ")");
+        System.out.println(genHealthBar(null));
+        System.out.println(PlayerClass.getPlayerStat("curHealth") + " / " +
+                PlayerClass.getPlayerStat("maxHealth") + " HP\tSTR: " +
+                PlayerClass.getPlayerStat("Strength"));
+        System.out.println(PlayerClass.getPlayerStat("curMana") + " / " +
+                PlayerClass.getPlayerStat("maxMana") + " Mana\tDEX: " +
+                PlayerClass.getPlayerStat("Dexterity"));
+        System.out.println("Armour: " + PlayerClass.getPlayerStat("Armour") + "\tINT: " +
+                PlayerClass.getPlayerStat("Intellect"));
     }
 
     public static int[] genOptionsArr(int highestOptionVal) {
