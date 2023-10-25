@@ -19,6 +19,7 @@ public class StoryBlockMaster {
         List<Integer> tempDestinationBlocks = new ArrayList<Integer>();
         List<String[]> tempCombatant = new ArrayList<String[]>();
         List<Boolean> tempIsEnding = new ArrayList<Boolean>();
+        List<Boolean> tempIsStatCheck = new ArrayList<Boolean>();
         List<Boolean> tempIsHiddenCheck = new ArrayList<Boolean>();
         List<Integer> tempStatValue = new ArrayList<Integer>();
         List<String> tempRelevantStat = new ArrayList<String>();
@@ -28,13 +29,14 @@ public class StoryBlockMaster {
             int thisTempStoryID = Integer.parseInt(tempStoryBit.get(0));
             if (thisTempStoryID != tempStoryID) {
                 storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
-                        tempCombatant, tempIsEnding, tempIsHiddenCheck,
+                        tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
                         tempStatValue, tempRelevantStat);
                 tempStoryID = thisTempStoryID;
                 tempChoices.clear();
                 tempDestinationBlocks.clear();
                 tempCombatant.clear();
                 tempIsEnding.clear();
+                tempIsStatCheck.clear();
                 tempIsHiddenCheck.clear();
                 tempStatValue.clear();
                 tempRelevantStat.clear();
@@ -43,8 +45,16 @@ public class StoryBlockMaster {
             tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1)));
             tempChoices.add(tempStoryBit.get(thisTempStorySize - 1)); // Last element is always text to guide player
             tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
-            if (!stringContainsAny(tempStoryBit.get(2), new char[]{'+', '-', '<', '>'})) {
-                tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
+
+            if (!stringContainsAny(tempStoryBit.get(2), new char[]{'+', '-', '<', '>'}) ||
+                tempStoryBit.size() <= 3) {
+                // combat info and stat boosts or checks are always >3 in size
+                if (tempStoryBit.size() > 3) {
+                    tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
+                } else {
+                    tempCombatant.add(null);
+                }
+                tempIsStatCheck.add(false);
                 tempIsHiddenCheck.add(false);
                 tempRelevantStat.add("");
                 tempStatValue.add(0);
@@ -52,7 +62,9 @@ public class StoryBlockMaster {
             }
             String[] statsInfo = tempStoryBit.get(2).split("[<>+-]");
             int statValModifier = -1;
-            if (stringContainsAny(tempStoryBit.get(1), new char[]{'>', '<'})) {
+            boolean isThisStatCheck = stringContainsAny(tempStoryBit.get(2), new char[]{'>', '<'});
+            tempIsStatCheck.add(isThisStatCheck);
+            if (isThisStatCheck) {
                 // is a stat check
                 if (tempStoryBit.size() == 5) {
                     // if specifies hidden/plain stat check
@@ -60,11 +72,11 @@ public class StoryBlockMaster {
                 } else {
                     tempIsHiddenCheck.add(false);
                 }
-                statValModifier = tempStoryBit.get(2).charAt(statsInfo.length) == '>' ? 1 : -1;
+                statValModifier = tempStoryBit.get(2).charAt(statsInfo[0].length()) == '>' ? 1 : -1;
                 tempStatValue.add(Integer.parseInt(statsInfo[1]) * statValModifier);
             } else {
                 // is a stat boost
-                statValModifier = tempStoryBit.get(2).charAt(statsInfo.length) == '+' ? 1 : -1;
+                statValModifier = tempStoryBit.get(2).charAt(statsInfo[0].length()) == '+' ? 1 : -1;
                 if (statsInfo[1].equals("max")) {
                     tempStatValue.add(statValModifier == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE);
                 } else {
@@ -76,9 +88,10 @@ public class StoryBlockMaster {
             tempCombatant.add(null);
         }
         storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
-                tempCombatant, tempIsEnding, tempIsHiddenCheck,
+                tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
                 tempStatValue, tempRelevantStat);
         // init results of last iteration
+        return;
     }
 
     public void showMeSomeStories() {

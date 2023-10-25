@@ -25,3 +25,13 @@
 [9.10][curHealth+5] Take a sip from the fountain
 [9.10][curHealth+max] Jump into the fountain
 [9.11][Subterfuge>1][hidden] Find out what powers up the fountain
+[9.12][Subterfuge>2] Pry open the fountain
+[10] Well, look at you go!
+[10.END] What a fun story this was!
+[11] You undearth fuckall!
+[11.END] Shit
+[12] Look at you, aren't you clever! Now what?
+[12.13][Subterfuge>3][hidden] I succeed
+[12.9][Subterfuge<4][hidden] You struggle and fail. Loser
+[13] Hellz yeah brother
+[13.END] Hellz yeah GM

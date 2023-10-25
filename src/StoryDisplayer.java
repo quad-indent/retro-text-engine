@@ -20,12 +20,14 @@ public class StoryDisplayer {
                 return;
             // curObj = curObj.getChoiceDestinationAtID(nextChoice);
             curIndex = nextChoice;
-            curObj = storyObj.get(curIndex);
-            if (curObj.getStatVals().get(rawChoicePicked) == 0) {
-                continue;
+//            if (curObj.getStatVals().get(rawChoicePicked) == 0) {
+//                continue;
+//            }
+            if (!curObj.isStatCheckAtChoiceID(rawChoicePicked)) {
+                PlayerClass.incrementPlayerStat(curObj.getRelevantStat().get(rawChoicePicked),
+                        curObj.getStatVals().get(rawChoicePicked));
             }
-            PlayerClass.incrementPlayerStat(curObj.getRelevantStat().get(rawChoicePicked),
-                    curObj.getStatVals().get(rawChoicePicked));
+            curObj = storyObj.get(curIndex);
             if (PlayerClass.checkForDeath(true)) {
                 return;
             }
