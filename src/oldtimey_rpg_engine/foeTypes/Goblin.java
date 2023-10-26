@@ -1,5 +1,10 @@
+package oldtimey_rpg_engine.foeTypes;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import oldtimey_rpg_engine.combat.CombatUtils;
+import oldtimey_rpg_engine.combat.Foe;
+
 
 public class Goblin extends Foe {
     public Goblin(String specificName, boolean matchPlayerLv, int relativeLvOffset,

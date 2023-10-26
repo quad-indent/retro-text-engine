@@ -1,3 +1,7 @@
+package oldtimey_rpg_engine.storyBits;
+
+import oldtimey_rpg_engine.player.*;
+
 import java.util.ArrayList;
 import java.util.List;
 

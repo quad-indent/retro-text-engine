@@ -1,3 +1,7 @@
+package oldtimey_rpg_engine.combat;
+
+import oldtimey_rpg_engine.player.PlayerClass;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -167,7 +171,7 @@ public class Foe {
         double xpModifier = (5 + PlayerClass.getPlayerStat("playerLevel") * 0.5 -
                 (PlayerClass.getPlayerStat("playerLevel") - selfLevel) * 0.6);
         xpModifier = Math.max(0.2, xpModifier);
-        return (int)((double)PlayerClass.getPlayerStat("neededXP") / xpModifier);
+        return (int)((double) PlayerClass.getPlayerStat("neededXP") / xpModifier);
     }
     public int genAttackType() {
         int[] weightz = new int[]{getDexterity(), CombatUtils

@@ -1,6 +1,4 @@
-// Using xp progression used by DnD 5e, which is non-linear. So, enums
-
-import javax.xml.xpath.XPath;
+package oldtimey_rpg_engine.player;// Using xp progression used by DnD 5e, which is non-linear. So, enums
 
 public enum LevelEnums
 {

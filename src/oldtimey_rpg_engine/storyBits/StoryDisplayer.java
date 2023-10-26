@@ -1,3 +1,9 @@
+package oldtimey_rpg_engine.storyBits;
+
+import oldtimey_rpg_engine.combat.*;
+import oldtimey_rpg_engine.foeTypes.*;
+import oldtimey_rpg_engine.player.PlayerClass;
+
 import java.util.*;
 
 interface inputVerificator {
@@ -26,8 +32,13 @@ public class StoryDisplayer {
                 PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
             }
             if (!curObj.isStatCheckAtChoiceID(rawChoicePicked)) {
-                PlayerClass.incrementPlayerStat(curObj.getRelevantStat().get(rawChoicePicked),
-                        curObj.getStatVal().get(rawChoicePicked));
+                String relevantStat = curObj.getRelevantStat().get(rawChoicePicked);
+                if (relevantStat.equals("curXP")) {
+                    PlayerClass.incrementXP(curObj.getStatVal().get(rawChoicePicked));
+                } else {
+                    PlayerClass.incrementPlayerStat(relevantStat,
+                            curObj.getStatVal().get(rawChoicePicked));
+                }
             }
             curObj = storyObj.get(curIndex);
             PlayerClass.saveCharacter(curIndex);

@@ -1,3 +1,7 @@
+package oldtimey_rpg_engine.player;
+
+import oldtimey_rpg_engine.storyBits.StoryDisplayer;
+
 import java.io.*;
 import java.util.*;
 
@@ -62,20 +66,20 @@ public class PlayerClass {
     }
     public static void incrementXP(int xpIncr) {
         getPlayerBaseVals().put("curXP", getPlayerBaseVals().get("curXP") + xpIncr);
-        int minorPoints = 0;
         int majorPoints = 0;
+        int minorPoints = 0;
         while (getPlayerBaseVals().get("curXP") >= getPlayerBaseVals().get("neededXP")) {
             // if levels up
             getPlayerBaseVals().put("curXP", getPlayerBaseVals().get("curXP") - getPlayerBaseVals().get("neededXP"));
             getPlayerBaseVals().put("playerLevel", getPlayerBaseVals().get("playerLevel") + 1);
             getPlayerBaseVals().put("neededXP", LevelEnums.XPArray[getPlayerBaseVals().get("playerLevel") + 1]);
-            minorPoints++;
+            majorPoints++;
             if (getPlayerBaseVals().get("playerLevel") % 5 == 0) {
                 minorPoints++;
                 majorPoints++;
             }
             if (getPlayerBaseVals().get("playerLevel") % 6 == 0) {
-                majorPoints++;
+                minorPoints++;
             }
             if (getPlayerBaseVals().get("playerLevel") % 10 == 0) {
                 minorPoints += 2;
@@ -83,7 +87,7 @@ public class PlayerClass {
             }
         }
         if (minorPoints > 0 || majorPoints > 0)
-            preciseStatPicker(majorPoints, minorPoints, null);
+            preciseStatPicker(majorPoints, minorPoints, null, true);
     }
     public static void incrementPlayerStat(String stat, int byHowMuch) {
         if (byHowMuch == 0)
@@ -198,7 +202,7 @@ public class PlayerClass {
                 storyStatPicker();
                 break;
             case 1:
-                preciseStatPicker(6, 4, null);
+                preciseStatPicker(6, 4, null, false);
                 break;
             default:
                 break;
@@ -372,15 +376,20 @@ public class PlayerClass {
                 ". I do look forward to seeing you navigate what lies ahead.");
         System.out.println(">> But, for now, do take a look at what you've wound up with");
         System.out.println(">> Oh, and do feel free to adjust before you embark on your journey!");
-        preciseStatPicker(0, 0, playerAttsOld);
+        preciseStatPicker(0, 0, playerAttsOld, false);
     }
     public static void incrementStatWithSass(String statToIncr, int valToIncrBy, String sassRemark) {
         getPlayerAtts().put(statToIncr, getPlayerAtts().get(statToIncr) + valToIncrBy);
         System.out.println(">> " + sassRemark);
     }
-    public static void preciseStatPicker(int majorPoints, int minorPoints, Map<String, Integer> playerAttsOld) {
+    public static void preciseStatPicker(int majorPoints, int minorPoints, Map<String, Integer> playerAttsOld,
+                                         boolean isLevelUp) {
         if (playerAttsOld == null)
             playerAttsOld = new LinkedHashMap<>(getPlayerAtts());
+        if (isLevelUp) {
+            System.out.println(">> You advance from level " + (getPlayerStat("playerLevel") - 1) +
+                    " to level " + getPlayerStat("playerLevel") + "!");
+        }
         System.out.println(">> Your stats are as follows:");
         int printCtr = 1;
         Map<Integer, String> tempStatIDMap = new LinkedHashMap<>();
@@ -430,7 +439,10 @@ public class PlayerClass {
     }
 
     public static void spamStatDescriptions(int majorPoints, int minorPoints) {
-        System.out.println("\n>> You have [" + majorPoints + "] major trait points, and [" + minorPoints + "] minor trait points");
+        System.out.println("\n>> You have [" + majorPoints + "] major trait " +
+                (majorPoints == 1 ? "point" : "points") + ", " +
+                "and [" + minorPoints + "] minor trait " +
+                (minorPoints == 1 ? "point" : "points"));
         int printCtr = 1;
         for (Map.Entry<String, Integer> curStat : getPlayerAtts().entrySet()) {
             System.out.println(">> [" + printCtr++ + "] " + curStat.getKey() + " - " + curStat.getValue());

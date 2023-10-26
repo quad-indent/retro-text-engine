@@ -1,6 +1,6 @@
-import java.sql.Array;
+package oldtimey_rpg_engine.storyBits;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class StoryBlockMaster {
@@ -41,7 +41,7 @@ public class StoryBlockMaster {
                 tempStatValue.clear();
                 tempRelevantStat.clear();
             }
-            // StoryBlock nextStoryBlock = getNextStoryStep(tempStoryBit.get(1)) == -1 ? null : this.storyObj.get(getNextStoryStep(tempStoryBit.get(1)));
+            // storyBits.StoryBlock nextStoryBlock = getNextStoryStep(tempStoryBit.get(1)) == -1 ? null : this.storyObj.get(getNextStoryStep(tempStoryBit.get(1)));
             tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1)));
             tempChoices.add(tempStoryBit.get(thisTempStorySize - 1)); // Last element is always text to guide player
             tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
@@ -128,7 +128,7 @@ public class StoryBlockMaster {
                 // story info. No id needed as they're marked from 0 to n, so just use .get() on storyObj
             }
             tempStoryBits.add(splitResult);
-            // this.storyObj.add(new StoryBlock(splitResult.get(splitResult.size()-1)));
+            // this.storyObj.add(new storyBits.StoryBlock(splitResult.get(splitResult.size()-1)));
         }
         return tempStoryBits;
     }
