@@ -1,4 +1,4 @@
-package oldtimey_rpg_engine.storyBits;
+package storyBits;
 
 public enum SplitReturnsEnum {
     STORY_PROMPT(2),

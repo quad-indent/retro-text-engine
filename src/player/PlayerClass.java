@@ -1,6 +1,6 @@
-package oldtimey_rpg_engine.player;
+package player;
 
-import oldtimey_rpg_engine.storyBits.StoryDisplayer;
+import storyBits.StoryDisplayer;
 
 import java.io.*;
 import java.util.*;

@@ -1,9 +1,7 @@
-package oldtimey_rpg_engine.foeTypes;
-import java.util.LinkedHashMap;
-import java.util.Map;
+package foeTypes;
 
-import oldtimey_rpg_engine.combat.CombatUtils;
-import oldtimey_rpg_engine.combat.Foe;
+import combat.CombatUtils;
+import combat.Foe;
 
 
 public class Goblin extends Foe {

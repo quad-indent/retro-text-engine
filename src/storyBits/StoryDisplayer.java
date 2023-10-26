@@ -1,8 +1,8 @@
-package oldtimey_rpg_engine.storyBits;
+package storyBits;
 
-import oldtimey_rpg_engine.combat.*;
-import oldtimey_rpg_engine.foeTypes.*;
-import oldtimey_rpg_engine.player.PlayerClass;
+import combat.*;
+import foeTypes.*;
+import player.PlayerClass;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
-package oldtimey_rpg_engine.combat;
+package combat;
 
-import oldtimey_rpg_engine.player.PlayerClass;
+import player.PlayerClass;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

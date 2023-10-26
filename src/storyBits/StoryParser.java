@@ -1,4 +1,4 @@
-package oldtimey_rpg_engine.storyBits;
+package storyBits;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

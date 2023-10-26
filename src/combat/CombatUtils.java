@@ -1,7 +1,7 @@
-package oldtimey_rpg_engine.combat;
+package combat;
 
-import oldtimey_rpg_engine.storyBits.StoryDisplayer;
-import oldtimey_rpg_engine.player.PlayerClass;
+import storyBits.StoryDisplayer;
+import player.PlayerClass;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;

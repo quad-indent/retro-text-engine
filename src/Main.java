@@ -1,8 +1,6 @@
-package oldtimey_rpg_engine;
-
-import oldtimey_rpg_engine.player.PlayerClass;
-import oldtimey_rpg_engine.storyBits.StoryBlockMaster;
-import oldtimey_rpg_engine.storyBits.StoryDisplayer;
+import player.PlayerClass;
+import storyBits.StoryBlockMaster;
+import storyBits.StoryDisplayer;
 
 public class Main {
     public static void main(String[] args) {
