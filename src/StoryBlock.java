@@ -12,7 +12,6 @@ public class StoryBlock {
     private List<Integer> statVal = new ArrayList<>();
     private List<String> relevantStat = new ArrayList<>();
 
-    public List<Integer> getStatVals() { return statVal; }
     public List<String> getRelevantStat() { return relevantStat; }
     public boolean isStatCheckAtChoiceID(int choiceID) {
         return areStatChecks.get(choiceID);
@@ -20,6 +19,63 @@ public class StoryBlock {
     public List<String[]> getCombatantInfo() {
         return combatantInfo;
     }
+
+    public void setPromptText(String promptText) {
+        this.promptText = promptText;
+    }
+
+    public void setChoices(List<String> choices) {
+        this.choices = choices;
+    }
+
+    public void setCombatantInfo(List<String[]> combatantInfo) {
+        this.combatantInfo = combatantInfo;
+    }
+
+    public List<Boolean> getIsEnding() {
+        return isEnding;
+    }
+
+    public void setIsEnding(List<Boolean> isEnding) {
+        this.isEnding = isEnding;
+    }
+
+    public List<Integer> getChoiceDestinations() {
+        return choiceDestinations;
+    }
+
+    public void setChoiceDestinations(List<Integer> choiceDestinations) {
+        this.choiceDestinations = choiceDestinations;
+    }
+
+    public List<Boolean> getAreHiddenStatChecks() {
+        return areHiddenStatChecks;
+    }
+
+    public void setAreHiddenStatChecks(List<Boolean> areHiddenStatChecks) {
+        this.areHiddenStatChecks = areHiddenStatChecks;
+    }
+
+    public List<Boolean> getAreStatChecks() {
+        return areStatChecks;
+    }
+
+    public void setAreStatChecks(List<Boolean> areStatChecks) {
+        this.areStatChecks = areStatChecks;
+    }
+
+    public List<Integer> getStatVal() {
+        return statVal;
+    }
+
+    public void setStatVal(List<Integer> statVal) {
+        this.statVal = statVal;
+    }
+
+    public void setRelevantStat(List<String> relevantStat) {
+        this.relevantStat = relevantStat;
+    }
+
     public StoryBlock(String tempPromptText) {
         promptText = tempPromptText;
         choices = new ArrayList<String>();
@@ -46,40 +102,41 @@ public class StoryBlock {
     }
 
     public int getChoiceDestinationAtID(int ID) {
-        if (ID < 0 || ID >= choiceDestinations.size()) {
+        if (ID < 0 || ID >= getChoiceDestinations().size()) {
             System.out.println("Incorrect ID provided!");
             return -1;
         }
-        return choiceDestinations.get(ID);
+        return getChoiceDestinations().get(ID);
     }
 
     public String getPromptText() {
-        return this.promptText;
+        return promptText;
     }
 
+    public List<String> getRawChoices() { return choices; }
     public List<String> getChoices() {
         List<String> returnChoices = new ArrayList<String>();
-        for (int i=0; i<this.choices.size(); i++) {
-            if (!(this.areHiddenStatChecks.get(i) || this.isStatCheckAtChoiceID(i))) {
+        for (int i=0; i<this.getRawChoices().size(); i++) {
+            if (!(this.getAreHiddenStatChecks().get(i) || this.isStatCheckAtChoiceID(i))) {
                 // If not any kind of stat check, just append to list
-                returnChoices.add(this.choices.get(i));
+                returnChoices.add(this.getRawChoices().get(i));
                 continue;
             }
-            String prettifiedStat = this.relevantStat.get(i);
-            String comparisonSign = this.statVal.get(i) > 0 ? ">" : "<";
+            String prettifiedStat = this.getRelevantStat().get(i);
+            String comparisonSign = this.getStatVal().get(i) > 0 ? ">" : "<";
             if (prettifiedStat.equalsIgnoreCase("curHealth")) {
                 prettifiedStat = "Current Health";
             } else if (prettifiedStat.equalsIgnoreCase("curMana")) {
                 prettifiedStat = "Current Mana";
             }
 
-            if (this.isStatCheckAtChoiceID(i) && !this.areHiddenStatChecks.get(i)) {
+            if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
                 // if unknown (to player) stat check
-                returnChoices.add("[" + prettifiedStat + "] " + this.choices.get(i));
-            } else if (PlayerClass.statComparer(this.statVal.get(i), this.relevantStat.get(i))) {
+                returnChoices.add("[" + prettifiedStat + "] " + this.getRawChoices().get(i));
+            } else if (PlayerClass.statComparer(this.getStatVal().get(i), this.getRelevantStat().get(i))) {
                 // If a HIDDEN stat check, only display if check passes
                 returnChoices.add("[" + prettifiedStat + " " + comparisonSign + " " +
-                        Math.abs(this.statVal.get(i)) + "] " + this.choices.get(i));
+                        Math.abs(this.getStatVal().get(i)) + "] " + this.getRawChoices().get(i));
             }
         }
         return returnChoices;

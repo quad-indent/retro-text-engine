@@ -147,14 +147,14 @@ public class Foe {
         attackInfo.put("isHit", 0);
         attackInfo.put("damageOut", 0);
         attackInfo.put("attackType", attackType);
-        if (!CombatUtils.rollForHit(dexterity, PlayerClass.getPlayerStat("Dexterity"),
-                strength, PlayerClass.getPlayerStat("Strength"), attackType)) {
+        if (!CombatUtils.rollForHit(getDexterity(), PlayerClass.getPlayerStat("Dexterity"),
+                getStrength(), PlayerClass.getPlayerStat("Strength"), attackType)) {
             return attackInfo;
         } else {
-            boolean isCrit = CombatUtils.rollForCrit(dexterity,
+            boolean isCrit = CombatUtils.rollForCrit(getDexterity(),
                     PlayerClass.getPlayerStat("Dexterity"), attackType);
-            int dmgRaw = CombatUtils.calcDamage(dexterity, PlayerClass.getPlayerStat("Dexterity"),
-                    strength, PlayerClass.getPlayerStat("Strength"), attackType, isCrit,
+            int dmgRaw = CombatUtils.calcDamage(getDexterity(), PlayerClass.getPlayerStat("Dexterity"),
+                    getStrength(), PlayerClass.getPlayerStat("Strength"), attackType, isCrit,
                     false, false);
             dmgRaw = CombatUtils.calcDamageAfterArmour(dmgRaw, PlayerClass.getPlayerStat("armour"));
             attackInfo.put("damageOut", dmgRaw);
@@ -170,8 +170,9 @@ public class Foe {
         return (int)((double)PlayerClass.getPlayerStat("neededXP") / xpModifier);
     }
     public int genAttackType() {
-        int[] weightz = new int[]{dexterity, CombatUtils.getMean(new int[]{strength, dexterity, intellect}),
-                strength};
+        int[] weightz = new int[]{getDexterity(), CombatUtils
+                .getMean(new int[]{getStrength(), getDexterity(), getIntellect()}),
+                getStrength()};
         int rngRes = CombatUtils.genRandomNum(0, Arrays.stream(weightz).sum());
         int attackType = 2;
         for (; attackType>=0; attackType--) {

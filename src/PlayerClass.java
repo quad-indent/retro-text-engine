@@ -9,44 +9,81 @@ public class PlayerClass {
     private static String playerName = "";
     private static int armour = 0;
 
+    public static String getDesiredSaveDest() {
+        return desiredSaveDest;
+    }
+
+    public static void setDesiredSaveDest(String desiredSaveDest) {
+        PlayerClass.desiredSaveDest = desiredSaveDest;
+    }
+
+    public static void setPlayerName(String playerName) {
+        PlayerClass.playerName = playerName;
+    }
+
+    public static int getArmour() {
+        return armour;
+    }
+
+    public static void setArmour(int armour) {
+        PlayerClass.armour = armour;
+    }
+
+    public static Map<String, Integer> getPlayerBaseVals() {
+        return playerBaseVals;
+    }
+
+    public static void setPlayerBaseVals(Map<String, Integer> playerBaseVals) {
+        PlayerClass.playerBaseVals = playerBaseVals;
+    }
+
+    public static Map<String, Integer> getPlayerAtts() {
+        return playerAtts;
+    }
+
+    public static void setPlayerAtts(Map<String, Integer> playerAtts) {
+        PlayerClass.playerAtts = playerAtts;
+    }
+
     public static String getPlayerName() { return playerName; }
     public static int getPlayerStat(String stat) {
-        if (stat.equalsIgnoreCase("Armour")) { return armour; }
-        return playerBaseVals.containsKey(stat) ?
-                playerBaseVals.get(stat) : playerAtts.get(stat);
+        if (stat.equalsIgnoreCase("Armour")) { return getArmour(); }
+        return getPlayerBaseVals().containsKey(stat) ?
+                getPlayerBaseVals().get(stat) : getPlayerAtts().get(stat);
     }
 
     public static void incrementHealth(int incrementBy) {
-        playerBaseVals.put("curHealth", playerBaseVals.get("curHealth") + incrementBy);
-        if (playerBaseVals.get("curHealth") > playerBaseVals.get("maxHealth")) {
-            playerBaseVals.put("curHealth", playerBaseVals.get("curHealth"));
-        } else if (playerBaseVals.get("curHealth") < 0){
-            playerBaseVals.put("curHealth", 0);
+        getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("curHealth") + incrementBy);
+        if (getPlayerBaseVals().get("curHealth") > getPlayerBaseVals().get("maxHealth")) {
+            getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("curHealth"));
+        } else if (getPlayerBaseVals().get("curHealth") < 0){
+            getPlayerBaseVals().put("curHealth", 0);
         }
     }
     public static void incrementXP(int xpIncr) {
-        playerBaseVals.put("curXP", playerBaseVals.get("curXP") + xpIncr);
+        getPlayerBaseVals().put("curXP", getPlayerBaseVals().get("curXP") + xpIncr);
         int minorPoints = 0;
         int majorPoints = 0;
-        while (playerBaseVals.get("curXP") >= playerBaseVals.get("neededXP")) {
+        while (getPlayerBaseVals().get("curXP") >= getPlayerBaseVals().get("neededXP")) {
             // if levels up
-            playerBaseVals.put("curXP", playerBaseVals.get("curXP") - playerBaseVals.get("neededXP"));
-            playerBaseVals.put("playerLevel", playerBaseVals.get("playerLevel") + 1);
-            playerBaseVals.put("neededXP", LevelEnums.XPArray[playerBaseVals.get("playerLevel") + 1]);
+            getPlayerBaseVals().put("curXP", getPlayerBaseVals().get("curXP") - getPlayerBaseVals().get("neededXP"));
+            getPlayerBaseVals().put("playerLevel", getPlayerBaseVals().get("playerLevel") + 1);
+            getPlayerBaseVals().put("neededXP", LevelEnums.XPArray[getPlayerBaseVals().get("playerLevel") + 1]);
             minorPoints++;
-            if (playerBaseVals.get("playerLevel") % 5 == 0) {
+            if (getPlayerBaseVals().get("playerLevel") % 5 == 0) {
                 minorPoints++;
                 majorPoints++;
             }
-            if (playerBaseVals.get("playerLevel") % 6 == 0) {
+            if (getPlayerBaseVals().get("playerLevel") % 6 == 0) {
                 majorPoints++;
             }
-            if (playerBaseVals.get("playerLevel") % 10 == 0) {
+            if (getPlayerBaseVals().get("playerLevel") % 10 == 0) {
                 minorPoints += 2;
                 majorPoints += 2;
             }
         }
-        preciseStatPicker(majorPoints, minorPoints, null);
+        if (minorPoints > 0 || majorPoints > 0)
+            preciseStatPicker(majorPoints, minorPoints, null);
     }
     public static void incrementPlayerStat(String stat, int byHowMuch) {
         if (byHowMuch == 0)
@@ -62,10 +99,10 @@ public class PlayerClass {
             if (byHowMuch == Integer.MIN_VALUE) {
                 switch (stat.toLowerCase()) {
                     case ("curhealth") -> {
-                        playerBaseVals.put("curHealth", 0);
+                        getPlayerBaseVals().put("curHealth", 0);
                     }
                     case ("curmana") -> {
-                        playerBaseVals.put("curMana", 0);
+                        getPlayerBaseVals().put("curMana", 0);
                     }
                     default -> {
                         return;
@@ -74,28 +111,28 @@ public class PlayerClass {
             } else if (byHowMuch == Integer.MAX_VALUE) {
                 switch (stat.toLowerCase()) {
                     case ("curhealth") -> {
-                        playerBaseVals.put("curHealth", playerBaseVals.get("maxHealth"));
+                        getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("maxHealth"));
                     }
                     case ("curmana") -> {
-                        playerBaseVals.put("curMana", playerBaseVals.get("maxMana"));
+                        getPlayerBaseVals().put("curMana", getPlayerBaseVals().get("maxMana"));
                     }
                     default -> {
                         return;
                     }
                 }
             } else {
-                playerBaseVals.put(stat, playerBaseVals.get(stat) + byHowMuch);
-                if (playerBaseVals.get(stat) > playerBaseVals.
+                getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
+                if (getPlayerBaseVals().get(stat) > getPlayerBaseVals().
                         get(stat.replace("cur", "max"))) {
-                    playerBaseVals.put(stat, playerBaseVals.get(stat.replace("cur", "max")));
+                    getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat.replace("cur", "max")));
                 }
             }
         } else {
-            if (playerBaseVals.containsKey(stat)) {
-                playerBaseVals.put(stat, playerBaseVals.get(stat) + byHowMuch);
+            if (getPlayerBaseVals().containsKey(stat)) {
+                getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
                 return;
             } else {
-                playerAtts.put(stat, playerAtts.get(stat) + byHowMuch);
+                getPlayerAtts().put(stat, getPlayerAtts().get(stat) + byHowMuch);
             }
         }
     }
@@ -116,8 +153,8 @@ public class PlayerClass {
     public static int initPlayer(String characterSheetPath) {
         if (characterSheetPath == null)
             characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
-        desiredSaveDest = characterSheetPath;
-        File playerFile = new File(desiredSaveDest);
+        setDesiredSaveDest(characterSheetPath);
+        File playerFile = new File(getDesiredSaveDest());
         int playerStoryPage = 0;
         if (!playerFile.isFile()) {
             characterCreator();
@@ -129,21 +166,21 @@ public class PlayerClass {
         return playerStoryPage;
     }
     public static void defaultPlayerInit() {
-        playerBaseVals.put("playerLevel", 1);
-        playerBaseVals.put("curXP", 0);
-        playerBaseVals.put("neededXP", LevelEnums.XPArray[2]);
-        playerBaseVals.put("maxHealth", 50);
-        playerBaseVals.put("curHealth", 50);
-        playerBaseVals.put("maxMana", 20);
-        playerBaseVals.put("curMana", 20);
-        playerAtts.put("Strength", 10);
-        playerAtts.put("Dexterity", 10);
-        playerAtts.put("Intellect", 10);
-        playerAtts.put("Diplomacy", 0);
-        playerAtts.put("Subterfuge", 0);
-        playerAtts.put("Arcana", 0);
-        playerAtts.put("Willpower", 0);
-        playerAtts.put("Keen Eye", 0);
+        getPlayerBaseVals().put("playerLevel", 1);
+        getPlayerBaseVals().put("curXP", 0);
+        getPlayerBaseVals().put("neededXP", LevelEnums.XPArray[2]);
+        getPlayerBaseVals().put("maxHealth", 50);
+        getPlayerBaseVals().put("curHealth", 50);
+        getPlayerBaseVals().put("maxMana", 20);
+        getPlayerBaseVals().put("curMana", 20);
+        getPlayerAtts().put("Strength", 10);
+        getPlayerAtts().put("Dexterity", 10);
+        getPlayerAtts().put("Intellect", 10);
+        getPlayerAtts().put("Diplomacy", 0);
+        getPlayerAtts().put("Subterfuge", 0);
+        getPlayerAtts().put("Arcana", 0);
+        getPlayerAtts().put("Willpower", 0);
+        getPlayerAtts().put("Keen Eye", 0);
     }
 
     public static void characterCreator() {
@@ -151,7 +188,7 @@ public class PlayerClass {
         System.out.println(">> Hello, and welcome to this story. I am your Narrator.\n>> I will always guide you through " +
                 "this beginning, and who knows, maybe we will meet again down the line!");
         System.out.println(">> Tell me, what is your name?");
-        playerName = StoryDisplayer.awaitChoiceInput(false, true);
+        setPlayerName(StoryDisplayer.awaitChoiceInput(false, true));
         System.out.println(">> Tell me about yourself, " + playerName + ". Would you prefer to have a little chat about yourself, " +
                 "or simply provide me with the precise information about your strengths and weaknesses?");
         System.out.println(">> [1] - Let's do this properly\n>> [2] - Let's skip the small talk");
@@ -170,23 +207,23 @@ public class PlayerClass {
 
     public static int saveCharacter(int curPage) {
         try {
-            FileWriter fileWriter = new FileWriter(desiredSaveDest);
+            FileWriter fileWriter = new FileWriter(getDesiredSaveDest());
             PrintWriter printWriter = getPrintWriter(fileWriter, curPage);
             printWriter.close();
             return 0;
         } catch (IOException e) {
-            System.out.println("Error! Could not create player save file \"" + desiredSaveDest + "\"");
+            System.out.println("Error! Could not create player save file \"" + getDesiredSaveDest() + "\"");
             return 1;
         }
     }
 
     private static PrintWriter getPrintWriter(FileWriter fileWriter, int curPage) {
         PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.println(playerName);
-        for (Integer baseLv : playerBaseVals.values())
+        printWriter.println(getPlayerName());
+        for (Integer baseLv : getPlayerBaseVals().values())
             printWriter.println(baseLv);
-        printWriter.println(armour);
-        for (Integer statLv : playerAtts.values())
+        printWriter.println(getArmour());
+        for (Integer statLv : getPlayerAtts().values())
             printWriter.println(statLv);
         printWriter.println(curPage); // starts at story index 0
         return printWriter;
@@ -195,23 +232,23 @@ public class PlayerClass {
     public static int loadCharacter() {
         int playerStoryPage = 0;
         try {
-            FileReader infoReader = new FileReader(desiredSaveDest);
+            FileReader infoReader = new FileReader(getDesiredSaveDest());
             Scanner storyReader = new Scanner(infoReader);
-            playerName = storyReader.nextLine();
-            playerBaseVals.replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
-            armour = Integer.parseInt(storyReader.nextLine());
-            playerAtts.replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+            setPlayerName(storyReader.nextLine());
+            getPlayerBaseVals().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+            setArmour(Integer.parseInt(storyReader.nextLine()));
+            getPlayerAtts().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
             playerStoryPage = Integer.parseInt(storyReader.nextLine());
             storyReader.close();
             return playerStoryPage;
         } catch (IOException e) {
-            System.out.println("Error! Could not open player save file \"" + desiredSaveDest + "\"");
+            System.out.println("Error! Could not open player save file \"" + getDesiredSaveDest() + "\"");
             return 1;
         }
     }
 
     public static void storyStatPicker() { // 6 major, 4 minor points to assign
-        Map<String, Integer> playerAttsOld = new LinkedHashMap<>(playerAtts);
+        Map<String, Integer> playerAttsOld = new LinkedHashMap<>(getPlayerAtts());
         System.out.println(">> How kind of you to humour me. Tell me, then: what is mightier? " +
                 "The pen or the sword?");
         int ans = StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"The pen", "The sword",
@@ -254,7 +291,7 @@ public class PlayerClass {
             case 2 -> "Intellect";
             default -> valToIncr;
         };
-        if (playerAtts.get(valToIncr) == 12)
+        if (getPlayerAtts().get(valToIncr) == 12)
             sassRemark = "Perhaps your earlier answer was truly in earnest";
         else {
             sassRemark = "And here I thought you'd go with a different approach. How quaint";
@@ -299,7 +336,7 @@ public class PlayerClass {
             default -> "Oh dear, something terrible has happened";
         };
         incrementStatWithSass(valToIncr, 3, sassRemark);
-        playerAtts.put(secondaryIncr, playerAtts.get(secondaryIncr) + 1);
+        getPlayerAtts().put(secondaryIncr, getPlayerAtts().get(secondaryIncr) + 1);
         System.out.println(">> And now, pick a trinket that you would like to be buried with");
         ans = StoryDisplayer.awaitChoiceInputFromOptions(new String[]{
                 "A coin", "An opulent ring", "A silver needle", "A feather", "A candle"
@@ -338,16 +375,16 @@ public class PlayerClass {
         preciseStatPicker(0, 0, playerAttsOld);
     }
     public static void incrementStatWithSass(String statToIncr, int valToIncrBy, String sassRemark) {
-        playerAtts.put(statToIncr, playerAtts.get(statToIncr) + valToIncrBy);
+        getPlayerAtts().put(statToIncr, getPlayerAtts().get(statToIncr) + valToIncrBy);
         System.out.println(">> " + sassRemark);
     }
     public static void preciseStatPicker(int majorPoints, int minorPoints, Map<String, Integer> playerAttsOld) {
         if (playerAttsOld == null)
-            playerAttsOld = new LinkedHashMap<>(playerAtts);
+            playerAttsOld = new LinkedHashMap<>(getPlayerAtts());
         System.out.println(">> Your stats are as follows:");
         int printCtr = 1;
         Map<Integer, String> tempStatIDMap = new LinkedHashMap<>();
-        for (Map.Entry<String, Integer> curStat : playerAtts.entrySet()) {
+        for (Map.Entry<String, Integer> curStat : getPlayerAtts().entrySet()) {
             tempStatIDMap.put(printCtr++, curStat.getKey());
         }
 
@@ -368,22 +405,22 @@ public class PlayerClass {
                 continue;
             }
             curChoicePicked = tempStatIDMap.get(curChoices[0]);
-            curChoiceLevel = playerAtts.get(curChoicePicked);
+            curChoiceLevel = getPlayerAtts().get(curChoicePicked);
             usingMajorPoints = curChoices[0] < 3;
 
             if (curChoices[1] == 1) {
                 if ((majorPoints < 1 && usingMajorPoints) || (minorPoints < 1 && !usingMajorPoints))
                     continue;
-                playerAtts.put(curChoicePicked, curChoiceLevel + 1);
+                getPlayerAtts().put(curChoicePicked, curChoiceLevel + 1);
                 if (usingMajorPoints)
                     majorPoints--;
                 else
                     minorPoints--;
             } else {
-                if (playerAttsOld.get(curChoicePicked) >= playerAtts.get(curChoicePicked))
+                if (playerAttsOld.get(curChoicePicked) >= getPlayerAtts().get(curChoicePicked))
                     continue;
                 // if player attempts to decrement below what they already had, continues
-                playerAtts.put(curChoicePicked, curChoiceLevel - 1);
+                getPlayerAtts().put(curChoicePicked, curChoiceLevel - 1);
                 if (usingMajorPoints)
                     majorPoints++;
                 else
@@ -395,7 +432,7 @@ public class PlayerClass {
     public static void spamStatDescriptions(int majorPoints, int minorPoints) {
         System.out.println("\n>> You have [" + majorPoints + "] major trait points, and [" + minorPoints + "] minor trait points");
         int printCtr = 1;
-        for (Map.Entry<String, Integer> curStat : playerAtts.entrySet()) {
+        for (Map.Entry<String, Integer> curStat : getPlayerAtts().entrySet()) {
             System.out.println(">> [" + printCtr++ + "] " + curStat.getKey() + " - " + curStat.getValue());
         }
         System.out.println(">> Major traits:\n>> Strength boosts your max health and accuracy of your strong attacks");
@@ -415,8 +452,8 @@ public class PlayerClass {
 
     public static boolean statComparer(int compareAgainst, String statName) {
         boolean shouldBeGreater = compareAgainst >= 0;
-        int statValInQuestion = playerAtts.containsKey(statName) ?
-                playerAtts.get(statName) : playerBaseVals.get(statName);
+        int statValInQuestion = getPlayerAtts().containsKey(statName) ?
+                getPlayerAtts().get(statName) : getPlayerBaseVals().get(statName);
         if (shouldBeGreater) {
             return statValInQuestion > compareAgainst;
         }
@@ -424,7 +461,7 @@ public class PlayerClass {
     }
 
     public static boolean checkForDeath(boolean handleEulogy) {
-        boolean isDead = playerBaseVals.get("curHealth") <= 0;
+        boolean isDead = getPlayerBaseVals().get("curHealth") <= 0;
         if (isDead) {
             if (handleEulogy) {
                 displayEulogy();
@@ -433,7 +470,7 @@ public class PlayerClass {
         return isDead;
     }
     public static void displayEulogy() {
-        System.out.println(">> And so ends the story of " + playerName);
+        System.out.println(">> And so ends the story of " + getPlayerName());
         System.out.println(">> There was so much more in store for you, you poor soul");
         System.out.println(">> May we meet again");
     }

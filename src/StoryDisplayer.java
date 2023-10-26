@@ -19,18 +19,15 @@ public class StoryDisplayer {
             nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked);
             if (nextChoice == -1)
                 return;
-            // curObj = curObj.getChoiceDestinationAtID(nextChoice);
             curIndex = nextChoice;
-//            if (curObj.getStatVals().get(rawChoicePicked) == 0) {
-//                continue;
-//            }
+
             if (curObj.getCombatantInfo().get(rawChoicePicked) != null) {
                 Foe currentFoe = getFoe(curObj, rawChoicePicked);
                 PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
             }
             if (!curObj.isStatCheckAtChoiceID(rawChoicePicked)) {
                 PlayerClass.incrementPlayerStat(curObj.getRelevantStat().get(rawChoicePicked),
-                        curObj.getStatVals().get(rawChoicePicked));
+                        curObj.getStatVal().get(rawChoicePicked));
             }
             curObj = storyObj.get(curIndex);
             PlayerClass.saveCharacter(curIndex);
