@@ -24,6 +24,10 @@ public class StoryDisplayer {
 //            if (curObj.getStatVals().get(rawChoicePicked) == 0) {
 //                continue;
 //            }
+            if (curObj.getCombatantInfo().get(rawChoicePicked) != null) {
+                Foe currentFoe = getFoe(curObj, rawChoicePicked);
+                PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
+            }
             if (!curObj.isStatCheckAtChoiceID(rawChoicePicked)) {
                 PlayerClass.incrementPlayerStat(curObj.getRelevantStat().get(rawChoicePicked),
                         curObj.getStatVals().get(rawChoicePicked));
@@ -34,6 +38,23 @@ public class StoryDisplayer {
                 return;
             }
         }
+    }
+
+    private static Foe getFoe(StoryBlock curObj, int rawChoicePicked) {
+        String[] combatantInfo = curObj.getCombatantInfo().get(rawChoicePicked);
+        Foe currentFoe;
+        switch (combatantInfo[0].toLowerCase()) {
+            case "goblin":
+                currentFoe = new Goblin(combatantInfo[1], true, 0, 0,
+                        0, 0, 0, 0, 0,
+                        0, 0, 0, 0);
+                break;
+            default:
+                currentFoe = new Foe("Errornimus", 1, 0,
+                        0, 0, 0, 0,
+                        0, 0, 0, 0);
+        }
+        return currentFoe;
     }
 
     public static int[] getChoiceOptions(List<String> choicez) {
@@ -146,23 +167,23 @@ public class StoryDisplayer {
     public static void displayCombatants(Foe combatant) {
         System.out.println(combatant.getName() + " (Level " + combatant.getLevel() + ")");
         System.out.println(genHealthBar(combatant));
-        System.out.println(combatant.getCurHealth() + " / " + combatant.getMaxHealth() + " HP\tSTR: " +
+        System.out.println(combatant.getCurHealth() + " / " + combatant.getMaxHealth() + " HP\t\tSTR: " +
                 combatant.getStrength());
-        System.out.println(combatant.getcurMana() + " / " + combatant.getMaxMana() + " Mana\tDEX: " +
+        System.out.println(combatant.getcurMana() + " / " + combatant.getMaxMana() + " Mana\t\tDEX: " +
                 combatant.getDexterity());
-        System.out.println("Armour: " + combatant.getArmour() + "\tINT: " + combatant.getIntellect());
+        System.out.println("Armour: " + combatant.getArmour() + "\t\tINT: " + combatant.getIntellect());
         System.out.println("\n>>>>>>>>>> VS <<<<<<<<<<\n");
         System.out.println(PlayerClass.getPlayerName() + " (Level " + PlayerClass.getPlayerStat("playerLevel") +
                 ", " + PlayerClass.getPlayerStat("curXP") + " / " + PlayerClass.getPlayerStat("neededXP") +
                 ")");
         System.out.println(genHealthBar(null));
         System.out.println(PlayerClass.getPlayerStat("curHealth") + " / " +
-                PlayerClass.getPlayerStat("maxHealth") + " HP\tSTR: " +
+                PlayerClass.getPlayerStat("maxHealth") + " HP\t\tSTR: " +
                 PlayerClass.getPlayerStat("Strength"));
         System.out.println(PlayerClass.getPlayerStat("curMana") + " / " +
-                PlayerClass.getPlayerStat("maxMana") + " Mana\tDEX: " +
+                PlayerClass.getPlayerStat("maxMana") + " Mana\t\tDEX: " +
                 PlayerClass.getPlayerStat("Dexterity"));
-        System.out.println("Armour: " + PlayerClass.getPlayerStat("Armour") + "\tINT: " +
+        System.out.println("Armour: " + PlayerClass.getPlayerStat("Armour") + "\t\tINT: " +
                 PlayerClass.getPlayerStat("Intellect"));
     }
 

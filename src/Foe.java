@@ -75,6 +75,34 @@ public class Foe {
         return armour;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setCurHealth(int curHealth) {
+        this.curHealth = curHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public int getCurMana() {
+        return curMana;
+    }
+
+    public void setCurMana(int curMana) {
+        this.curMana = curMana;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
     public void setArmour(int armour) {
         this.armour = armour;
     }
@@ -104,12 +132,16 @@ public class Foe {
         this.armour = armour;
     }
 
+    public void specialAttack() {
+
+    }
+
     public Map<String, Integer> launchAttack() {
         // attackType = 0 for quick, 1 for normal, 2 for strong
         // isCrit = 0 for non-crit, 1 for crit
         // attackHit = 0 or 1
         // damageOut = damage after having applied player's armour
-        Map<String, Integer> attackInfo = new LinkedHashMap<>();
+        Map<String, Integer> attackInfo = new LinkedHashMap<String, Integer>();
         int attackType = genAttackType();
         attackInfo.put("isCrit", 0);
         attackInfo.put("isHit", 0);
@@ -131,7 +163,12 @@ public class Foe {
         }
         return attackInfo;
     }
-
+    public static int genXPYield(int selfLevel) {
+        double xpModifier = (5 + PlayerClass.getPlayerStat("playerLevel") * 0.5 -
+                (PlayerClass.getPlayerStat("playerLevel") - selfLevel) * 0.6);
+        xpModifier = Math.max(0.2, xpModifier);
+        return (int)((double)PlayerClass.getPlayerStat("neededXP") / xpModifier);
+    }
     public int genAttackType() {
         int[] weightz = new int[]{dexterity, CombatUtils.getMean(new int[]{strength, dexterity, intellect}),
                 strength};

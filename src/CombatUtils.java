@@ -5,6 +5,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CombatUtils {
     public static int genRandomNum(int minOut, int maxOut) {
+        if (minOut >= maxOut)
+            return minOut;
         return ThreadLocalRandom.current().nextInt(minOut, maxOut + 1);
     }
 
@@ -76,11 +78,11 @@ public class CombatUtils {
 
     public static boolean rollForHit(int thisDex, int otherDex,
                                      int thisStr, int otherStr, int attackType) {
-        return genRandomNum(0, 100) >= getChanceToHit(thisDex, otherDex, thisStr, otherStr, attackType);
+        return genRandomNum(0, 100) <= getChanceToHit(thisDex, otherDex, thisStr, otherStr, attackType);
     }
 
     public static boolean rollForCrit(int thisDex, int otherDex, int attackType) {
-        return genRandomNum(0, 100) >= getChanceToCrit(thisDex, otherDex, attackType);
+        return genRandomNum(0, 100) <= getChanceToCrit(thisDex, otherDex, attackType);
     }
     public static int calcDamageAfterArmour(int hitVal, int armourVal) {
         int hitAmount = (int)(hitVal * (30. / (30. + armourVal)));
@@ -157,7 +159,7 @@ public class CombatUtils {
         return Math.min(curValue, highestAcceptable);
     }
 
-    public String[] genAttackChoices(Foe combatant) {
+    public static String[] genAttackChoices(Foe combatant) {
         // thisDex and thisStr will always be the player's, as the enemy
         // doesn't need to see its options
         String[] choicez = new String[3];
@@ -188,11 +190,21 @@ public class CombatUtils {
         String[] typez = new String[]{"Quick", "Normal", "Heavy"};
         for (int i = 0; i < 3; i++) {
             choicez[i] = typez[i] + " attack: " + minHitVals[i] + "-" + maxHitVals[i] +
-                    "; hit chance: " + hitChances[i] + "%; crit chance: " + critChances[i];
+                    "; hit chance: " + hitChances[i] + "%; crit chance: " + critChances[i] + "%";
         }
         return choicez;
     }
-    public int combatLoop(Foe combatant) {
+
+    public static int genEnemyLevel(boolean matchLevel, int relativeOffset, int absoluteOffset) {
+        int playerLevel = PlayerClass.getPlayerStat("playerLevel");
+        if (matchLevel) {
+            return playerLevel;
+        } else if (relativeOffset != 0) {
+            return playerLevel + relativeOffset;
+        }
+        return absoluteOffset;
+    }
+    public static int combatLoop(Foe combatant) {
         int atkChoice = -1;
         int thisDex = PlayerClass.getPlayerStat("Dexterity");
         int otherDex = combatant.getDexterity();
@@ -201,9 +213,9 @@ public class CombatUtils {
         boolean isAHit = false;
         boolean isACrit = false;
         int dmgDealt = -1;
-        Map<String, Integer> foeMap;
+        Map<String, Integer> foeMap = new LinkedHashMap<>();
         String enemyAtkFlavour = "";
-        while (!combatant.isDead()) {
+        while (true) {
             StoryDisplayer.displayCombatants(combatant);
             System.out.println("\n>> How do you proceed?");
             atkChoice = StoryDisplayer.awaitChoiceInputFromOptions(genAttackChoices(combatant));
@@ -226,15 +238,17 @@ public class CombatUtils {
                         " evades your attack!");
             }
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
-            foeMap = new LinkedHashMap<>(combatant.launchAttack());
+            foeMap.putAll(combatant.launchAttack());
             // attackType = 0 for quick, 1 for normal, 2 for strong
             // isCrit = 0 for non-crit, 1 for crit
             // attackHit = 0 or 1
             // damageOut = damage after having applied player's armour
-            isAHit = foeMap.get("attackHit") == 1;
+            if (combatant.isDead())
+                break;
+            isAHit = foeMap.get("isHit") == 1;
             if (isAHit) {
                 isACrit = foeMap.get("isCrit") == 1;
-                enemyAtkFlavour = isACrit ? " fiercely " : "";
+                enemyAtkFlavour = isACrit ? " fiercely" : "";
                 enemyAtkFlavour += switch (foeMap.get("attackType")) {
                     case 0:
                         yield " strikes you with a quick jab ";
@@ -245,19 +259,26 @@ public class CombatUtils {
                     default:
                         yield " does something that results in an ERROR! ";
                 };
-                System.out.println(">> " + combatant.getName() + enemyAtkFlavour + " for " +
-                        foeMap.get("damageOut") + "!");
+                System.out.println(">> " + combatant.getName() + enemyAtkFlavour + "for " +
+                        foeMap.get("damageOut") + " damage!");
                 PlayerClass.incrementHealth(-foeMap.get("damageOut"));
                 if (PlayerClass.checkForDeath(true)) {
                     return -1;
                 }
-                StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
+            } else {
+                System.out.println(">> You dodge " + combatant.getName() + "'s attack!");
             }
+            StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         }
         System.out.println(">> " + combatant.getName() + " lies dead before you. You have gained " +
-                combatant.getXpYield() + " and now have " + PlayerClass.getPlayerStat("curXP") +
-                " out of " + PlayerClass.getPlayerStat("neededXP") + " to reach level " +
-                (PlayerClass.getPlayerStat("playerLevel") + 1));
+                combatant.getXpYield() + "XP and now have " +
+                (PlayerClass.getPlayerStat("curXP") + combatant.getXpYield()) +
+                " out of " + PlayerClass.getPlayerStat("neededXP") +
+                "XP needed to reach level " + (PlayerClass.getPlayerStat("playerLevel") + 1));
+        if (combatant.getXpYield() + PlayerClass.getPlayerStat("curXP") >=
+            PlayerClass.getPlayerStat("neededXP")){
+            System.out.println(">> You level up!");
+        }
         StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         return combatant.getXpYield();
     }

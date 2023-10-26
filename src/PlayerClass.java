@@ -24,6 +24,30 @@ public class PlayerClass {
             playerBaseVals.put("curHealth", 0);
         }
     }
+    public static void incrementXP(int xpIncr) {
+        playerBaseVals.put("curXP", playerBaseVals.get("curXP") + xpIncr);
+        int minorPoints = 0;
+        int majorPoints = 0;
+        while (playerBaseVals.get("curXP") >= playerBaseVals.get("neededXP")) {
+            // if levels up
+            playerBaseVals.put("curXP", playerBaseVals.get("curXP") - playerBaseVals.get("neededXP"));
+            playerBaseVals.put("playerLevel", playerBaseVals.get("playerLevel") + 1);
+            playerBaseVals.put("neededXP", LevelEnums.XPArray[playerBaseVals.get("playerLevel") + 1]);
+            minorPoints++;
+            if (playerBaseVals.get("playerLevel") % 5 == 0) {
+                minorPoints++;
+                majorPoints++;
+            }
+            if (playerBaseVals.get("playerLevel") % 6 == 0) {
+                majorPoints++;
+            }
+            if (playerBaseVals.get("playerLevel") % 10 == 0) {
+                minorPoints += 2;
+                majorPoints += 2;
+            }
+        }
+        preciseStatPicker(majorPoints, minorPoints, null);
+    }
     public static void incrementPlayerStat(String stat, int byHowMuch) {
         if (byHowMuch == 0)
             return;
@@ -408,7 +432,6 @@ public class PlayerClass {
         }
         return isDead;
     }
-
     public static void displayEulogy() {
         System.out.println(">> And so ends the story of " + playerName);
         System.out.println(">> There was so much more in store for you, you poor soul");

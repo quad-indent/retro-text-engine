@@ -14,6 +14,12 @@ public class StoryBlock {
 
     public List<Integer> getStatVals() { return statVal; }
     public List<String> getRelevantStat() { return relevantStat; }
+    public boolean isStatCheckAtChoiceID(int choiceID) {
+        return areStatChecks.get(choiceID);
+    }
+    public List<String[]> getCombatantInfo() {
+        return combatantInfo;
+    }
     public StoryBlock(String tempPromptText) {
         promptText = tempPromptText;
         choices = new ArrayList<String>();
@@ -79,7 +85,4 @@ public class StoryBlock {
         return returnChoices;
     }
 
-    public boolean isStatCheckAtChoiceID(int choiceID) {
-        return areStatChecks.get(choiceID);
-    }
 }
