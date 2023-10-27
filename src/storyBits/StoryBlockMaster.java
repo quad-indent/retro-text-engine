@@ -1,6 +1,8 @@
 package storyBits;
 
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StoryBlockMaster {
@@ -12,6 +14,10 @@ public class StoryBlockMaster {
     public StoryBlockMaster(String storyFile) {
         storyObj = new ArrayList<StoryBlock>();
         List<String> storyData = StoryParser.parseFile(storyFile);
+        if (storyData == null) {
+            System.out.println("File could not be parsed!");
+            return;
+        }
         List<ArrayList<String>> tempStoryBits = genTempStoryBits(storyData);
 
         int tempStoryID = 0;
@@ -23,11 +29,12 @@ public class StoryBlockMaster {
         List<Boolean> tempIsHiddenCheck = new ArrayList<Boolean>();
         List<Integer> tempStatValue = new ArrayList<Integer>();
         List<String> tempRelevantStat = new ArrayList<String>();
-
         for (ArrayList<String> tempStoryBit : tempStoryBits) {
+            // iterates over story-bits that are not just prompts, i.e. have choices to pick from
             int thisTempStorySize = tempStoryBit.size();
             int thisTempStoryID = Integer.parseInt(tempStoryBit.get(0));
             if (thisTempStoryID != tempStoryID) {
+                // if loop hits a new story block, update the old storyObj before moving on to this next, new one
                 storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
                         tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
                         tempStatValue, tempRelevantStat);
@@ -41,8 +48,7 @@ public class StoryBlockMaster {
                 tempStatValue.clear();
                 tempRelevantStat.clear();
             }
-            // storyBits.StoryBlock nextStoryBlock = getNextStoryStep(tempStoryBit.get(1)) == -1 ? null : this.storyObj.get(getNextStoryStep(tempStoryBit.get(1)));
-            tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1)));
+            tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1))); // 1st index contains story destination
             tempChoices.add(tempStoryBit.get(thisTempStorySize - 1)); // Last element is always text to guide player
             tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
 
@@ -91,7 +97,6 @@ public class StoryBlockMaster {
                 tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
                 tempStatValue, tempRelevantStat);
         // init results of last iteration
-        return;
     }
 
     public void showMeSomeStories() {
@@ -119,16 +124,23 @@ public class StoryBlockMaster {
 
     public List<ArrayList<String>> genTempStoryBits(List<String> storyData) {
         List<ArrayList<String>> tempStoryBits = new ArrayList<>();
+        List<ArrayList<String>> splitResultz = new ArrayList<>();
         for (String storyLine : storyData) {
             ArrayList<String> splitResult = stringSplitter(storyLine);
-            if (splitResult.size() == SplitReturnsEnum.STORY_PROMPT.val) {
-                storyObj.add(new StoryBlock(splitResult.get(splitResult.size() - 1)));
+            splitResultz.add(splitResult);
+        }
+        splitResultz.sort((o1, o2) -> Integer.parseInt(o1.get(0)) - Integer.parseInt(o2.get(0)));
+        // By running the loop above and subsequent sorting,
+        // storybits can be placed in the textAdv.txt file out of order
+        // and still be parsed and initialised properly
+        for (ArrayList<String> storyLine : splitResultz) {
+            if (storyLine.size() == SplitReturnsEnum.STORY_PROMPT.val) {
+                storyObj.add(new StoryBlock(storyLine.get(storyLine.size() - 1)));
                 continue;
                 // In this case, that's all the use of this particular splitResult as it only contains relevant
                 // story info. No id needed as they're marked from 0 to n, so just use .get() on storyObj
             }
-            tempStoryBits.add(splitResult);
-            // this.storyObj.add(new storyBits.StoryBlock(splitResult.get(splitResult.size()-1)));
+            tempStoryBits.add(storyLine);
         }
         return tempStoryBits;
     }
