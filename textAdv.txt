@@ -34,4 +34,10 @@
 [12.13][Subterfuge>3][hidden] I succeed
 [12.9][Subterfuge<4][hidden] You struggle and fail. Loser
 [13] Hellz yeah brother
-[13.END] Hellz yeah GM
+[13.14] Hellz yeah GM
+[14] Say a prayer NOW!!!
+[14.15][curXP+240] Okay
+[15] Combat time
+[15.16][Goblin][Fuckamole] Skibadee skibadanger!
+[16] The end
+[16.END] The end indeed
