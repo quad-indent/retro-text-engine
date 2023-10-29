@@ -1,8 +1,6 @@
 package storyBits;
 
-import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class StoryBlockMaster {
@@ -13,7 +11,7 @@ public class StoryBlockMaster {
     }
     public StoryBlockMaster(String storyFile) {
         storyObj = new ArrayList<StoryBlock>();
-        List<String> storyData = StoryParser.parseFile(storyFile);
+        List<String> storyData = FileParser.parseFile(storyFile);
         if (storyData == null) {
             System.out.println("File could not be parsed!");
             return;

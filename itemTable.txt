@@ -1,0 +1,26 @@
+# Items need to be stored in the following way:
+# [item's ID] [type of item] [name of item] [description (can be left as [])] [price to buy (or -1 if can't be traded)]
+# Then, depending on the type of item:
+# if it's a weapon, add: [1H (or 2H)] [minimum damage] [maximum damage] [stat that it scales with] [weapon (or shield)]
+# in case of shields, minimum and maximum damage refer to how much damage they are capable of blocking per attack
+# if it's armour, add: [armour slot (needs to correspond to an entry in armourSlotsConfig.txt)] [armour bonus]
+#
+# At the end of whatever item, unless it's junk or quest item, you can add stat boons, such as:
+# [Subterfuge+1] or [Strength-1]. You can stack them, too! (without the comma)
+# You can also impose stat requirements in a similar way (also after required parameters), such as:
+# [Dexterity>15] or [Willpower<10]. Stacking possible as well
+#
+# Allowed types of items: junk, quest, weapon (shields are counted as weapons), armour, trinket, neck
+#
+# You can also start a line here with # to comment it out
+# Here are some sample items:
+#
+[0][weapon][Dagger][A simple steel dagger][100][1H][1][3][Dexterity][weapon][Dexterity+1]
+[1][weapon][Sword][A simple sword][120][2H][2][4][Strength][weapon][Strength>12]
+[2][weapon][Pavise][A pavise shield][100][1H][3][4][Strength][shield]
+[3][armour][Simple cap][Better than nothing][30][Helmet][2][Dexterity+1][Strength-1]
+[4][trinket][Silver ring][Almost useless, but pretty][50][Diplomacy+1]
+[5][neck][Necklace][Nothing to marvel at][60][Subterfuge+1]
+
+
+todo: include item/gold checks

@@ -51,6 +51,17 @@ public class PlayerClass {
 
     public static String getPlayerName() { return playerName; }
     public static int getPlayerStat(String stat) {
+        stat = switch (stat.toLowerCase()) {
+            case "curlevel", "level", "lvl", "lv":
+                yield "playerLevel";
+            case "xpneeded", "nextxp":
+                yield "neededXP";
+            case "xp", "exp", "experience":
+                yield "curXP";
+            default:
+                yield stat;
+        };
+        // cba to remember
         if (stat.equalsIgnoreCase("Armour")) { return getArmour(); }
         return getPlayerBaseVals().containsKey(stat) ?
                 getPlayerBaseVals().get(stat) : getPlayerAtts().get(stat);

@@ -152,9 +152,12 @@ public class StoryDisplayer {
         }
     }
 
-    public static <T> String genHealthBar(T character) {
+    public static <T> String genHealthBar(T character, int healthBarLen) {
         int curHealth;
         int maxHealth;
+        if (healthBarLen < 0) {
+            healthBarLen = HP_BAR_LEN;
+        }
         double scale;
         if (!(character instanceof Foe)) {
             curHealth = PlayerClass.getPlayerStat("curHealth");
@@ -164,9 +167,9 @@ public class StoryDisplayer {
             maxHealth = ((Foe) character).getMaxHealth();
         }
         StringBuilder healthBar = new StringBuilder("[");
-        scale = ((double) HP_BAR_LEN / maxHealth);
+        scale = ((double) healthBarLen / maxHealth);
         scale *= curHealth;
-        for (int i = 0; i < HP_BAR_LEN; i++) {
+        for (int i = 0; i < healthBarLen; i++) {
             healthBar.append(i < scale ? "=" : " ");
         }
         healthBar.append("]");
@@ -174,7 +177,7 @@ public class StoryDisplayer {
     }
     public static void displayCombatants(Foe combatant) {
         System.out.println(combatant.getName() + " (Level " + combatant.getLevel() + ")");
-        System.out.println(genHealthBar(combatant));
+        System.out.println(genHealthBar(combatant, -1));
         System.out.println(combatant.getCurHealth() + " / " + combatant.getMaxHealth() + " HP\t\tSTR: " +
                 combatant.getStrength());
         System.out.println(combatant.getcurMana() + " / " + combatant.getMaxMana() + " Mana\t\tDEX: " +
@@ -184,7 +187,7 @@ public class StoryDisplayer {
         System.out.println(PlayerClass.getPlayerName() + " (Level " + PlayerClass.getPlayerStat("playerLevel") +
                 ", " + PlayerClass.getPlayerStat("curXP") + " / " + PlayerClass.getPlayerStat("neededXP") +
                 ")");
-        System.out.println(genHealthBar(null));
+        System.out.println(genHealthBar(null, -1));
         System.out.println(PlayerClass.getPlayerStat("curHealth") + " / " +
                 PlayerClass.getPlayerStat("maxHealth") + " HP\t\tSTR: " +
                 PlayerClass.getPlayerStat("Strength"));
