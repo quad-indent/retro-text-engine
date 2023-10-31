@@ -1,5 +1,9 @@
 package player;
 
+import inventory.ArmourItem;
+import inventory.Inventory;
+import inventory.Item;
+import inventory.WeaponItem;
 import storyBits.StoryDisplayer;
 
 import java.io.*;
@@ -241,6 +245,42 @@ public class PlayerClass {
         for (Integer statLv : getPlayerAtts().values())
             printWriter.println(statLv);
         printWriter.println(curPage); // starts at story index 0
+
+        StringBuilder equipmentLine = new StringBuilder();
+        for (Item i : Inventory.getEquppedNecks()) {
+            if (i != null)
+                equipmentLine.append(i.getItemID()).append(" ");
+        }
+        for (Item i : Inventory.getEquippedTrinkets()) {
+            if (i != null) {
+                equipmentLine.append(i.getItemID()).append(" ");
+            }
+        }
+        Map<Integer, Boolean> twoHanders = new LinkedHashMap<>();
+        // cause if using list, remove might interpret ID as index
+        for (WeaponItem i : Inventory.getEquippedWeapons()) {
+            if (i == null)
+                continue;
+            if (!i.isIs1H() && !twoHanders.containsKey(i.getItemID())) {
+                twoHanders.put(i.getItemID(), true);
+            } else if (!i.isIs1H() && twoHanders.containsKey(i.getItemID())) {
+                twoHanders.remove(i.getItemID());
+                continue;
+            }
+            equipmentLine.append(i.getItemID()).append(" ");
+        }
+        for (ArmourItem i : Inventory.getEquippedArmour().values()) {
+            equipmentLine.append(i.getItemID()).append(" ");
+        }
+        printWriter.println(equipmentLine.substring(0, equipmentLine.toString().length() - 1));
+        equipmentLine = new StringBuilder();
+        for (Item i : Inventory.getInventorySpace()) {
+            equipmentLine.append(i.getItemID()).append(" ");
+        }
+        equipmentLine.append(Inventory.getCurrentGold());
+
+        printWriter.println(equipmentLine);
+
         return printWriter;
     }
 
@@ -254,6 +294,7 @@ public class PlayerClass {
             setArmour(Integer.parseInt(storyReader.nextLine()));
             getPlayerAtts().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
             playerStoryPage = Integer.parseInt(storyReader.nextLine());
+            Inventory.initInventoryFromSave(storyReader);
             storyReader.close();
             return playerStoryPage;
         } catch (IOException e) {

@@ -21,6 +21,8 @@
 [3][armour][Simple cap][Better than nothing][30][Helmet][2][Dexterity+1][Strength-1]
 [4][trinket][Silver ring][Almost useless, but pretty][50][Diplomacy+1]
 [5][neck][Necklace][Nothing to marvel at][60][Subterfuge+1]
+[6][junk][Hair brush][Seems used. You'd rather not touch it][1]
+[7][quest][The Orb][What a pleasant hum it's emitting][-1]
 
 
 todo: include item/gold checks

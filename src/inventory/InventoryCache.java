@@ -37,6 +37,7 @@ public class InventoryCache {
         System.out.println("Attempting to open " + fileName);
         List<String> itemEntries = FileParser.parseFile(fileName);
         List<List<String>> splitItemEntries = new ArrayList<>();
+        assert itemEntries != null;
         for (String itemEntry : itemEntries) {
             ArrayList<String> splits = new ArrayList<String>(List.of(itemEntry.split("]")));
             splits.replaceAll(String::trim);

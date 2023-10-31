@@ -50,10 +50,19 @@ public class WeaponItem extends Item {
         this.scalingStat = scalingStat;
     }
 
-    public WeaponItem(int itemID, String name, String description, Map<String, Integer> statBoons,
+    public WeaponItem(WeaponItem weapon) {
+        super(weapon.getItemID(), weapon.getName(), weapon.getDescription(), "Weapon",
+                weapon.getBuyValue(), weapon.getStatBoons(), weapon.getStatRequirements());
+        this.minDmg = weapon.getMinDmg();
+        this.maxDmg = weapon.getMaxDmg();
+        this.is1H = weapon.isIs1H();
+        this.isShield = weapon.isShield();
+        this.scalingStat = weapon.getScalingStat();
+    }
+    public WeaponItem(int itemID, String name, String description, int itemValue, Map<String, Integer> statBoons,
                       Map<String, Integer> statRequirements,
                       int minDmg, int maxDmg, boolean is1H, boolean isShield, String scalingStat) {
-        super(itemID, name, description, "Weapon", statBoons, statRequirements);
+        super(itemID, name, description, "Weapon", itemValue, statBoons, statRequirements);
         this.minDmg = minDmg;
         this.maxDmg = maxDmg;
         this.is1H = is1H;

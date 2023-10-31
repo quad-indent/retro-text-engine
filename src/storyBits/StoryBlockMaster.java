@@ -162,7 +162,7 @@ public class StoryBlockMaster {
         return rawNodeData;
     }
 
-    public boolean stringContainsAny(String sourceStr, char[] charsToMatch) {
+    public static boolean stringContainsAny(String sourceStr, char[] charsToMatch) {
         for (char i: sourceStr.toCharArray()) {
             for (char j: charsToMatch) {
                 if (Character.compare(i, j) == 0) { return true; }

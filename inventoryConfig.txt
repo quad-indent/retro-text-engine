@@ -1,0 +1,8 @@
+Helmet
+Chest
+Shoulderguards
+Trousers
+Boots
+trinketSlots = 2
+neckSlots = 1
+weaponSlots = 2
