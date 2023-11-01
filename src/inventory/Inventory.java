@@ -338,6 +338,9 @@ public class Inventory {
     }
 
     public static int equipTrinketOrNeck(Item itemToEquip, int eqSlot) {
+        if (!PlayerClass.playerPassesReq(itemToEquip.getStatRequirements())) {
+            return 4; // reqs not passed
+        }
         String itemType = itemToEquip.getItemType();
         Item[] itemUsed = itemType.equals("neck") ? getEquppedNecks() : getEquippedTrinkets();
         if (eqSlot == -1) {
@@ -359,9 +362,13 @@ public class Inventory {
             getEquppedNecks()[eqSlot] = itemToEquip;
         else
             getEquippedTrinkets()[eqSlot] = itemToEquip;
+        PlayerClass.incrementPlayerStat(itemToEquip.getStatBoons(), false);
         return 0;
     }
     public static int equipArmour(ArmourItem armourToEquip) {
+        if (!PlayerClass.playerPassesReq(armourToEquip.getStatRequirements())) {
+            return 4; // reqs not passed
+        }
         if (!getEquippedArmour().containsKey(armourToEquip.getArmourSlot())) {
             return 3; // no such slot
         }
@@ -369,9 +376,13 @@ public class Inventory {
             return 1; // armour already there
         }
         getEquippedArmour().put(armourToEquip.getArmourSlot(), armourToEquip);
+        PlayerClass.incrementPlayerStat(armourToEquip.getStatBoons(), false);
         return 0;
     }
     public static int equipWeapon(WeaponItem weaponToEquip, int eqSlot) {
+        if (!PlayerClass.playerPassesReq(weaponToEquip.getStatRequirements())) {
+            return 4; // reqs not passed
+        }
         int foundEqSlot1 = -1;
         int foundEqSlot2 = -1;
         if (eqSlot != -1) {
@@ -390,6 +401,7 @@ public class Inventory {
             getEquippedWeapons()[foundEqSlot2] = weaponToEquip;
         }
         getEquippedWeapons()[foundEqSlot1] = weaponToEquip;
+        PlayerClass.incrementPlayerStat(weaponToEquip.getStatBoons(), false);
         return 0; // success
     }
     public static Item unequipTrinketOrNeck(int slotIdx, boolean unequipTrinket) {
@@ -404,6 +416,7 @@ public class Inventory {
             getEquippedTrinkets()[slotIdx] = null;
         else
             getEquppedNecks()[slotIdx] = null;
+        PlayerClass.incrementPlayerStat(itemCopy.getStatBoons(), true);
         return itemCopy;
     }
     public static ArmourItem unequipArmour(String armourSlot) {
@@ -415,6 +428,7 @@ public class Inventory {
         }
         ArmourItem armourCopy = new ArmourItem(getEquippedArmour().get(armourSlot));
         getEquippedArmour().put(armourSlot, null);
+        PlayerClass.incrementPlayerStat(armourCopy.getStatBoons(), true);
         return armourCopy;
     }
     public static WeaponItem unequipWeapon(int weaponIDToUnequip) {
@@ -434,6 +448,7 @@ public class Inventory {
             }
         }
         getEquippedWeapons()[weaponIDToUnequip] = null;
+        PlayerClass.incrementPlayerStat(weaponCopy.getStatBoons(), true);
         return weaponCopy;
     }
 
@@ -505,4 +520,6 @@ public class Inventory {
     }
 }
 
-ADD STAT ADJUSTEMENTS UPON EQUIPPING AND UNEQUIPPING!!!
+// todo: maybe run equipment req pass checks over whole equipment when unequipping
+// (if a stat bestowed by the unequipped item fails to fulfill criteria for other items to be equipped)
+// todo: include item/gold checks

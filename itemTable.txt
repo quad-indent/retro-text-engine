@@ -23,6 +23,3 @@
 [5][neck][Necklace][Nothing to marvel at][60][Subterfuge+1]
 [6][junk][Hair brush][Seems used. You'd rather not touch it][1]
 [7][quest][The Orb][What a pleasant hum it's emitting][-1]
-
-
-todo: include item/gold checks

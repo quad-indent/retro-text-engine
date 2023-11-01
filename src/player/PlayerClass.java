@@ -4,6 +4,7 @@ import inventory.ArmourItem;
 import inventory.Inventory;
 import inventory.Item;
 import inventory.WeaponItem;
+import storyBits.StoryBlockMaster;
 import storyBits.StoryDisplayer;
 
 import java.io.*;
@@ -104,11 +105,67 @@ public class PlayerClass {
         if (minorPoints > 0 || majorPoints > 0)
             preciseStatPicker(majorPoints, minorPoints, null, true);
     }
+
+    public static boolean playerPassesReq(String statAndReqCombo) {
+        // again, cuz lazy
+        if (!StoryBlockMaster.stringContainsAny(statAndReqCombo, new char[]{'>', '<'})) {
+            System.out.println("Error trying to check requirement! Faulty instruction " +
+                    "received: " + statAndReqCombo);
+            return false;
+        }
+        int isPositive = StoryBlockMaster.stringContainsAny(statAndReqCombo, new char[]{'>'}) ? 1 : -1;
+        String[] statz = statAndReqCombo.split((isPositive == 1 ? ">" : "<"));
+        assert statz.length == 2 : "Error trying to check requirement! Faulty instruction " +
+                "received: " + statAndReqCombo;
+        for (int i = 0; i < 2; i++) {
+            statz[i] = StoryDisplayer.removeWhiteSpace(statz[i]);
+        }
+        int statInQuestion = getPlayerStat(statz[0]);
+        return isPositive == 1 ? statInQuestion > Integer.parseInt(statz[1]) :
+                statInQuestion < Integer.parseInt(statz[1]);
+    }
+    public static boolean playerPassesReq(Map<String, Integer> relevantReqz) {
+        for (Map.Entry<String, Integer> curEntry : relevantReqz.entrySet()) {
+            if (!playerPassesReq(curEntry.getKey(), curEntry.getValue()))
+                return false;
+        }
+        return true;
+    }
+    public static boolean playerPassesReq(String relevantStat, int valRequired) {
+        // if value negative, stat needs to be below abs val of it
+        int statInQuestion = getPlayerStat(relevantStat);
+        if (valRequired < 0) {
+            return statInQuestion < valRequired * -1;
+        }
+        return statInQuestion > valRequired;
+    }
+    public static void incrementPlayerStat(String stat) {
+        // cuz lazy
+        if (!StoryBlockMaster.stringContainsAny(stat, new char[]{'+', '-'})) {
+            System.out.println("Error trying to increment stat! Faulty instruction " +
+                    "received: " + stat);
+            return;
+        }
+        int isPositive = StoryBlockMaster.stringContainsAny(stat, new char[]{'+'}) ? 1 : -1;
+        String[] statz = stat.split((isPositive == 1 ? "+" : "-"));
+        assert statz.length == 2 : "Error trying to increment stat! Faulty instruction " +
+                "received: " + stat;
+        for (int i = 0; i < 2; i++) {
+            statz[i] = StoryDisplayer.removeWhiteSpace(statz[i]);
+        }
+        incrementPlayerStat(statz[0], Integer.parseInt(statz[1]) * isPositive);
+    }
+    public static void incrementPlayerStat(Map<String, Integer> statzInQuestion, boolean isUnequipping) {
+        for (Map.Entry<String, Integer> curEntry : statzInQuestion.entrySet()) {
+            incrementPlayerStat(curEntry.getKey(),
+                    (isUnequipping ? curEntry.getValue() * -1 : curEntry.getValue()));
+        }
+    }
     public static void incrementPlayerStat(String stat, int byHowMuch) {
         if (byHowMuch == 0)
             return;
         if (stat.equalsIgnoreCase("armour")) {
-            armour += byHowMuch;
+            setArmour(getArmour() + byHowMuch);
             return;
         }
         if (byHowMuch == Integer.MAX_VALUE || byHowMuch == Integer.MIN_VALUE ||
@@ -154,19 +211,6 @@ public class PlayerClass {
                 getPlayerAtts().put(stat, getPlayerAtts().get(stat) + byHowMuch);
             }
         }
-    }
-
-    static {
-        // Json would be better, but dependencies. This will be some funky .txt parsing instead
-//        if (characterSheetPath == null)
-//            characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
-//        File playerFile = new File(characterSheetPath);
-//        if (!playerFile.isFile()) {
-//            characterCreator();
-//            saveCharacter(characterSheetPath);
-//        } else {
-//            loadCharacter(characterSheetPath);
-//        }
     }
 
     public static int initPlayer(String characterSheetPath) {
