@@ -2,6 +2,7 @@ package storyBits;
 
 import combat.*;
 import foeTypes.*;
+import inventory.Inventory;
 import player.PlayerClass;
 
 import java.util.*;
@@ -18,10 +19,19 @@ public class StoryDisplayer {
         StoryBlock curObj = storyObj.get(curIndex);
         int nextChoice;
         int rawChoicePicked;
+        int pureChoiceLen = -1;
         while (curIndex < storyObj.size()) {
             System.out.println(">> " + curObj.getPromptText());
-            printChoiceOptions(curObj.getChoices());
-            rawChoicePicked = awaitChoiceInput(getChoiceOptions(curObj.getChoices()).length);
+            printChoiceOptions(curObj.getChoices(), true, true);
+            pureChoiceLen = getChoiceOptions(curObj.getChoices(), false, false).length;
+            rawChoicePicked = awaitChoiceInput(pureChoiceLen + 2); // +2 since allowing inv and eq view
+            if (rawChoicePicked >= pureChoiceLen) {
+                if (rawChoicePicked == pureChoiceLen)
+                    Inventory.displayInventory();
+                else
+                    Inventory.displayEquipment();
+                continue;
+            }
             nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked);
             if (nextChoice == -1)
                 return;
@@ -65,19 +75,28 @@ public class StoryDisplayer {
         return currentFoe;
     }
 
-    public static int[] getChoiceOptions(List<String> choicez) {
+    public static int[] getChoiceOptions(List<String> choicez, boolean hasInventoryChoice,
+                                         boolean hasEquipmentChoice) {
         int choiceLen = choicez.size();
+        if (hasInventoryChoice)
+            choiceLen++;
+        if (hasEquipmentChoice)
+            choiceLen++;
         int[] options = new int[choiceLen];
         for (int i = 0; i < choiceLen; i++)
             options[i] = i + 1;
         return options;
     }
 
-    public static void printChoiceOptions(List<String> choicez) {
+    public static void printChoiceOptions(List<String> choicez, boolean offerInventory, boolean offerEquipment) {
         int choiceLen = 1;
         for (String choice : choicez) {
             System.out.println(">> [" + choiceLen++ + "] " + choice);
         }
+        if (offerInventory)
+            System.out.println(">> [" + choiceLen++ + "] view inventory");
+        if (offerEquipment)
+            System.out.println(">> [" + choiceLen + "] view equipment");
     }
 
     public static int awaitChoiceInput(int highestOptionVal) {

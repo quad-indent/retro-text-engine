@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.*;
 
 import player.PlayerClass;
+import storyBits.StoryBlockMaster;
 import storyBits.StoryDisplayer;
 
 public class Inventory {
@@ -16,7 +17,7 @@ public class Inventory {
     private static Map<String, ArmourItem> equippedArmour = new LinkedHashMap<>();
     private static WeaponItem[] equippedWeapons = new WeaponItem[weaponSlots];
     private static Item[] equippedTrinkets = new Item[trinketSlots];
-    private static Item[] equppedNecks = new Item[neckSlots];
+    private static Item[] equippedNecks = new Item[neckSlots];
     private static int currentGold = 0;
     private static List<Item> inventorySpace = new ArrayList<>();
 
@@ -114,12 +115,12 @@ public class Inventory {
         equippedTrinkets = tempEquippedTrinkets;
     }
 
-    public static Item[] getEquppedNecks() {
-        return equppedNecks;
+    public static Item[] getEquippedNecks() {
+        return equippedNecks;
     }
 
-    public static void setEquppedNecks(Item[] tempEquppedNecks) {
-        equppedNecks = tempEquppedNecks;
+    public static void setEquippedNecks(Item[] tempEquippedNecks) {
+        equippedNecks = tempEquippedNecks;
     }
 
     public static int getCurrentGold() {
@@ -164,7 +165,7 @@ public class Inventory {
             setArmourSlots(tempArmourSlotz);
             setEquippedTrinkets(new Item[getTrinketSlots()]);
             setEquippedWeapons(new WeaponItem[getWeaponSlots()]);
-            setEquppedNecks(new Item[getNeckSlots()]);
+            setEquippedNecks(new Item[getNeckSlots()]);
         } catch (FileNotFoundException e) {
             System.out.println("Error! " + inventoryConfigFile + " not found!");
             return;
@@ -179,7 +180,8 @@ public class Inventory {
         int purify(String a);
     }
 
-    public static void displaySideBySide(List<List<String>> textz, int columnzToUse, int marginSpace) {
+    public static void displaySideBySide(List<List<String>> textz, int columnzToUse, int marginSpace,
+                                         boolean featureLilArrowz) {
         // The list of lists here is assumed to be UN-SPLIT texts
         // so for instance a single element will look like ["Revolver", "1-2 damage bonus (Dexterity scaling)",
         // "A formidable weapon crafted by an expert gunsmith", "+1 Dexterity"]
@@ -227,11 +229,17 @@ public class Inventory {
                     }
                     lineStr.append(strings.get(entryListIndexer));
                 }
-                System.out.println(lineStr.toString());
+                if (!featureLilArrowz)
+                    System.out.println(lineStr.toString());
+                else
+                    System.out.println(">> " + lineStr.toString());
                 lineStr = new StringBuilder();
             }
+            if (!featureLilArrowz)
+                System.out.println();
+            else
+                System.out.println(">>");
             updatedList.clear();
-            System.out.println();
             if (textz.isEmpty())
                 return;
         }
@@ -274,12 +282,6 @@ public class Inventory {
         }
         return returnalList;
     }
-    public static void displayInventory() {
-        System.out.println(">> " + PlayerClass.getPlayerName());
-        System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
-                " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
-
-    }
 
     public static boolean hasEquipmentInSlot(String equipmentType, int slotID, String slotName) {
         return switch (equipmentType.toLowerCase()) {
@@ -301,7 +303,7 @@ public class Inventory {
             case "neck", "necks" -> {
                 if (slotID >= getNeckSlots())
                     yield true;
-                yield getEquppedNecks()[slotID] != null;
+                yield getEquippedNecks()[slotID] != null;
             }
             default -> true;
         };
@@ -328,7 +330,7 @@ public class Inventory {
             }
             case "neck", "necks" -> {
                 for (int i = 0; i < getNeckSlots(); i++) {
-                    if (getEquppedNecks()[i] == null)
+                    if (getEquippedNecks()[i] == null)
                         yield i;
                 }
                 yield -1;
@@ -342,7 +344,7 @@ public class Inventory {
             return 4; // reqs not passed
         }
         String itemType = itemToEquip.getItemType();
-        Item[] itemUsed = itemType.equals("neck") ? getEquppedNecks() : getEquippedTrinkets();
+        Item[] itemUsed = itemType.equals("neck") ? getEquippedNecks() : getEquippedTrinkets();
         if (eqSlot == -1) {
             for (int i = 0; i < itemUsed.length; i++) {
                 if (itemUsed[i] == null) {
@@ -359,7 +361,7 @@ public class Inventory {
         }
 
         if (itemType.equals("neck"))
-            getEquppedNecks()[eqSlot] = itemToEquip;
+            getEquippedNecks()[eqSlot] = itemToEquip;
         else
             getEquippedTrinkets()[eqSlot] = itemToEquip;
         PlayerClass.incrementPlayerStat(itemToEquip.getStatBoons(), false);
@@ -405,7 +407,7 @@ public class Inventory {
         return 0; // success
     }
     public static Item unequipTrinketOrNeck(int slotIdx, boolean unequipTrinket) {
-        Item[] itemUsed = unequipTrinket ? getEquippedTrinkets() : getEquppedNecks();
+        Item[] itemUsed = unequipTrinket ? getEquippedTrinkets() : getEquippedNecks();
         if (slotIdx >= itemUsed.length) {
             return null;
         } else if (itemUsed[slotIdx] == null) {
@@ -415,7 +417,7 @@ public class Inventory {
         if (unequipTrinket)
             getEquippedTrinkets()[slotIdx] = null;
         else
-            getEquppedNecks()[slotIdx] = null;
+            getEquippedNecks()[slotIdx] = null;
         PlayerClass.incrementPlayerStat(itemCopy.getStatBoons(), true);
         return itemCopy;
     }
@@ -515,8 +517,79 @@ public class Inventory {
             }
         } catch (Exception e) {
             System.out.println("Malformed inventory data in save file! Aborting . . .");
-            return;
         }
+    }
+
+    public static List<List<String>> prepareInvDisplay(int startingInvID, int entriesToDisplay) {
+        if (startingInvID + entriesToDisplay >= getInventorySpace().size()) {
+            entriesToDisplay = getInventorySpace().size() - startingInvID;
+        }
+        List<List<String>> preparedItemz = new ArrayList<>();
+        List<String> tempie = new ArrayList<>();
+        int dispRefCtr = 1;
+        for (int i = startingInvID; i < startingInvID + entriesToDisplay; i++) {
+            tempie.clear();
+            tempie.add("[" + dispRefCtr++ + "] " + getInventorySpace().get(i).getName());
+            tempie.add(getInventorySpace().get(i).getDescription());
+            tempie.add(getInventorySpace().get(i).getItemType());
+            preparedItemz.add(new ArrayList<>(tempie));
+        }
+        return preparedItemz;
+    }
+    public static int inspectItem(int intemIdx) {
+        return 0;
+    }
+    public static void displayInventory() {
+        int curChoice = -1;
+        int curStartIndex = -1;
+        int curInvPage = 1;
+        int prevPageBind = -1;
+        int nextPageBind = -1;
+        int exitBind = -1;
+        int totalPages = getInventorySpace().size() / 6 + 1; // choices 7-9 reserved for toggling pages and exiting
+        List<String> optionz = new ArrayList<>();
+        while (true) {
+            System.out.println(">> " + PlayerClass.getPlayerName());
+            System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
+                    " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
+            System.out.println(">> Inventory page " + curInvPage + " of " + totalPages + "\n>>");
+            optionz.clear();
+            prevPageBind = -1;
+            nextPageBind = -1;
+            exitBind = -1;
+            curStartIndex = (curInvPage - 1) * 6;
+            displaySideBySide(prepareInvDisplay(curStartIndex, 6), 3, 10, true);
+            System.out.println(">> View:");
+            for (int i = curStartIndex; i < curStartIndex + 6 && i < getInventorySpace().size(); i++) {
+                optionz.add(getInventorySpace().get(i).getName());
+            }
+            if (curInvPage < totalPages) {
+                nextPageBind = optionz.size();
+                optionz.add("Next page");
+            }
+            if (curInvPage > 1) {
+                prevPageBind = optionz.size();
+                optionz.add("Previous page");
+            }
+            exitBind = optionz.size();
+            optionz.add("Exit inventory");
+            curChoice = StoryDisplayer.awaitChoiceInputFromOptions(optionz.toArray(new String[0]));
+            if (curChoice == nextPageBind) {
+                curInvPage++;
+                continue;
+            }
+            if (curChoice == prevPageBind) {
+                curInvPage--;
+                continue;
+            }
+            if (curChoice == exitBind)
+                return;
+            inspectItem(curStartIndex + curChoice);
+        }
+    }
+
+    public static void displayEquipment() {
+        return;
     }
 }
 

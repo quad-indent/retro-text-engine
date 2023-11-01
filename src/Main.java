@@ -29,7 +29,7 @@ public class Main {
         stringz.add(new ArrayList<>(tempie));
         tempie.clear();
 
-        Inventory.displaySideBySide(stringz, 5, 5);
+        Inventory.displaySideBySide(stringz, 5, 5, true);
         StoryBlockMaster bard = new StoryBlockMaster(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);

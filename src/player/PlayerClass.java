@@ -291,7 +291,7 @@ public class PlayerClass {
         printWriter.println(curPage); // starts at story index 0
 
         StringBuilder equipmentLine = new StringBuilder();
-        for (Item i : Inventory.getEquppedNecks()) {
+        for (Item i : Inventory.getEquippedNecks()) {
             if (i != null)
                 equipmentLine.append(i.getItemID()).append(" ");
         }

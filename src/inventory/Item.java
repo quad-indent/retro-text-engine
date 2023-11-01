@@ -5,7 +5,6 @@ import storyBits.StoryBlockMaster;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import storyBits.StoryBlockMaster;
 
 public class Item {
     private String name = "";
@@ -123,7 +122,7 @@ public class Item {
         for (String stat : rawStatz) {
             if (StoryBlockMaster.stringContainsAny(stat, new char[]{'+', '-'})) {
                 String[] splittie = stat.split("[+-]");
-                assert splittie.length == 2 : "Miconfigured item named " + rawStatz.get(1) +
+                assert splittie.length == 2 : "Misconfigured item named " + rawStatz.get(1) +
                         " in itemTable.txt found!";
                 boolean isPositive = stat.contains("+");
                 returnal.put(splittie[0], isPositive ?
@@ -137,7 +136,7 @@ public class Item {
         for (String stat : rawStatz) {
             if (StoryBlockMaster.stringContainsAny(stat, new char[]{'>', '<'})) {
                 String[] splittie = stat.split("[><]");
-                assert splittie.length == 2 : "Miconfigured item named " + rawStatz.get(1) +
+                assert splittie.length == 2 : "Misconfigured item named " + rawStatz.get(1) +
                         " in itemTable.txt found!";
                 boolean isPositive = stat.contains(">");
                 returnal.put(splittie[0], isPositive ?
