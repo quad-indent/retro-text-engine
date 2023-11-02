@@ -536,8 +536,57 @@ public class Inventory {
         }
         return preparedItemz;
     }
-    public static int inspectItem(int intemIdx) {
-        return 0;
+    public static void inspectItem(int itemIdx, boolean includedLilArrowz) {
+        List<String> itemDescFieldz = new ArrayList<>();
+        Item itemInQuestion = getInventorySpace().get(itemIdx);
+        // name, then desc, then type
+        itemDescFieldz.add(itemInQuestion.getName());
+        itemDescFieldz.add(itemInQuestion.getDescription());
+        if (itemInQuestion instanceof WeaponItem tempie) {
+            if (!tempie.isShield()) {
+                itemDescFieldz.set(0, itemDescFieldz.get(0) + " (Weapon)");
+                itemDescFieldz.add("+" + tempie.getMinDmg() + "-" + tempie.getMinDmg() + " damage");
+            } else {
+                itemDescFieldz.set(0, itemDescFieldz.get(0) + " (Shield)");
+                itemDescFieldz.add(tempie.getMinDmg() + "-" + tempie.getMinDmg() + " flat damage absorption");
+            }
+            itemDescFieldz.add((tempie.isIs1H() ? "One-handed" : "Two-handed"));
+            itemDescFieldz.add(tempie.getScalingStat() + " scaling");
+
+        } else if (itemInQuestion instanceof ArmourItem tempie) {
+            itemDescFieldz.set(0, itemDescFieldz.get(0) + " (" + tempie.getArmourSlot() + " armour)");
+            itemDescFieldz.add("+" + tempie.getArmourBonus() + " armour");
+        } else {
+            itemDescFieldz.set(0, itemDescFieldz.get(0) + " (" + itemInQuestion.getItemType() + ")");
+        }
+
+        if (!itemInQuestion.getStatRequirements().isEmpty()) {
+            itemDescFieldz.add("Required stats:");
+            for (Map.Entry<String, Integer> curReq : itemInQuestion.getStatRequirements().entrySet()) {
+                itemDescFieldz.add(" " + curReq.getKey() + (curReq.getValue() >= 0 ? " > " : " < ") +
+                        curReq.getValue() + " (yours: " + PlayerClass.getPlayerStat(curReq.getKey()) + ")");
+            }
+        }
+        if (!itemInQuestion.getStatBoons().isEmpty()) {
+            itemDescFieldz.add("Provides:");
+            for (Map.Entry<String, Integer> curReq : itemInQuestion.getStatBoons().entrySet()) {
+                itemDescFieldz.add(" " + curReq.getKey() + (curReq.getValue() >= 0 ? ": +" : ": -") +
+                        curReq.getValue());
+            }
+        }
+        itemDescFieldz.add((itemInQuestion.getBuyValue() >= 0 ?
+                "Value: " + itemInQuestion.getBuyValue() + "g" :
+                "Quest item"));
+        for (String i : itemDescFieldz) {
+            if (includedLilArrowz)
+                System.out.println(">> " + i);
+            else
+                System.out.println(i);
+        }
+        System.out.println(">> [1] Return");
+        int exitChoice = -1;
+        while (exitChoice != 0)
+            exitChoice = StoryDisplayer.awaitChoiceInput(1);
     }
     public static void displayInventory() {
         int curChoice = -1;
@@ -584,7 +633,7 @@ public class Inventory {
             }
             if (curChoice == exitBind)
                 return;
-            inspectItem(curStartIndex + curChoice);
+            inspectItem(curStartIndex + curChoice, true);
         }
     }
 

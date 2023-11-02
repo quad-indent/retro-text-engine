@@ -23,3 +23,5 @@
 [5][neck][Necklace][Nothing to marvel at][60][Subterfuge+1]
 [6][junk][Hair brush][Seems used. You'd rather not touch it][1]
 [7][quest][The Orb][What a pleasant hum it's emitting][-1]
+[8][armour][Bucket helmet][Is that really what it's called?][40][Helmet][3]
+[9][armour][Leather vest][Comfy!][50][Chest][7][Subterfuge+1][Dexterity>15]
