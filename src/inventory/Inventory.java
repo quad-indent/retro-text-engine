@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
+import combat.CombatUtils;
 import player.PlayerClass;
 import storyBits.StoryBlockMaster;
 import storyBits.StoryDisplayer;
@@ -339,7 +340,7 @@ public class Inventory {
         };
     }
 
-    public static int equipTrinketOrNeck(Item itemToEquip, int eqSlot) {
+    public static int equipTrinketOrNeck(Item itemToEquip, int eqSlot, boolean procStatz) {
         if (!PlayerClass.playerPassesReq(itemToEquip.getStatRequirements())) {
             return 4; // reqs not passed
         }
@@ -364,10 +365,13 @@ public class Inventory {
             getEquippedNecks()[eqSlot] = itemToEquip;
         else
             getEquippedTrinkets()[eqSlot] = itemToEquip;
-        PlayerClass.incrementPlayerStat(itemToEquip.getStatBoons(), false);
+        if (procStatz) {
+            PlayerClass.incrementPlayerStat(itemToEquip.getStatBoons(), false);
+            PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
+        }
         return 0;
     }
-    public static int equipArmour(ArmourItem armourToEquip) {
+    public static int equipArmour(ArmourItem armourToEquip, boolean procStatz) {
         if (!PlayerClass.playerPassesReq(armourToEquip.getStatRequirements())) {
             return 4; // reqs not passed
         }
@@ -378,10 +382,13 @@ public class Inventory {
             return 1; // armour already there
         }
         getEquippedArmour().put(armourToEquip.getArmourSlot(), armourToEquip);
-        PlayerClass.incrementPlayerStat(armourToEquip.getStatBoons(), false);
+        if (procStatz) {
+            PlayerClass.incrementPlayerStat(armourToEquip.getStatBoons(), false);
+            PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
+        }
         return 0;
     }
-    public static int equipWeapon(WeaponItem weaponToEquip, int eqSlot) {
+    public static int equipWeapon(WeaponItem weaponToEquip, int eqSlot, boolean procStatz) {
         if (!PlayerClass.playerPassesReq(weaponToEquip.getStatRequirements())) {
             return 4; // reqs not passed
         }
@@ -403,7 +410,10 @@ public class Inventory {
             getEquippedWeapons()[foundEqSlot2] = weaponToEquip;
         }
         getEquippedWeapons()[foundEqSlot1] = weaponToEquip;
-        PlayerClass.incrementPlayerStat(weaponToEquip.getStatBoons(), false);
+        if (procStatz) {
+            PlayerClass.incrementPlayerStat(weaponToEquip.getStatBoons(), false);
+            PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
+        }
         return 0; // success
     }
     public static Item unequipTrinketOrNeck(int slotIdx, boolean unequipTrinket) {
@@ -419,6 +429,7 @@ public class Inventory {
         else
             getEquippedNecks()[slotIdx] = null;
         PlayerClass.incrementPlayerStat(itemCopy.getStatBoons(), true);
+        PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         return itemCopy;
     }
     public static ArmourItem unequipArmour(String armourSlot) {
@@ -431,6 +442,7 @@ public class Inventory {
         ArmourItem armourCopy = new ArmourItem(getEquippedArmour().get(armourSlot));
         getEquippedArmour().put(armourSlot, null);
         PlayerClass.incrementPlayerStat(armourCopy.getStatBoons(), true);
+        PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         return armourCopy;
     }
     public static WeaponItem unequipWeapon(int weaponIDToUnequip) {
@@ -451,6 +463,7 @@ public class Inventory {
         }
         getEquippedWeapons()[weaponIDToUnequip] = null;
         PlayerClass.incrementPlayerStat(weaponCopy.getStatBoons(), true);
+        PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         return weaponCopy;
     }
 
@@ -474,13 +487,16 @@ public class Inventory {
                 List<String> curItemSpecs = InventoryCache.getItem(curID);
                 switch (curItemSpecs.get(0).toLowerCase()) {
                     case "weapon":
-                        equipWeapon(((WeaponItem) Item.smartItemInit(curID, curItemSpecs)), -1);
+                        equipWeapon(((WeaponItem) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs))),
+                                -1, false);
                         break;
                     case "armour", "armor":
-                        equipArmour(((ArmourItem) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs))));
+                        equipArmour((ArmourItem) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs)),
+                                false);
                         break;
                     case "trinket", "neck":
-                        equipTrinketOrNeck(((Item) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs))), -1);
+                        equipTrinketOrNeck((Item) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs)),
+                                -1, false);
                         break;
                     default:
                         throw new Exception();
@@ -637,8 +653,93 @@ public class Inventory {
         }
     }
 
+    public static List<List<String>> getEquipmentToDisplay(String sectionType, boolean inclIndexing) {
+        List<List<String>> displayPreparer = new ArrayList<>();
+        List<String> singleEntry = new ArrayList<>();
+        return switch (sectionType.toLowerCase()) {
+            case "weapon", "weapons", "wep", "wepz", "weps", "weaponz":
+                for (int curWepIdx = 0; curWepIdx < getWeaponSlots(); curWepIdx++) {
+                    if (getEquippedWeapons()[curWepIdx] == null) {
+                        break;
+                    }
+                    singleEntry.clear();
+                    WeaponItem tempie = getEquippedWeapons()[curWepIdx];
+                    singleEntry.add((inclIndexing ? "[" + (curWepIdx+1) + "] " : "") +
+                            tempie.getName() + (tempie.isShield() ? " (shield, " : " (weapon, ") +
+                            (tempie.isIs1H() ? "1H)" : "2H)"));
+                    if (!tempie.isShield()) {
+                        singleEntry.add("+" + tempie.getMinDmg() + "-" + tempie.getMaxDmg() +
+                                " damage (" + tempie.getScalingStat() + ")");
+                    } else {
+                        singleEntry.add(tempie.getMinDmg() + "-" + tempie.getMaxDmg() +
+                                " damage absorption (" + tempie.getScalingStat() + ")");
+                    }
+                    for (Map.Entry<String, Integer> boonz : tempie.getStatBoons().entrySet()) {
+                        singleEntry.add((boonz.getValue() >= 0 ? "+" : "") + boonz.getValue() + " " + boonz.getKey());
+                    }
+                    displayPreparer.add(new ArrayList<>(singleEntry));
+                }
+                yield displayPreparer;
+            case "armour", "armor":
+                int indexor = 1;
+                for (Map.Entry<String, ArmourItem> curArmour : getEquippedArmour().entrySet()) {
+                    if (curArmour.getValue() == null) {
+                        break;
+                    }
+                    singleEntry.clear();
+                    singleEntry.add((inclIndexing ? "[" + (indexor++) + "] " : "") + curArmour.getKey());
+                    singleEntry.add(curArmour.getValue().getName());
+                    singleEntry.add("+" + curArmour.getValue().getArmourBonus() + " armour");
+                    for (Map.Entry<String, Integer> boonz : curArmour.getValue().getStatBoons().entrySet()) {
+                        singleEntry.add((boonz.getValue() >= 0 ? "+" : "") + boonz.getValue() + " " + boonz.getKey());
+                    }
+                    displayPreparer.add(new ArrayList<>(singleEntry));
+                }
+                yield displayPreparer;
+            case "neck", "necks", "neckz", "trinket", "trinkets", "trinketz":
+                Item[] whicheverOne = (sectionType.toLowerCase().charAt(0) == 't') ? getEquippedTrinkets() : getEquippedNecks();
+                for (int i = 0; i < whicheverOne.length; i++) {
+                    if (whicheverOne[i] == null) {
+                        break;
+                    }
+                    singleEntry.clear();
+                    singleEntry.add((inclIndexing ? "[" + (i+1) + "] " : "") + whicheverOne[i].getName());
+                    for (Map.Entry<String, Integer> boonz : whicheverOne[i].getStatBoons().entrySet()) {
+                        singleEntry.add((boonz.getValue() >= 0 ? "+" : "") + boonz.getValue() + " " + boonz.getKey());
+                    }
+                    displayPreparer.add(new ArrayList<>(singleEntry));
+                }
+                yield displayPreparer;
+            default:
+                yield null;
+        };
+    }
     public static void displayEquipment() {
-        return;
+        int curChoice = -1;
+        String[] optionz = new String[]{"Weapons", "Armour", "Neck", "Trinkets", "Return"};
+        while (true) {
+            System.out.println(">> " + PlayerClass.getPlayerName());
+            System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
+                    " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
+            System.out.println(">> " +
+                    PlayerClass.getPlayerStat("curHealth") + "/" + PlayerClass.getPlayerStat("maxHealth") + " HP");
+            System.out.println(">> " + PlayerClass.getPlayerStat("Armour") + " Armour");
+            for (Map.Entry<String, Integer> curEntry : PlayerClass.getPlayerAtts().entrySet()) {
+                System.out.println(">> " + curEntry.getKey() + ": " + curEntry.getValue());
+            }
+            System.out.println(">>");
+            String[] ittie = new String[]{"Weapons", "Armour", "Neck", "Trinkets"};
+            for (int i = 0; i < ittie.length; i++) {
+                System.out.println(">> [" + (i + 1) + "] " + ittie[i] + ":");
+                displaySideBySide(getEquipmentToDisplay(ittie[i], false),
+                        5, 5, true);
+            }
+            System.out.println(">> Inspect:");
+            curChoice = StoryDisplayer.awaitChoiceInputFromOptions(optionz);
+            if (curChoice == 4) {
+                return;
+            }
+        }
     }
 }
 

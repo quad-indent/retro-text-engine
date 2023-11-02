@@ -205,6 +205,10 @@ public class PlayerClass {
             }
         } else {
             if (getPlayerBaseVals().containsKey(stat)) {
+                if (stat.equalsIgnoreCase("strength")) {
+                    getPlayerBaseVals().put("maxHealth", getPlayerBaseVals().get("maxHealth") + 5);
+                    incrementPlayerStat("curHealth", 5);
+                }
                 getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
                 return;
             } else {
@@ -483,6 +487,8 @@ public class PlayerClass {
         if (playerAttsOld == null)
             playerAttsOld = new LinkedHashMap<>(getPlayerAtts());
         if (isLevelUp) {
+            incrementPlayerStat("curHealth", Integer.MAX_VALUE);
+            incrementPlayerStat("curMana", Integer.MAX_VALUE);
             System.out.println(">> You advance from level " + (getPlayerStat("playerLevel") - 1) +
                     " to level " + getPlayerStat("playerLevel") + "!");
         }

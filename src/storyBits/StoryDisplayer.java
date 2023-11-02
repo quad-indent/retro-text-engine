@@ -14,13 +14,23 @@ interface inputVerificator {
 public class StoryDisplayer {
     private static final Scanner scannerObj = new Scanner(System.in);
     private static final int HP_BAR_LEN = 16;
+    private static int curIndex = -1;
+
+    public static int getCurIndex() {
+        return curIndex;
+    }
+
+    public static void setCurIndex(int curIndex) {
+        StoryDisplayer.curIndex = curIndex;
+    }
+
     public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt) {
-        int curIndex = beginAt;
-        StoryBlock curObj = storyObj.get(curIndex);
+        setCurIndex(beginAt);
+        StoryBlock curObj = storyObj.get(getCurIndex());
         int nextChoice;
         int rawChoicePicked;
         int pureChoiceLen = -1;
-        while (curIndex < storyObj.size()) {
+        while (getCurIndex() < storyObj.size()) {
             System.out.println(">> " + curObj.getPromptText());
             printChoiceOptions(curObj.getChoices(), true, true);
             pureChoiceLen = getChoiceOptions(curObj.getChoices(), false, false).length;
@@ -35,7 +45,7 @@ public class StoryDisplayer {
             nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked);
             if (nextChoice == -1)
                 return;
-            curIndex = nextChoice;
+            setCurIndex(nextChoice);
 
             if (curObj.getCombatantInfo().get(rawChoicePicked) != null) {
                 Foe currentFoe = getFoe(curObj, rawChoicePicked);
@@ -50,8 +60,8 @@ public class StoryDisplayer {
                             curObj.getStatVal().get(rawChoicePicked));
                 }
             }
-            curObj = storyObj.get(curIndex);
-            PlayerClass.saveCharacter(curIndex);
+            curObj = storyObj.get(getCurIndex());
+            PlayerClass.saveCharacter(getCurIndex());
             if (PlayerClass.checkForDeath(true)) {
                 return;
             }
