@@ -1,5 +1,7 @@
 package combat;
 
+import inventory.Inventory;
+import inventory.WeaponItem;
 import storyBits.StoryDisplayer;
 import player.PlayerClass;
 
@@ -7,12 +9,85 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.Logger;
 
 public class CombatUtils {
+
+    public static int calcDamageShieldBlocked(int dmgIn) {
+        if (Arrays.stream(Inventory.getEquippedWeapons()).noneMatch(WeaponItem::isShield)) {
+            return 0;
+        }
+        int minBlock = Arrays.stream(Inventory.getEquippedWeapons()).mapToInt(WeaponItem::getMinDmg).sum();
+        int maxBlock = Arrays.stream(Inventory.getEquippedWeapons()).mapToInt(WeaponItem::getMaxDmg).sum();
+        return genRandomNum(minBlock, maxBlock);
+    }
+    public static int scaleWepDmg(int dmgVal, String scalingStat) {
+        int valToScale = PlayerClass.getPlayerStat(scalingStat);
+        double returnal = dmgVal * Math.log10(10 + 8 * (valToScale - 10));
+        return (int) Math.round(returnal);
+    }
+    public static int scaleWepDmg(int dmgVal, WeaponItem wep) {
+        return scaleWepDmg(dmgVal, wep.getScalingStat());
+    }
     public static int genRandomNum(int minOut, int maxOut) {
         if (minOut >= maxOut)
             return minOut;
         return ThreadLocalRandom.current().nextInt(minOut, maxOut + 1);
+    }
+    public static int genRandomNumWeighted(int minOut, int maxOut, int[] qWeightz) throws AssertionError {
+        // the weightz are expected to be {chance for lowest quartile of range, chance for 2nd, 3rd, and top quartile}
+        // thirds or halves can be used as well, and regardless they need to sum up to 100
+        if (qWeightz.length > 4) {
+            throw new AssertionError("Up to four values for the weight quarters " +
+                    "expected, got " + qWeightz.length + "!");
+        } else if (Arrays.stream(qWeightz).sum() != 100) {
+            throw new AssertionError("The weights need to sum to 100! " +
+                    "(exclamation point, not factorial)");
+        }
+        if (minOut == maxOut)
+            return minOut;
+        if (maxOut - minOut == 1) {
+            // 2 possibilities
+            if (qWeightz[2] > 0 && qWeightz[3] > 0) {
+                qWeightz = new int[]{qWeightz[0] + qWeightz[1], qWeightz[2] + qWeightz[3]};
+            } else {
+                qWeightz = new int[]{qWeightz[0], qWeightz[1]};
+            }
+        } else if (maxOut - minOut == 2) {
+            // 3 possibilities
+            if (qWeightz[3] > 0) {
+                System.out.println("Warning: " +
+                        "Got 3 possible outcomes, and four quarter weights. Use 3 instead for this one!");
+                double tempie = (double) qWeightz[3] / 3;
+                for (int i = 0; i < 3; i++) {
+                    qWeightz[i] += (int) tempie;
+                }
+                int tempCtr = 0;
+                while (Arrays.stream(qWeightz).sum() != 100) {
+                    if (Arrays.stream(qWeightz).sum() > 100)
+                        qWeightz[tempCtr++]--;
+                    else
+                        qWeightz[tempCtr++]++;
+                    if (tempCtr > 2)
+                        tempCtr = 0;
+                }
+            }
+            qWeightz = new int[]{qWeightz[0], qWeightz[1], qWeightz[3]};
+        }
+        int qRoll = genRandomNum(0, 100);
+        int qPicked = qWeightz.length-1;
+        for (; qPicked >= 0; qPicked--) {
+            qRoll -= qWeightz[qPicked];
+            if (qRoll <= 0)
+                break;
+        }
+        int outRange = maxOut - minOut;
+        double qRange = (double) outRange / qWeightz.length;
+        // qRange = Math.max(qRange, 1);
+        int rMin = (int) (minOut + qPicked * qRange);
+        int rMax = (int) (minOut + qPicked * qRange + qRange);
+        int resultar = genRandomNum(rMin, rMin);
+        return Math.min(resultar, rMax);
     }
 
     public static int getMean(int[] numz) {
@@ -97,6 +172,9 @@ public class CombatUtils {
     public static int calcDamage(int thisDex, int otherDex, int thisStr, int otherStr,
                                      int attackType, boolean isCrit,
                                      boolean returnMinDmg, boolean returnMaxDmg) {
+        // 0 - quick
+        // 1 - normal
+        // 2 - strong
         boolean isDisadvantagedDex = thisDex < otherDex;
         boolean isDisadvantagedStr = thisStr < otherStr;
         double dmgMultiplier = isCrit ? 2.5 : 1.;
@@ -145,11 +223,31 @@ public class CombatUtils {
                 }
             }
         }
+
+        int minDmgBoon = 0;
+        int maxDmgBoon = 0;
+        for (WeaponItem wep: Arrays.stream(Inventory.getEquippedWeapons()).toList()) {
+            minDmgBoon += scaleWepDmg(wep.getMinDmg(), wep);
+            maxDmgBoon += scaleWepDmg(wep.getMaxDmg(), wep);
+        }
+
         if (returnMinDmg)
-            return minDmg;
+            return minDmg + minDmgBoon;
         if (returnMaxDmg)
-            return maxDmg;
-        return (int)(genRandomNum(minDmg, maxDmg) * dmgMultiplier);
+            return maxDmg + maxDmgBoon;
+        int[] rollWeightz;
+        rollWeightz = switch (attackType) {
+            case 0:
+                yield new int[]{55, 30, 15};
+            case 1:
+                yield new int[]{28, 55, 17};
+            case 2:
+                yield new int[]{20, 35, 45};
+            default:
+                yield new int[]{25, 25, 25, 25};
+        };
+        int boonRoll = genRandomNumWeighted(minDmg + minDmgBoon, maxDmg + maxDmgBoon, rollWeightz);
+        return (int)(boonRoll * dmgMultiplier);
     }
     public static <T> void decreaseHealth(T obj, int byHowMuch) {
         if (!(obj instanceof Foe)) {
@@ -209,7 +307,7 @@ public class CombatUtils {
         }
         return absoluteOffset;
     }
-    public static int combatLoop(Foe combatant) {
+    public static int combatLoop(Foe combatant) throws Exception {
         int atkChoice = -1;
         int thisDex = PlayerClass.getPlayerStat("Dexterity");
         int otherDex = combatant.getDexterity();
@@ -248,6 +346,7 @@ public class CombatUtils {
             // isCrit = 0 for non-crit, 1 for crit
             // attackHit = 0 or 1
             // damageOut = damage after having applied player's armour
+            String dmgText = "";
             if (combatant.isDead())
                 break;
             isAHit = foeMap.get("isHit") == 1;
@@ -262,10 +361,16 @@ public class CombatUtils {
                     case 2:
                         yield " launches a mighty swing at you ";
                     default:
-                        yield " does something that results in an ERROR! ";
+                        throw new Exception("Foe attack type mismatch! Expected 0, 1, or 2, got "
+                                + foeMap.get("attackType"));
                 };
-                System.out.println(">> " + combatant.getName() + enemyAtkFlavour + "for " +
-                        foeMap.get("damageOut") + " damage!");
+                dmgText = ">> " + combatant.getName() + enemyAtkFlavour + "for " +
+                        foeMap.get("damageOut") + " damage";
+                if (foeMap.get("damageBlocked") != 0) {
+                    dmgText += " (" + foeMap.get("damageBlocked") + " blocked)";
+                }
+                dmgText += "!";
+                System.out.println(dmgText);
                 PlayerClass.incrementHealth(-foeMap.get("damageOut"));
                 if (PlayerClass.checkForDeath(true)) {
                     return -1;

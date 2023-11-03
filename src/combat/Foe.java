@@ -151,6 +151,7 @@ public class Foe {
         attackInfo.put("isHit", 0);
         attackInfo.put("damageOut", 0);
         attackInfo.put("attackType", attackType);
+        attackInfo.put("damageBlocked", 0);
         if (!CombatUtils.rollForHit(getDexterity(), PlayerClass.getPlayerStat("Dexterity"),
                 getStrength(), PlayerClass.getPlayerStat("Strength"), attackType)) {
             return attackInfo;
@@ -160,6 +161,8 @@ public class Foe {
             int dmgRaw = CombatUtils.calcDamage(getDexterity(), PlayerClass.getPlayerStat("Dexterity"),
                     getStrength(), PlayerClass.getPlayerStat("Strength"), attackType, isCrit,
                     false, false);
+            attackInfo.put("damageBlocked", CombatUtils.calcDamageShieldBlocked(dmgRaw));
+            dmgRaw -= attackInfo.get("damageBlocked");
             dmgRaw = CombatUtils.calcDamageAfterArmour(dmgRaw, PlayerClass.getPlayerStat("armour"));
             attackInfo.put("damageOut", dmgRaw);
             attackInfo.put("isCrit", isCrit ? 1 : 0);

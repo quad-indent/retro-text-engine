@@ -536,26 +536,53 @@ public class Inventory {
         }
     }
 
-    public static List<List<String>> prepareInvDisplay(int startingInvID, int entriesToDisplay) {
-        if (startingInvID + entriesToDisplay >= getInventorySpace().size()) {
-            entriesToDisplay = getInventorySpace().size() - startingInvID;
+    public static List<List<String>> prepareItemSeriesDisplay(int startingInvID, int entriesToDisplay,
+                                                              String itemCat) {
+        List<Item> itemzInQuestion = new ArrayList<>();
+        boolean castToWeapons = false;
+        boolean castToArmour = false;
+        String prependerFlavour = "";
+        itemzInQuestion = new ArrayList<>(switch (itemCat.toLowerCase()) {
+            case "weapons", "weapon", "wep", "weps", "wepz", "weaponz":
+                castToWeapons = true;
+                prependerFlavour = "Weapon #";
+                yield Arrays.stream(getEquippedWeapons()).toList();
+            case "armour", "armor", "arm":
+                prependerFlavour = "";
+                castToArmour = true;
+                yield getEquippedArmour().values().stream().toList();
+            case "neck", "neckz", "necks":
+                prependerFlavour = "Necklace #";
+                yield Arrays.stream(getEquippedNecks()).toList();
+            case "trinket", "trinkets", "trinketz":
+                prependerFlavour = "Trinket #";
+                yield Arrays.stream(getEquippedTrinkets()).toList();
+            default:
+                prependerFlavour = "itemz";
+                yield getInventorySpace();
+        });
+        if (startingInvID + entriesToDisplay >= itemzInQuestion.size()) {
+            entriesToDisplay = itemzInQuestion.size() - startingInvID;
         }
         List<List<String>> preparedItemz = new ArrayList<>();
-        List<String> tempie = new ArrayList<>();
+        List<String> tempie = new LinkedList<>();
         int dispRefCtr = 1;
         for (int i = startingInvID; i < startingInvID + entriesToDisplay; i++) {
             tempie.clear();
-            tempie.add("[" + dispRefCtr++ + "] " + getInventorySpace().get(i).getName());
-            tempie.add(getInventorySpace().get(i).getDescription());
-            tempie.add(getInventorySpace().get(i).getItemType());
+            if (prependerFlavour.equalsIgnoreCase("itemz")) {
+                tempie.add("[" + dispRefCtr++ + "] " + getInventorySpace().get(i).getName());
+                tempie.add(getInventorySpace().get(i).getDescription());
+                tempie.add(getInventorySpace().get(i).getItemType());
+            } else {
+                tempie.add(prependerFlavour + dispRefCtr++);
+                tempie.addAll(inspectItem(itemzInQuestion.get(i), false, true));
+            }
             preparedItemz.add(new ArrayList<>(tempie));
         }
         return preparedItemz;
     }
-    public static void inspectItem(int itemIdx, boolean includedLilArrowz) {
+    public static List<String> inspectItem(Item itemInQuestion, boolean includedLilArrowz, boolean returnList) {
         List<String> itemDescFieldz = new ArrayList<>();
-        Item itemInQuestion = getInventorySpace().get(itemIdx);
-        // name, then desc, then type
         itemDescFieldz.add(itemInQuestion.getName());
         itemDescFieldz.add(itemInQuestion.getDescription());
         if (itemInQuestion instanceof WeaponItem tempie) {
@@ -593,6 +620,8 @@ public class Inventory {
         itemDescFieldz.add((itemInQuestion.getBuyValue() >= 0 ?
                 "Value: " + itemInQuestion.getBuyValue() + "g" :
                 "Quest item"));
+        if (returnList)
+            return  itemDescFieldz;
         for (String i : itemDescFieldz) {
             if (includedLilArrowz)
                 System.out.println(">> " + i);
@@ -603,6 +632,7 @@ public class Inventory {
         int exitChoice = -1;
         while (exitChoice != 0)
             exitChoice = StoryDisplayer.awaitChoiceInput(1);
+        return new ArrayList<>();
     }
     public static void displayInventory() {
         int curChoice = -1;
@@ -623,7 +653,8 @@ public class Inventory {
             nextPageBind = -1;
             exitBind = -1;
             curStartIndex = (curInvPage - 1) * 6;
-            displaySideBySide(prepareInvDisplay(curStartIndex, 6), 3, 10, true);
+            displaySideBySide(prepareItemSeriesDisplay(curStartIndex, 6, "inv"),
+                    3, 10, true);
             System.out.println(">> View:");
             for (int i = curStartIndex; i < curStartIndex + 6 && i < getInventorySpace().size(); i++) {
                 optionz.add(getInventorySpace().get(i).getName());
@@ -649,7 +680,7 @@ public class Inventory {
             }
             if (curChoice == exitBind)
                 return;
-            inspectItem(curStartIndex + curChoice, true);
+            inspectItem(getInventorySpace().get(curStartIndex + curChoice), true, false);
         }
     }
 
@@ -659,10 +690,12 @@ public class Inventory {
         return switch (sectionType.toLowerCase()) {
             case "weapon", "weapons", "wep", "wepz", "weps", "weaponz":
                 for (int curWepIdx = 0; curWepIdx < getWeaponSlots(); curWepIdx++) {
-                    if (getEquippedWeapons()[curWepIdx] == null) {
-                        break;
-                    }
                     singleEntry.clear();
+                    if (getEquippedWeapons()[curWepIdx] == null) {
+                        singleEntry.add("Empty");
+                        displayPreparer.add(new ArrayList<>(singleEntry));
+                        continue;
+                    }
                     WeaponItem tempie = getEquippedWeapons()[curWepIdx];
                     singleEntry.add((inclIndexing ? "[" + (curWepIdx+1) + "] " : "") +
                             tempie.getName() + (tempie.isShield() ? " (shield, " : " (weapon, ") +
@@ -683,10 +716,13 @@ public class Inventory {
             case "armour", "armor":
                 int indexor = 1;
                 for (Map.Entry<String, ArmourItem> curArmour : getEquippedArmour().entrySet()) {
-                    if (curArmour.getValue() == null) {
-                        break;
-                    }
                     singleEntry.clear();
+                    if (curArmour.getValue() == null) {
+                        singleEntry.add(curArmour.getKey());
+                        singleEntry.add("Empty");
+                        displayPreparer.add(new ArrayList<>(singleEntry));
+                        continue;
+                    }
                     singleEntry.add((inclIndexing ? "[" + (indexor++) + "] " : "") + curArmour.getKey());
                     singleEntry.add(curArmour.getValue().getName());
                     singleEntry.add("+" + curArmour.getValue().getArmourBonus() + " armour");
@@ -699,10 +735,12 @@ public class Inventory {
             case "neck", "necks", "neckz", "trinket", "trinkets", "trinketz":
                 Item[] whicheverOne = (sectionType.toLowerCase().charAt(0) == 't') ? getEquippedTrinkets() : getEquippedNecks();
                 for (int i = 0; i < whicheverOne.length; i++) {
-                    if (whicheverOne[i] == null) {
-                        break;
-                    }
                     singleEntry.clear();
+                    if (whicheverOne[i] == null) {
+                        singleEntry.add("Empty");
+                        displayPreparer.add(new ArrayList<>(singleEntry));
+                        continue;
+                    }
                     singleEntry.add((inclIndexing ? "[" + (i+1) + "] " : "") + whicheverOne[i].getName());
                     for (Map.Entry<String, Integer> boonz : whicheverOne[i].getStatBoons().entrySet()) {
                         singleEntry.add((boonz.getValue() >= 0 ? "+" : "") + boonz.getValue() + " " + boonz.getKey());
@@ -740,6 +778,11 @@ public class Inventory {
                 return;
             }
         }
+    }
+
+    public static void inspectEquipmentSection(int eqSection) {
+        // weaponz - 0, armour - 1, neck - 2, trinketz - 3
+
     }
 }
 

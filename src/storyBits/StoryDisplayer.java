@@ -49,7 +49,12 @@ public class StoryDisplayer {
 
             if (curObj.getCombatantInfo().get(rawChoicePicked) != null) {
                 Foe currentFoe = getFoe(curObj, rawChoicePicked);
-                PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
+                try {
+                    PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return;
+                }
             }
             if (!curObj.isStatCheckAtChoiceID(rawChoicePicked)) {
                 String relevantStat = curObj.getRelevantStat().get(rawChoicePicked);
