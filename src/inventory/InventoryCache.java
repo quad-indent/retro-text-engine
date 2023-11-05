@@ -43,7 +43,6 @@ public class InventoryCache {
             splits.replaceAll(String::trim);
             splits.replaceAll(e -> e.replaceAll("\\[", ""));
             addItemToCache(Integer.parseInt(splits.remove(0)), splits);
-            //splitItemEntries.add(splits);
         }
     }
 }

@@ -37,7 +37,7 @@ public class StoryDisplayer {
             rawChoicePicked = awaitChoiceInput(pureChoiceLen + 2); // +2 since allowing inv and eq view
             if (rawChoicePicked >= pureChoiceLen) {
                 if (rawChoicePicked == pureChoiceLen)
-                    Inventory.displayInventory();
+                    Inventory.displayInventoryOrEq(Inventory.eqCats.INVENTORY);
                 else
                     Inventory.displayEquipment();
                 continue;
