@@ -30,14 +30,24 @@ public class StoryDisplayer {
         int nextChoice;
         int rawChoicePicked;
         int pureChoiceLen = -1;
+        int choiceAdditions = 0;
+        if (!Inventory.isMalformedEq()) {
+            choiceAdditions++;
+        }
+        if (!Inventory.isMalformedInv()) {
+            choiceAdditions++;
+        }
         while (getCurIndex() < storyObj.size()) {
             System.out.println(">> " + curObj.getPromptText());
-            printChoiceOptions(curObj.getChoices(), true, true);
+            printChoiceOptions(curObj.getChoices(), !Inventory.isMalformedInv(),
+                    !Inventory.isMalformedEq());
             pureChoiceLen = getChoiceOptions(curObj.getChoices(), false, false).length;
-            rawChoicePicked = awaitChoiceInput(pureChoiceLen + 2); // +2 since allowing inv and eq view
+
+            rawChoicePicked = awaitChoiceInput(
+                    pureChoiceLen + choiceAdditions); // +2 since allowing inv and eq view
             if (rawChoicePicked >= pureChoiceLen) {
                 if (rawChoicePicked == pureChoiceLen)
-                    Inventory.displayInventoryOrEq(Inventory.eqCats.INVENTORY);
+                    Inventory.displayInventoryOrEq(Inventory.eqCats.INVENTORY, false);
                 else
                     Inventory.displayEquipment();
                 continue;

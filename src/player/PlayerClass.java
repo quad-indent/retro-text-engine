@@ -318,9 +318,16 @@ public class PlayerClass {
             equipmentLine.append(i.getItemID()).append(" ");
         }
         for (ArmourItem i : Inventory.getEquippedArmour().values()) {
+            if (i == null)
+                continue;
             equipmentLine.append(i.getItemID()).append(" ");
         }
-        printWriter.println(equipmentLine.substring(0, equipmentLine.toString().length() - 1));
+        if (equipmentLine.length() > 0) {
+            printWriter.println(equipmentLine.substring(0, equipmentLine.toString().length() - 1));
+        } else {
+            printWriter.println("");
+        }
+        // printWriter.println(equipmentLine.substring(0, equipmentLine.toString().length() - 1));
         equipmentLine = new StringBuilder();
         for (Item i : Inventory.getInventorySpace()) {
             equipmentLine.append(i.getItemID()).append(" ");
