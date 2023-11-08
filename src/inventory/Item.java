@@ -76,7 +76,7 @@ public class Item {
         this.itemID = itemID;
         this.name = name;
         this.description = description;
-        this.itemType = itemType;
+        this.itemType = itemType.toLowerCase();
         this.buyValue = itemValue;
         if (statBoons != null) {
             this.statBoons = statBoons;

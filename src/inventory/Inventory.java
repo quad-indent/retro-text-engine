@@ -74,7 +74,7 @@ public class Inventory {
     public static void addItemToInventory(Item itemToAdd) {
         getInventorySpace().add(itemToAdd);
     }
-    public static Item getInventoryItemByID(int ID) {
+    public static Item getInventoryItemByItemID(int ID) {
         for (Item it : getInventorySpace()) {
             if (it.getItemID() == ID) {
                 return it;
@@ -83,17 +83,19 @@ public class Inventory {
         return null;
     }
 
-    public static int removeInventoryItem(int itemID, boolean removeAllInstances) {
+    public static Item removeInventoryItem(int itemID, boolean removeAllInstances) {
         List<Item> inventorySpaceCopy = new ArrayList<>(getInventorySpace());
+        Item returnal;
         for (Item it : inventorySpaceCopy) {
             if (it.getItemID() == itemID) {
+                returnal = it;
                 getInventorySpace().remove(it);
                 if (!removeAllInstances) {
-                    return 0; // success
+                    return returnal; // success
                 }
             }
         }
-        return 1; // no items removed
+        return null; // no items removed
     }
 
     public static int removeInventoryItem(Item itemToRemove) {
@@ -101,8 +103,8 @@ public class Inventory {
     }
 
     public static Item removeInventoryItem(int invIdxOfInterest) {
-        return getInventorySpace().remove(invIdxOfInterest);
-    }
+            return getInventorySpace().remove(invIdxOfInterest);
+        }
 
     public static int getMaxColWidth(int columnsAccepted, int marginSpace) {
         return (MAX_CONSOLE_CHARS - (columnsAccepted - 1) * marginSpace) / columnsAccepted;
@@ -234,6 +236,9 @@ public class Inventory {
         // The list of lists here is assumed to be UN-SPLIT texts
         // so for instance a single element will look like ["Revolver", "1-2 damage bonus (Dexterity scaling)",
         // "A formidable weapon crafted by an expert gunsmith", "+1 Dexterity"]
+        if (textz.isEmpty()) {
+            return;
+        }
         StringBuilder lineStr = new StringBuilder();
         List<String> tempList = new ArrayList<>();
         tempList.add(" ");
@@ -697,26 +702,29 @@ public class Inventory {
                 } else {
                     tempie.add("[" + ((ArmourItem)itemzToHandle[i]).getArmourSlot() + "]");
                 }
-                tempie.addAll(inspectItem(itemzToHandle[i], false, true, i));
+                tempie.addAll(Objects.requireNonNull(
+                        inspectItem(itemzToHandle[i], false, true, i,
+                        itemCat)));
             }
             preparedItemz.add(new ArrayList<>(tempie));
         }
         return preparedItemz;
     }
 
-    public static List<String> inspectionChoiceMaker(int itemID) {
+    public static List<String> inspectionChoiceMaker(int itemID, boolean isEquipping) {
         List<String> optionz = new ArrayList<>();
-        if (itemID != -1) {
+        if (itemID != -1 && isEquipping) {
             optionz.add(">> [1] Swap");
             optionz.add(">> [2] Unequip");
-        } else {
+        } else if (isEquipping) {
             optionz.add(">> [1] Equip");
         }
         optionz.add(">> [" + (optionz.size() + 1) + "] Return");
         return optionz;
     }
     public static List<String> inspectItem(Item itemInQuestion, boolean includedLilArrowz,
-                                           boolean returnList, int rawIndex) {
+                                           boolean returnList, int rawIndex,
+                                           eqCats itemCat) {
         List<String> itemDescFieldz = new ArrayList<>();
         List<String> eqOptionz = new ArrayList<>();
         if (itemInQuestion == null || itemInQuestion.getItemID() == -1) {
@@ -729,19 +737,43 @@ public class Inventory {
                 else
                     System.out.println(i);
             }
-            eqOptionz = inspectionChoiceMaker(-1);
+            eqOptionz = inspectionChoiceMaker(-1, itemCat != eqCats.INVENTORY);
             for (String option : eqOptionz) {
                 System.out.println(option);
             }
-            // System.out.println(">> [1] Return");
             int exitChoice = -1;
+            Item[] availables = craftItemArray(itemCat, true);
             while (exitChoice != 1) {
                 exitChoice = StoryDisplayer.awaitChoiceInput(eqOptionz.size() + 1);
                 if (exitChoice == 0) {
-                     // LOGICz
+                    int itemtoEquip = displayInventoryOrEq(itemCat, true);
+                    if (itemtoEquip == -1) {
+                        return null;
+                    }
+                    switch (itemCat) {
+                        case WEAPONZ:
+                            Inventory.equipWeapon(((WeaponItem)
+                                            Objects.requireNonNull(Inventory.removeInventoryItem(
+                                            availables[itemtoEquip].getItemID(), false))),
+                                    rawIndex, true, true);
+                            break;
+                        case ARMOUR:
+                            Inventory.equipArmour(((ArmourItem)
+                                            Objects.requireNonNull(Inventory.removeInventoryItem(
+                                            availables[itemtoEquip].getItemID(), false))),
+                                    true, true);
+                            break;
+                        case TRINKETZ, NECKZ:
+                            Inventory.equipTrinketOrNeck(
+                                    Objects.requireNonNull(Inventory.removeInventoryItem(
+                                            availables[itemtoEquip].getItemID(), false)),
+                                    rawIndex, true);
+                            break;
+                    }
+                    return null; // jygjygjyjgy// LOGICz
                 }
             }
-            return new ArrayList<>();
+            return null;
 
             // This is placeholder copy-pasted code for now,
             // if inspecting empty item that will mean that the player
@@ -795,76 +827,25 @@ public class Inventory {
             else
                 System.out.println(i);
         }
-//        eqOptionz = inspectionChoiceMaker(itemInQuestion.getItemID());
-//        // at this point it's guaranteed that the options are:
-//        // 1 - swap, 2 - unequip, 3 - return
-//        for (String option : eqOptionz) {
-//            System.out.println(option);
-//        }
-//        int exitChoice = -1;
-//        eqCats curCat = strToEqCat(itemInQuestion.getItemType());
-//        while (exitChoice != eqOptionz.size() - 1) {
-//            exitChoice = StoryDisplayer.awaitChoiceInput(eqOptionz.size() + 1);
-//            if (exitChoice == 1) {
-//                Item tempieItem = null;
-//                switch (curCat) {
-//                    case ARMOUR:
-//                        assert itemInQuestion instanceof ArmourItem;
-//                        tempieItem = unequipArmour(((ArmourItem)itemInQuestion).getArmourSlot());
-//                        break;
-//                    case WEAPONZ:
-//                        tempieItem = unequipWeapon(itemInQuestion.getItemID());
-//                        break;
-//                    case TRINKETZ, NECKZ:
-//                        tempieItem = unequipTrinketOrNeck(rawIndex,
-//                                itemInQuestion.getItemType().toLowerCase().charAt(0) == 't');
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                addItemToInventory(tempieItem);
-//                return new ArrayList<>();
-//            } else if (exitChoice == 0) { // swap
-//                int replacementPicked = displayInventoryOrEq(curCat, true);
-//                if (replacementPicked == -1)
-//                    continue;
-//                switch (curCat) {
-//                    case WEAPONZ:
-//                        Inventory.addItemToInventory(unequipWeapon(
-//                                getEquippedWeapons()[rawIndex].getItemID()));
-//                        Inventory.equipWeapon(((WeaponItem) Inventory.removeInventoryItem(replacementPicked)),
-//                                rawIndex, true, true);
-//                        break;
-//                    case ARMOUR:
-//                        assert itemInQuestion instanceof ArmourItem;
-//                        Inventory.addItemToInventory(unequipArmour(
-//                                ((ArmourItem)itemInQuestion).getArmourSlot()));
-//                        Inventory.equipArmour(((ArmourItem) Inventory.removeInventoryItem(replacementPicked)),
-//                                true, true);
-//                        break;
-//                    case TRINKETZ, NECKZ:
-//                        Inventory.addItemToInventory(unequipTrinketOrNeck(rawIndex,
-//                                curCat == eqCats.TRINKETZ));
-//                        Inventory.equipTrinketOrNeck(Inventory.removeInventoryItem(replacementPicked),
-//                                rawIndex, true);
-//                        break;
-//                }
-//            }
-//        }
         return new ArrayList<>();
     }
 
-    public static int handleItemInspectionChoices(Item itemInQuestion, eqCats itemCat, int rawIndex) {
-        List<String> eqOptionz = inspectionChoiceMaker(itemInQuestion.getItemID());
-        // at this point it's guaranteed that the options are:
+    public static int handleItemInspectionChoices(Item itemInQuestion, eqCats itemCat, int rawIndex,
+                                                  boolean isEquipping) {
+        List<String> eqOptionz = inspectionChoiceMaker
+                (itemInQuestion.getItemID(), isEquipping);
+        // at this point it's NOT guaranteed that the options are:
         // 1 - swap, 2 - unequip, 3 - return
         for (String option : eqOptionz) {
             System.out.println(option);
         }
         int exitChoice = -1;
         eqCats curCat = strToEqCat(itemInQuestion.getItemType());
-        while (exitChoice != eqOptionz.size() - 1) {
+        while (true) {
             exitChoice = StoryDisplayer.awaitChoiceInput(eqOptionz.size() + 1);
+            if (exitChoice == eqOptionz.size() - 1) {
+                return -1;
+            }
             if (exitChoice == 1) {
                 Item tempieItem = null;
                 switch (curCat) {
@@ -886,32 +867,42 @@ public class Inventory {
                 return 0;
             } else if (exitChoice == 0) { // swap
                 int replacementPicked = displayInventoryOrEq(curCat, true);
-                if (replacementPicked == -1)
-                    continue;
+                if (replacementPicked == -1) {
+                    return -1;
+                }
+                Item[] availables = craftItemArray(curCat, true);
+                // if (replacementPicked == -1)
+                //    continue;
                 switch (curCat) {
                     case WEAPONZ:
                         Inventory.addItemToInventory(unequipWeapon(
                                 getEquippedWeapons()[rawIndex].getItemID()));
-                        Inventory.equipWeapon(((WeaponItem) Inventory.removeInventoryItem(replacementPicked)),
+                        Inventory.equipWeapon(((WeaponItem)
+                                        Objects.requireNonNull(Inventory.removeInventoryItem(
+                                        availables[replacementPicked].getItemID(), false))),
                                 rawIndex, true, true);
                         break;
                     case ARMOUR:
                         assert itemInQuestion instanceof ArmourItem;
                         Inventory.addItemToInventory(unequipArmour(
                                 ((ArmourItem)itemInQuestion).getArmourSlot()));
-                        Inventory.equipArmour(((ArmourItem) Inventory.removeInventoryItem(replacementPicked)),
+                        Inventory.equipArmour(((ArmourItem)
+                                        Objects.requireNonNull(Inventory.removeInventoryItem(
+                                        availables[replacementPicked].getItemID(), false))),
                                 true, true);
                         break;
                     case TRINKETZ, NECKZ:
                         Inventory.addItemToInventory(unequipTrinketOrNeck(rawIndex,
                                 curCat == eqCats.TRINKETZ));
-                        Inventory.equipTrinketOrNeck(Inventory.removeInventoryItem(replacementPicked),
+                        Inventory.equipTrinketOrNeck(
+                                Objects.requireNonNull(Inventory.removeInventoryItem(
+                                        availables[replacementPicked].getItemID(), false)),
                                 rawIndex, true);
                         break;
                 }
+                return 0;
             }
         }
-        return 0;
     }
     public static int displayInventoryOrEq(eqCats catToDisp, boolean isEquipping) {
         int curChoice = -1;
@@ -963,7 +954,11 @@ public class Inventory {
                 } else if (catToDisp != eqCats.ARMOUR) {
                     optionz.add(displayCopy[i].getItemType() + " #" + (i + 1));
                 } else {
-                    optionz.add(((ArmourItem)displayCopy[i]).getArmourSlot());
+                    if (displayCopy[i].getName().isEmpty()) {
+                        optionz.add(((ArmourItem)displayCopy[i]).getArmourSlot());
+                    } else {
+                        optionz.add(((ArmourItem) displayCopy[i]).getName());
+                    }
                 }
             }
             if (curInvPage < totalPages) {
@@ -988,10 +983,12 @@ public class Inventory {
             if (curChoice == exitBind)
                 return -1;
             if (!isEquipping) {
-                inspectItem(displayCopy[curStartIndex + curChoice], true, false,
-                        curStartIndex + curChoice);
+                if (inspectItem(displayCopy[curStartIndex + curChoice], true, false,
+                        curStartIndex + curChoice, catToDisp) == null) {
+                    return 0;
+                }
                 handleItemInspectionChoices(displayCopy[curStartIndex + curChoice], catToDisp,
-                        curStartIndex + curChoice);
+                        curStartIndex + curChoice, catToDisp != eqCats.INVENTORY);
             } else {
                 return curStartIndex + curChoice;
             }
