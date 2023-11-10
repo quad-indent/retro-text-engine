@@ -438,6 +438,7 @@ public class Inventory {
         getEquippedArmour().put(armourToEquip.getArmourSlot(), armourToEquip);
         if (procStatz) {
             PlayerClass.incrementPlayerStat(armourToEquip.getStatBoons(), false);
+            PlayerClass.incrementPlayerStat("Armour", armourToEquip.getArmourBonus());
             PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         }
         return 0;
@@ -498,6 +499,7 @@ public class Inventory {
         ArmourItem armourCopy = new ArmourItem(getEquippedArmour().get(armourSlot));
         getEquippedArmour().put(armourSlot, null);
         PlayerClass.incrementPlayerStat(armourCopy.getStatBoons(), true);
+        PlayerClass.incrementPlayerStat("Armour", -armourCopy.getArmourBonus());
         PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         return armourCopy;
     }
@@ -586,7 +588,7 @@ public class Inventory {
                         Inventory.getInventorySpace()
                                 .add(((ArmourItem) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs))));
                         break;
-                    case TRINKETZ, NECKZ:
+                    case TRINKETZ, NECKZ, INVENTORY:
                         Inventory.getInventorySpace()
                                 .add((Item) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs)));
                         break;
@@ -595,7 +597,7 @@ public class Inventory {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Malformed inventory data in save file! Aborting . . .");
+            System.out.println("Malformed inventory data in save file! " + e.getMessage() + " Aborting . . .");
         }
     }
 
@@ -722,6 +724,49 @@ public class Inventory {
         optionz.add(">> [" + (optionz.size() + 1) + "] Return");
         return optionz;
     }
+
+    public static void handleEquipping(eqCats itemCat, int itemToEquipInvIdx, int eqSlot, Item[] availables) {
+        switch (itemCat) {
+            case WEAPONZ:
+                Inventory.equipWeapon(((WeaponItem)
+                                Objects.requireNonNull(Inventory.removeInventoryItem(
+                                        availables[itemToEquipInvIdx].getItemID(), false))),
+                        eqSlot, true, true);
+                break;
+            case ARMOUR:
+                Inventory.equipArmour(((ArmourItem)
+                                Objects.requireNonNull(Inventory.removeInventoryItem(
+                                        availables[itemToEquipInvIdx].getItemID(), false))),
+                        true, true);
+                break;
+            case TRINKETZ, NECKZ:
+                Inventory.equipTrinketOrNeck(
+                        Objects.requireNonNull(Inventory.removeInventoryItem(
+                                availables[itemToEquipInvIdx].getItemID(), false)),
+                        eqSlot, true);
+                break;
+        }
+    }
+
+    public static void handleUnequpping(eqCats itemCat, Item itemInQuestion, int equippedAtIndex) {
+        Item tempieItem = null;
+        switch (itemCat) {
+            case ARMOUR:
+                assert itemInQuestion instanceof ArmourItem;
+                tempieItem = unequipArmour(((ArmourItem)itemInQuestion).getArmourSlot());
+                break;
+            case WEAPONZ:
+                tempieItem = unequipWeapon(equippedAtIndex);
+                break;
+            case TRINKETZ, NECKZ:
+                tempieItem = unequipTrinketOrNeck(equippedAtIndex,
+                        itemInQuestion.getItemType().toLowerCase().charAt(0) == 't');
+                break;
+            default:
+                break;
+        }
+        addItemToInventory(tempieItem);
+    }
     public static List<String> inspectItem(Item itemInQuestion, boolean includedLilArrowz,
                                            boolean returnList, int rawIndex,
                                            eqCats itemCat) {
@@ -750,27 +795,8 @@ public class Inventory {
                     if (itemtoEquip == -1) {
                         return null;
                     }
-                    switch (itemCat) {
-                        case WEAPONZ:
-                            Inventory.equipWeapon(((WeaponItem)
-                                            Objects.requireNonNull(Inventory.removeInventoryItem(
-                                            availables[itemtoEquip].getItemID(), false))),
-                                    rawIndex, true, true);
-                            break;
-                        case ARMOUR:
-                            Inventory.equipArmour(((ArmourItem)
-                                            Objects.requireNonNull(Inventory.removeInventoryItem(
-                                            availables[itemtoEquip].getItemID(), false))),
-                                    true, true);
-                            break;
-                        case TRINKETZ, NECKZ:
-                            Inventory.equipTrinketOrNeck(
-                                    Objects.requireNonNull(Inventory.removeInventoryItem(
-                                            availables[itemtoEquip].getItemID(), false)),
-                                    rawIndex, true);
-                            break;
-                    }
-                    return null; // jygjygjyjgy// LOGICz
+                    handleEquipping(itemCat, itemtoEquip, rawIndex, availables);
+                    return null;
                 }
             }
             return null;
@@ -847,23 +873,7 @@ public class Inventory {
                 return -1;
             }
             if (exitChoice == 1) {
-                Item tempieItem = null;
-                switch (curCat) {
-                    case ARMOUR:
-                        assert itemInQuestion instanceof ArmourItem;
-                        tempieItem = unequipArmour(((ArmourItem)itemInQuestion).getArmourSlot());
-                        break;
-                    case WEAPONZ:
-                        tempieItem = unequipWeapon(itemInQuestion.getItemID());
-                        break;
-                    case TRINKETZ, NECKZ:
-                        tempieItem = unequipTrinketOrNeck(rawIndex,
-                                itemInQuestion.getItemType().toLowerCase().charAt(0) == 't');
-                        break;
-                    default:
-                        break;
-                }
-                addItemToInventory(tempieItem);
+                handleUnequpping(curCat, itemInQuestion, rawIndex);
                 return 0;
             } else if (exitChoice == 0) { // swap
                 int replacementPicked = displayInventoryOrEq(curCat, true);
@@ -871,35 +881,8 @@ public class Inventory {
                     return -1;
                 }
                 Item[] availables = craftItemArray(curCat, true);
-                // if (replacementPicked == -1)
-                //    continue;
-                switch (curCat) {
-                    case WEAPONZ:
-                        Inventory.addItemToInventory(unequipWeapon(
-                                getEquippedWeapons()[rawIndex].getItemID()));
-                        Inventory.equipWeapon(((WeaponItem)
-                                        Objects.requireNonNull(Inventory.removeInventoryItem(
-                                        availables[replacementPicked].getItemID(), false))),
-                                rawIndex, true, true);
-                        break;
-                    case ARMOUR:
-                        assert itemInQuestion instanceof ArmourItem;
-                        Inventory.addItemToInventory(unequipArmour(
-                                ((ArmourItem)itemInQuestion).getArmourSlot()));
-                        Inventory.equipArmour(((ArmourItem)
-                                        Objects.requireNonNull(Inventory.removeInventoryItem(
-                                        availables[replacementPicked].getItemID(), false))),
-                                true, true);
-                        break;
-                    case TRINKETZ, NECKZ:
-                        Inventory.addItemToInventory(unequipTrinketOrNeck(rawIndex,
-                                curCat == eqCats.TRINKETZ));
-                        Inventory.equipTrinketOrNeck(
-                                Objects.requireNonNull(Inventory.removeInventoryItem(
-                                        availables[replacementPicked].getItemID(), false)),
-                                rawIndex, true);
-                        break;
-                }
+                handleUnequpping(curCat, itemInQuestion, rawIndex);
+                handleEquipping(curCat, replacementPicked, rawIndex, availables);
                 return 0;
             }
         }
