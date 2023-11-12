@@ -39,9 +39,10 @@ public class StoryDisplayer {
         }
         while (getCurIndex() < storyObj.size()) {
             System.out.println(">> " + curObj.getPromptText());
-            printChoiceOptions(curObj.getChoices(), !Inventory.isMalformedInv(),
+            List<String> currentChoicez = curObj.getChoices();
+            printChoiceOptions(currentChoicez, !Inventory.isMalformedInv(),
                     !Inventory.isMalformedEq());
-            pureChoiceLen = getChoiceOptions(curObj.getChoices(), false, false).length;
+            pureChoiceLen = getChoiceOptions(currentChoicez, false, false).length;
 
             rawChoicePicked = awaitChoiceInput(
                     pureChoiceLen + choiceAdditions); // +2 since allowing inv and eq view
@@ -52,12 +53,12 @@ public class StoryDisplayer {
                     Inventory.displayEquipment();
                 continue;
             }
-            nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked);
+            nextChoice = curObj.getChoiceDestinationAtChoiceStr(currentChoicez.get(rawChoicePicked));
             if (nextChoice == -1)
                 return;
             setCurIndex(nextChoice);
 
-            if (curObj.getCombatantInfo().get(rawChoicePicked) != null) {
+            if (curObj.getCombatantAtChoice(currentChoicez.get(rawChoicePicked)) != null) {
                 Foe currentFoe = getFoe(curObj, rawChoicePicked);
                 try {
                     PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
@@ -66,7 +67,7 @@ public class StoryDisplayer {
                     return;
                 }
             }
-            if (!curObj.isStatCheckAtChoiceID(rawChoicePicked)) {
+            if (!curObj.isStatCheckAtChoiceStr(currentChoicez.get(rawChoicePicked))) {
                 String relevantStat = curObj.getRelevantStat().get(rawChoicePicked);
                 if (relevantStat.equals("curXP")) {
                     PlayerClass.incrementXP(curObj.getStatVal().get(rawChoicePicked));

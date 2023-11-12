@@ -26,6 +26,10 @@
 [9.10][curHealth+max] Jump into the fountain
 [9.11][Subterfuge>1][hidden] Find out what powers up the fountain
 [9.12][Subterfuge>2] Pry open the fountain
+[9.13][has:0] Offer some shit
+[9.17][Currency>20][hidden] Offer some gold
+[17] Now, out with the gold!
+[17.13][Currency-20] SIR YES SIR!!!
 [10] Well, look at you go!
 [10.END] What a fun story this was!
 [11] You undearth fuckall!

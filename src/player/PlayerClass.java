@@ -211,8 +211,10 @@ public class PlayerClass {
                 }
                 getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
                 return;
-            } else {
+            } else if (getPlayerAtts().containsKey(stat)) {
                 getPlayerAtts().put(stat, getPlayerAtts().get(stat) + byHowMuch);
+            } else {
+                Inventory.setCurrentGold(Inventory.getCurrentGold() + byHowMuch);
             }
         }
     }
@@ -573,12 +575,19 @@ public class PlayerClass {
 
     public static boolean statComparer(int compareAgainst, String statName) {
         boolean shouldBeGreater = compareAgainst >= 0;
-        int statValInQuestion = getPlayerAtts().containsKey(statName) ?
-                getPlayerAtts().get(statName) : getPlayerBaseVals().get(statName);
+        int statValInQuestion = -1;
+        if (getPlayerAtts().containsKey(statName)) {
+            statValInQuestion = getPlayerAtts().get(statName);
+        } else if (getPlayerBaseVals().containsKey(statName)) {
+            statValInQuestion = getPlayerBaseVals().get(statName);
+        } else {
+            // if gold is the "stat" in question
+            statValInQuestion = Inventory.getCurrentGold();
+        }
         if (shouldBeGreater) {
             return statValInQuestion > compareAgainst;
         }
-        return statValInQuestion < compareAgainst;
+        return statValInQuestion < compareAgainst * -1;
     }
 
     public static boolean checkForDeath(boolean handleEulogy) {

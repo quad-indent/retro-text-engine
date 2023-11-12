@@ -919,6 +919,7 @@ public class Inventory {
                 System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
                         " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
             }
+            System.out.println(">> Gold: " + Inventory.getCurrentGold());
             System.out.println(">> " + pagenamer + " page " + curInvPage + " of " + totalPages + "\n>>");
             optionz.clear();
             prevPageBind = -1;
@@ -1072,6 +1073,7 @@ public class Inventory {
             System.out.println(">> " +
                     PlayerClass.getPlayerStat("curHealth") + "/" + PlayerClass.getPlayerStat("maxHealth") + " HP");
             System.out.println(">> " + PlayerClass.getPlayerStat("Armour") + " Armour");
+            System.out.println(">> Gold: " + Inventory.getCurrentGold());
             for (Map.Entry<String, Integer> curEntry : PlayerClass.getPlayerAtts().entrySet()) {
                 System.out.println(">> " + curEntry.getKey() + ": " + curEntry.getValue());
             }

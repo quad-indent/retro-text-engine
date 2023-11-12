@@ -1,9 +1,13 @@
 package storyBits;
 
+import inventory.Inventory;
+import inventory.Item;
 import player.*;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StoryBlock {
     private String promptText;
@@ -20,8 +24,28 @@ public class StoryBlock {
     public boolean isStatCheckAtChoiceID(int choiceID) {
         return areStatChecks.get(choiceID);
     }
+    public boolean isStatCheckAtChoiceStr(String choiceStr) {
+        String tempie = removeBracketAndWhiteSpace(choiceStr);
+        for (int i = 0; i < getRawChoices().size(); i++) {
+            if (getRawChoices().get(i).equals(tempie)) {
+                return isStatCheckAtChoiceID(i);
+            }
+        }
+        return false;
+    }
+
     public List<String[]> getCombatantInfo() {
         return combatantInfo;
+    }
+
+    public String[] getCombatantAtChoice(String choiceStr) {
+        String tempie = removeBracketAndWhiteSpace(choiceStr);
+        for (int i = 0; i < getRawChoices().size(); i++) {
+            if (getRawChoices().get(i).equals(tempie)) {
+                return getCombatantInfo().get(i);
+            }
+        }
+        return null;
     }
 
     public void setPromptText(String promptText) {
@@ -113,6 +137,16 @@ public class StoryBlock {
         return getChoiceDestinations().get(ID);
     }
 
+    public int getChoiceDestinationAtChoiceStr(String choiceStr) {
+        String tempie = removeBracketAndWhiteSpace(choiceStr);
+        for (int i = 0; i < getRawChoices().size(); i++) {
+            if (getRawChoices().get(i).equals(tempie)) {
+                return getChoiceDestinationAtID(i);
+            }
+        }
+        return -1;
+    }
+
     public String getPromptText() {
         return promptText;
     }
@@ -134,7 +168,14 @@ public class StoryBlock {
                 prettifiedStat = "Current Mana";
             }
 
-            if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
+            if (this.getRelevantStat().get(i).matches("^[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
+                // if item-check
+                Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
+                if (itemInQuestion == null) {
+                    continue;
+                }
+                returnChoices.add("[give " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
+            } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
                 // if unknown (to player) stat check
                 returnChoices.add("[" + prettifiedStat + "] " + this.getRawChoices().get(i));
             } else if (PlayerClass.statComparer(this.getStatVal().get(i), this.getRelevantStat().get(i))) {
@@ -144,6 +185,11 @@ public class StoryBlock {
             }
         }
         return returnChoices;
+    }
+
+    public String removeBracketAndWhiteSpace(String strToPurify) {
+        String[] tempie = strToPurify.split("]");
+        return StoryDisplayer.removeWhiteSpace(tempie[tempie.length-1]);
     }
 
 }
