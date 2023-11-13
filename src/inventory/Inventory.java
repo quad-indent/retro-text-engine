@@ -86,16 +86,13 @@ public class Inventory {
     public static Item removeInventoryItem(int itemID, boolean removeAllInstances) {
         List<Item> inventorySpaceCopy = new ArrayList<>(getInventorySpace());
         Item returnal;
-        for (Item it : inventorySpaceCopy) {
-            if (it.getItemID() == itemID) {
-                returnal = it;
-                getInventorySpace().remove(it);
-                if (!removeAllInstances) {
-                    return returnal; // success
-                }
-            }
+        List<Item> filteredInv = inventorySpaceCopy.stream().filter(it -> it.getItemID() == itemID).toList();
+        if (filteredInv.isEmpty()) {
+            return null;
         }
-        return null; // no items removed
+        returnal = filteredInv.get(0);
+        getInventorySpace().remove(filteredInv.get(0));
+        return returnal;
     }
 
     public static int removeInventoryItem(Item itemToRemove) {
@@ -1111,4 +1108,6 @@ public class Inventory {
 
 // todo: maybe run equipment req pass checks over whole equipment when unequipping
 // (if a stat bestowed by the unequipped item fails to fulfill criteria for other items to be equipped)
-// todo: include item/gold checks
+// todo: include item/gold checks - done!
+// todo: forgot to remove inventory item upon passed check - fix!!!
+// !!!

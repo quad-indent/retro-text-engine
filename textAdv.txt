@@ -1,4 +1,4 @@
-[0] You awake, cold and alone. Do you 
+[0][Tune0] You awake, cold and alone. Do you 
 [0.1] Scream
 [0.1] Cry
 [1] Regardless, your attempts have no effect. You should do something useful. Do you
@@ -7,7 +7,7 @@
 [2] You now stand up and look around the room. Darkness all around. Do you
 [2.4] Look for a door
 [2.5] Look for a light source
-[3] You really should stop it and try something else. Do you
+[3][Tune1] You really should stop it and try something else. Do you
 [3.2] Get up
 [3.6] Scream yet again
 [4] Every part of every wall feels like it's made of solid bricks. No handle in sight

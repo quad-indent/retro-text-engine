@@ -6,6 +6,7 @@ import inventory.Inventory;
 import player.PlayerClass;
 
 import java.util.*;
+import audio.ClipPlayer;
 
 interface inputVerificator {
     Boolean checkInput(int i, int[] x);
@@ -39,6 +40,7 @@ public class StoryDisplayer {
         }
         while (getCurIndex() < storyObj.size()) {
             System.out.println(">> " + curObj.getPromptText());
+            ClipPlayer.playTune(curObj.getTuneToPlay());
             List<String> currentChoicez = curObj.getChoices();
             printChoiceOptions(currentChoicez, !Inventory.isMalformedInv(),
                     !Inventory.isMalformedEq());

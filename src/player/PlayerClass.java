@@ -29,6 +29,7 @@ public class PlayerClass {
     public static void setPlayerName(String playerName) {
         PlayerClass.playerName = playerName;
     }
+    public static String getPlayerName() { return playerName; }
 
     public static int getArmour() {
         return armour;
@@ -54,7 +55,6 @@ public class PlayerClass {
         PlayerClass.playerAtts = playerAtts;
     }
 
-    public static String getPlayerName() { return playerName; }
     public static int getPlayerStat(String stat) {
         stat = switch (stat.toLowerCase()) {
             case "curlevel", "level", "lvl", "lv":
@@ -258,7 +258,7 @@ public class PlayerClass {
                 "this beginning, and who knows, maybe we will meet again down the line!");
         System.out.println(">> Tell me, what is your name?");
         setPlayerName(StoryDisplayer.awaitChoiceInput(false, true));
-        System.out.println(">> Tell me about yourself, " + playerName + ". Would you prefer to have a little chat about yourself, " +
+        System.out.println(">> Tell me about yourself, " + getPlayerName() + ". Would you prefer to have a little chat about yourself, " +
                 "or simply provide me with the precise information about your strengths and weaknesses?");
         System.out.println(">> [1] - Let's do this properly\n>> [2] - Let's skip the small talk");
         int creatorChoice = StoryDisplayer.awaitChoiceInput(2);
@@ -324,7 +324,7 @@ public class PlayerClass {
                 continue;
             equipmentLine.append(i.getItemID()).append(" ");
         }
-        if (equipmentLine.length() > 0) {
+        if (equipmentLine.isEmpty()) {
             printWriter.println(equipmentLine.substring(0, equipmentLine.toString().length() - 1));
         } else {
             printWriter.println("");
@@ -481,7 +481,7 @@ public class PlayerClass {
             default -> "Oh dear, something terrible has happened";
         };
         incrementStatWithSass(valToIncr, 1, sassRemark);
-        System.out.println(">> What a curious soul you are, " + playerName +
+        System.out.println(">> What a curious soul you are, " + getPlayerName() +
                 ". I do look forward to seeing you navigate what lies ahead.");
         System.out.println(">> But, for now, do take a look at what you've wound up with");
         System.out.println(">> Oh, and do feel free to adjust before you embark on your journey!");

@@ -19,6 +19,10 @@ public class StoryBlock {
     private List<Boolean> areStatChecks = new ArrayList<>();
     private List<Integer> statVal = new ArrayList<>();
     private List<String> relevantStat = new ArrayList<>();
+    private int tuneToPlay;
+
+    public void setTuneToPlay(int tune) { this.tuneToPlay = tune; }
+    public int getTuneToPlay() { return tuneToPlay; }
 
     public List<String> getRelevantStat() { return relevantStat; }
     public boolean isStatCheckAtChoiceID(int choiceID) {
@@ -104,7 +108,7 @@ public class StoryBlock {
         this.relevantStat = relevantStat;
     }
 
-    public StoryBlock(String tempPromptText) {
+    public StoryBlock(String tempPromptText, int tempTuneToPlay) {
         promptText = tempPromptText;
         choices = new ArrayList<String>();
         combatantInfo = new ArrayList<String[]>();
@@ -114,6 +118,7 @@ public class StoryBlock {
         areStatChecks = new ArrayList<>();
         statVal = new ArrayList<>();
         relevantStat = new ArrayList<>();
+        tuneToPlay = tempTuneToPlay;
     }
 
     public void initChoices(List<String> tempChoices, List<Integer> tempChoiceDestinations, List<String[]> tempCombatantInfo,

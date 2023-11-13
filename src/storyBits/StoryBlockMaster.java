@@ -153,8 +153,13 @@ public class StoryBlockMaster {
         // storybits can be placed in the textAdv.txt file out of order
         // and still be parsed and initialised properly
         for (ArrayList<String> storyLine : splitResultz) {
-            if (storyLine.size() == SplitReturnsEnum.STORY_PROMPT.val) {
-                storyObj.add(new StoryBlock(storyLine.get(storyLine.size() - 1)));
+            if (storyLine.size() == SplitReturnsEnum.STORY_PROMPT.val || storyLine.get(1).toLowerCase().contains("tune")) {
+                // if is pure story thing
+                int tuneToPlay = -1;
+                if (storyLine.get(1).toLowerCase().contains("tune")) {
+                    tuneToPlay = Integer.parseInt(storyLine.get(1).toLowerCase().split("tune")[1]);
+                }
+                storyObj.add(new StoryBlock(storyLine.get(storyLine.size() - 1), tuneToPlay));
                 continue;
                 // In this case, that's all the use of this particular splitResult as it only contains relevant
                 // story info. No id needed as they're marked from 0 to n, so just use .get() on storyObj
