@@ -324,7 +324,7 @@ public class PlayerClass {
                 continue;
             equipmentLine.append(i.getItemID()).append(" ");
         }
-        if (equipmentLine.isEmpty()) {
+        if (!equipmentLine.isEmpty()) {
             printWriter.println(equipmentLine.substring(0, equipmentLine.toString().length() - 1));
         } else {
             printWriter.println("");

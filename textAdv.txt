@@ -14,11 +14,11 @@
 [4.2] Oh well.
 [5] You manage to find something that feels like candle and some flint
 [5.7] You strike the candle alight
-[6] Your scream awakes something mean!
+[6][Tune2] Your scream awakes something mean!
 [6.8][Goblin][Goblin Sentry] Prepare for trouble!
 [7] The match is struck, a blazing starlight ahead!
 [7.END] Woo!
-[8] What a fight that was!
+[8][Tune0] What a fight that was!
 [8.9] Woo!
 [9] Reward time
 [9.10][Intellect+1] Take a scroll
