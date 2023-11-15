@@ -25,9 +25,9 @@ public class StoryDisplayer {
         StoryDisplayer.curIndex = curIndex;
     }
 
-    public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt) {
+    public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt) throws Exception {
         setCurIndex(beginAt);
-        StoryBlock curObj = storyObj.get(getCurIndex());
+        StoryBlock curObj = storyObj.get(getCurIndex()).refineCurStoryBlock();
         int nextChoice;
         int rawChoicePicked;
         int pureChoiceLen = -1;
@@ -48,19 +48,20 @@ public class StoryDisplayer {
 
             rawChoicePicked = awaitChoiceInput(
                     pureChoiceLen + choiceAdditions); // +2 since allowing inv and eq view
-            if (rawChoicePicked >= pureChoiceLen) {
+            if (rawChoicePicked >= pureChoiceLen && rawChoicePicked < pureChoiceLen + choiceAdditions) {
                 if (rawChoicePicked == pureChoiceLen)
                     Inventory.displayInventoryOrEq(Inventory.eqCats.INVENTORY, false);
                 else
                     Inventory.displayEquipment();
                 continue;
             }
-            nextChoice = curObj.getChoiceDestinationAtChoiceStr(currentChoicez.get(rawChoicePicked));
+            nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked); // getChoiceDestinationAtChoiceStr(currentChoicez.get(rawChoicePicked));
             if (nextChoice == -1)
                 return;
             setCurIndex(nextChoice);
 
-            if (curObj.getCombatantAtChoice(currentChoicez.get(rawChoicePicked)) != null) {
+            if (curObj.getCombatantInfo().get(rawChoicePicked) != null) { // getCombatantAtChoice(currentChoicez.get(rawChoicePicked)) != null) {
+                // is combat
                 Foe currentFoe = getFoe(curObj, rawChoicePicked);
                 try {
                     PlayerClass.incrementXP(CombatUtils.combatLoop(currentFoe));
@@ -70,15 +71,20 @@ public class StoryDisplayer {
                 }
             }
             if (!curObj.isStatCheckAtChoiceStr(currentChoicez.get(rawChoicePicked))) {
+                // is stat incrementing
                 String relevantStat = curObj.getRelevantStat().get(rawChoicePicked);
                 if (relevantStat.equals("curXP")) {
                     PlayerClass.incrementXP(curObj.getStatVal().get(rawChoicePicked));
-                } else {
+                } else if (!relevantStat.matches("^[0-9]\\d*$")) {
+                    // if it's not numeric, i.e., if it's not an item
                     PlayerClass.incrementPlayerStat(relevantStat,
                             curObj.getStatVal().get(rawChoicePicked));
+                } else {
+                    // if is an item requirement (which has been passed, else the choice wouldn't be displayed
+                    Inventory.removeInventoryItem(Integer.parseInt(relevantStat), false);
                 }
             }
-            curObj = storyObj.get(getCurIndex());
+            curObj = storyObj.get(getCurIndex()).refineCurStoryBlock();
             PlayerClass.saveCharacter(getCurIndex());
             if (PlayerClass.checkForDeath(true)) {
                 return;
@@ -93,12 +99,12 @@ public class StoryDisplayer {
             case "goblin":
                 currentFoe = new Goblin(combatantInfo[1], true, 0, 0,
                         0, 0, 0, 0, 0,
-                        0, 0, 0, 0);
+                        0, 0, 0, 0, 0);
                 break;
             default:
-                currentFoe = new Foe("Errornimus", 1, 0,
+                currentFoe = new Goblin("Errornimus", true, 0,
                         0, 0, 0, 0,
-                        0, 0, 0, 0);
+                        0, 0, 0, 0, 0, 0, 0);
         }
         return currentFoe;
     }

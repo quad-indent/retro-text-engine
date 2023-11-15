@@ -63,10 +63,13 @@ public class PlayerClass {
                 yield "neededXP";
             case "xp", "exp", "experience":
                 yield "curXP";
+            case "gold", "money", "currency":
+                yield "gold";
             default:
                 yield stat;
         };
         // cba to remember
+        if (stat.equalsIgnoreCase("gold")) { return Inventory.getCurrentGold(); }
         if (stat.equalsIgnoreCase("Armour")) { return getArmour(); }
         return getPlayerBaseVals().containsKey(stat) ?
                 getPlayerBaseVals().get(stat) : getPlayerAtts().get(stat);
@@ -161,6 +164,10 @@ public class PlayerClass {
                     (isUnequipping ? curEntry.getValue() * -1 : curEntry.getValue()));
         }
     }
+    public static void refillHealthAndMana() {
+        incrementPlayerStat("curHealth", Integer.MAX_VALUE);
+        incrementPlayerStat("curMana", Integer.MAX_VALUE);
+    }
     public static void incrementPlayerStat(String stat, int byHowMuch) {
         if (byHowMuch == 0)
             return;
@@ -171,38 +178,7 @@ public class PlayerClass {
         if (byHowMuch == Integer.MAX_VALUE || byHowMuch == Integer.MIN_VALUE ||
             stat.equalsIgnoreCase("curhealth") ||
                 stat.equalsIgnoreCase("curmana")) {
-            // Hideous double-switch, too lazy rn to be fancy
-            if (byHowMuch == Integer.MIN_VALUE) {
-                switch (stat.toLowerCase()) {
-                    case ("curhealth") -> {
-                        getPlayerBaseVals().put("curHealth", 0);
-                    }
-                    case ("curmana") -> {
-                        getPlayerBaseVals().put("curMana", 0);
-                    }
-                    default -> {
-                        return;
-                    }
-                }
-            } else if (byHowMuch == Integer.MAX_VALUE) {
-                switch (stat.toLowerCase()) {
-                    case ("curhealth") -> {
-                        getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("maxHealth"));
-                    }
-                    case ("curmana") -> {
-                        getPlayerBaseVals().put("curMana", getPlayerBaseVals().get("maxMana"));
-                    }
-                    default -> {
-                        return;
-                    }
-                }
-            } else {
-                getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
-                if (getPlayerBaseVals().get(stat) > getPlayerBaseVals().
-                        get(stat.replace("cur", "max"))) {
-                    getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat.replace("cur", "max")));
-                }
-            }
+            handleHealthAndManaIncr(byHowMuch, stat);
         } else {
             if (getPlayerBaseVals().containsKey(stat)) {
                 if (stat.equalsIgnoreCase("strength")) {
@@ -215,6 +191,39 @@ public class PlayerClass {
                 getPlayerAtts().put(stat, getPlayerAtts().get(stat) + byHowMuch);
             } else {
                 Inventory.setCurrentGold(Inventory.getCurrentGold() + byHowMuch);
+            }
+        }
+    }
+    private static void handleHealthAndManaIncr(int byHowMuch, String stat) {
+        if (byHowMuch == Integer.MIN_VALUE) {
+            switch (stat.toLowerCase()) {
+                case ("curhealth") -> {
+                    getPlayerBaseVals().put("curHealth", 0);
+                }
+                case ("curmana") -> {
+                    getPlayerBaseVals().put("curMana", 0);
+                }
+                default -> {
+                    return;
+                }
+            }
+        } else if (byHowMuch == Integer.MAX_VALUE) {
+            switch (stat.toLowerCase()) {
+                case ("curhealth") -> {
+                    getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("maxHealth"));
+                }
+                case ("curmana") -> {
+                    getPlayerBaseVals().put("curMana", getPlayerBaseVals().get("maxMana"));
+                }
+                default -> {
+                    return;
+                }
+            }
+        } else {
+            getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
+            if (getPlayerBaseVals().get(stat) > getPlayerBaseVals().
+                    get(stat.replace("cur", "max"))) {
+                getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat.replace("cur", "max")));
             }
         }
     }

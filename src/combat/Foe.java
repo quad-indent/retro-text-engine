@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Foe {
+public abstract class Foe {
     private String name;
     private int level;
     private int curHealth;
@@ -18,7 +18,16 @@ public class Foe {
     private int dexterity;
     private int intellect;
     private int armour;
-
+    private int goldDrop;
+    public int getGoldDrop() {
+        return goldDrop;
+    }
+    public void setGoldDrop(int goldDrop) {
+        this.goldDrop = goldDrop;
+    }
+    public void generateGoldDrop(int baseVal, int lowRandomLvMul, int highRandomLvMul) {
+        this.setGoldDrop(baseVal + CombatUtils.genRandomNum(getLevel() * lowRandomLvMul, getLevel() * highRandomLvMul));
+    }
     public String getName() {
         return name;
     }
@@ -58,6 +67,14 @@ public class Foe {
     public void setStrength(int strength) {
         this.strength = strength;
     }
+    public void generateStrength(int baseVal, int levelDivisor, int randomLow, int randomHighLevelDivisor) {
+        this.setIntellect(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(randomLow, getLevel() / randomHighLevelDivisor));
+    }
+    public void generateStrength(int baseVal, double levelDivisor, int randomLow, double randomHighLevelDivisor) {
+        this.setIntellect(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(randomLow, (int)Math.round(getLevel() / randomHighLevelDivisor)));
+    }
 
     public int getDexterity() {
         return dexterity;
@@ -66,7 +83,14 @@ public class Foe {
     public void setDexterity(int dexterity) {
         this.dexterity = dexterity;
     }
-
+    public void generateDexterity(int baseVal, int levelDivisor, int randomLow, int randomHighLevelDivisor) {
+        this.setDexterity(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(randomLow, getLevel() / randomHighLevelDivisor));
+    }
+    public void generateDexterity(int baseVal, double levelDivisor, int randomLow, double randomHighLevelDivisor) {
+        this.setDexterity(baseVal + genLevelDivisorVal(levelDivisor) +
+                        CombatUtils.genRandomNum(randomLow, (int)Math.round(getLevel() / randomHighLevelDivisor)));
+    }
     public int getIntellect() {
         return intellect;
     }
@@ -74,43 +98,53 @@ public class Foe {
     public void setIntellect(int intellect) {
         this.intellect = intellect;
     }
-
+    public void generateIntellect(int baseVal, int levelDivisor, int randomLow, int randomHighLevelDivisor) {
+        this.setIntellect(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(randomLow, getLevel() / randomHighLevelDivisor));
+    }
+    public void generateIntellect(int baseVal, double levelDivisor, int randomLow, double randomHighLevelDivisor) {
+        this.setIntellect(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(randomLow, (int)Math.round(getLevel() / randomHighLevelDivisor)));
+    }
     public int getArmour() {
         return armour;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public void setCurHealth(int curHealth) {
-        this.curHealth = curHealth;
-    }
-
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
-    }
-
-    public int getCurMana() {
-        return curMana;
-    }
-
-    public void setCurMana(int curMana) {
-        this.curMana = curMana;
-    }
-
-    public void setMaxMana(int maxMana) {
-        this.maxMana = maxMana;
-    }
-
     public void setArmour(int armour) {
         this.armour = armour;
     }
-
+    public void generateArmour(int baseVal, int levelDivisor, int randomLowLvDivisor, int randomHighLevelMul) {
+        this.setArmour(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(genLevelDivisorVal(randomLowLvDivisor), getLevel() * randomHighLevelMul));
+    }
+    public void generateArmour(int baseVal, double levelDivisor, double randomLowLvDivisor, double randomHighLevelMul) {
+        this.setArmour(baseVal + genLevelDivisorVal(levelDivisor) +
+                CombatUtils.genRandomNum(genLevelDivisorVal(randomLowLvDivisor), (int)Math.round(getLevel() * randomHighLevelMul)));
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setLevel(int level) {
+        this.level = level;
+    }
+    public void setCurHealth(int curHealth) {
+        this.curHealth = curHealth;
+    }
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+    public void generateMaxHealth(int baseVal, int levelMulLow, int levelMulHigh) {
+        this.setMaxHealth(6 + getLevel() * CombatUtils.genRandomNum(1, 3));
+        this.setCurHealth(getMaxHealth());
+    }
+    public int getCurMana() {
+        return curMana;
+    }
+    public void setCurMana(int curMana) {
+        this.curMana = curMana;
+    }
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
     public boolean isDead() { return curHealth <= 0; }
     public void increaseHealth(int increaseBy) {
         this.curHealth += increaseBy;
@@ -122,7 +156,7 @@ public class Foe {
     }
 
     public Foe(String name, int level, int curHealth, int maxHealth, int mana, int maxMana,
-               int xpYield, int strength, int dexterity, int intellect, int armour) {
+               int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop) {
         this.name = name;
         this.level = level;
         this.curHealth = curHealth;
@@ -134,12 +168,16 @@ public class Foe {
         this.dexterity = dexterity;
         this.intellect = intellect;
         this.armour = armour;
+        this.goldDrop = goldDrop;
     }
 
-    public void specialAttack() {
-
+    public abstract void specialAttack();
+    protected int genLevelDivisorVal(int levelDivisor) {
+        return levelDivisor == 0 ? 0 : getLevel() / levelDivisor;
     }
-
+    protected int genLevelDivisorVal(double levelDivisor) {
+        return levelDivisor == 0 ? 0 : (int)Math.round(getLevel() / levelDivisor);
+    }
     public Map<String, Integer> launchAttack() {
         // attackType = 0 for quick, 1 for normal, 2 for strong
         // isCrit = 0 for non-crit, 1 for crit

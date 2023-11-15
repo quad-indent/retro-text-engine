@@ -314,28 +314,14 @@ public class CombatUtils {
         int thisStr = PlayerClass.getPlayerStat("Strength");
         int otherStr = combatant.getStrength();
         boolean isAHit = false;
-        boolean isACrit = false;
-        int dmgDealt = -1;
         Map<String, Integer> foeMap = new LinkedHashMap<>();
-        String enemyAtkFlavour = "";
         while (true) {
             StoryDisplayer.displayCombatants(combatant);
             System.out.println("\n>> How do you proceed?");
             atkChoice = StoryDisplayer.awaitChoiceInputFromOptions(genAttackChoices(combatant));
             isAHit = rollForHit(thisDex, otherDex, thisStr, otherStr, atkChoice);
             if (isAHit) {
-                isACrit = rollForCrit(thisDex, otherDex, atkChoice);
-
-                dmgDealt = calcDamageAfterArmour(calcDamage(thisDex, otherDex,
-                        thisStr, otherStr, atkChoice, isACrit, false, false),
-                        combatant.getArmour());
-                combatant.increaseHealth(-dmgDealt);
-                if (isACrit) {
-                    System.out.println(">> You deal a dizzying critical blow to " + combatant.getName() +
-                            " for " + dmgDealt + "!");
-                } else {
-                    System.out.println(">> You strike " + combatant.getName() + " for " + dmgDealt + "!");
-                }
+                processHit(combatant, thisDex, otherDex, atkChoice, thisStr, otherStr);
             } else {
                 System.out.println(">> By luck, or by skill, " + combatant.getName() +
                         " evades your attack!");
@@ -351,28 +337,7 @@ public class CombatUtils {
                 break;
             isAHit = foeMap.get("isHit") == 1;
             if (isAHit) {
-                isACrit = foeMap.get("isCrit") == 1;
-                enemyAtkFlavour = isACrit ? " fiercely" : "";
-                enemyAtkFlavour += switch (foeMap.get("attackType")) {
-                    case 0:
-                        yield " strikes you with a quick jab ";
-                    case 1:
-                        yield " attacks you ";
-                    case 2:
-                        yield " launches a mighty swing at you ";
-                    default:
-                        throw new Exception("Foe attack type mismatch! Expected 0, 1, or 2, got "
-                                + foeMap.get("attackType"));
-                };
-                dmgText = ">> " + combatant.getName() + enemyAtkFlavour + "for " +
-                        foeMap.get("damageOut") + " damage";
-                if (foeMap.get("damageBlocked") != 0) {
-                    dmgText += " (" + foeMap.get("damageBlocked") + " blocked)";
-                }
-                dmgText += "!";
-                System.out.println(dmgText);
-                PlayerClass.incrementHealth(-foeMap.get("damageOut"));
-                if (PlayerClass.checkForDeath(true)) {
+                if (processEnemyHit(foeMap, combatant) == -1) {
                     return -1;
                 }
             } else {
@@ -385,11 +350,56 @@ public class CombatUtils {
                 (PlayerClass.getPlayerStat("curXP") + combatant.getXpYield()) +
                 " out of " + PlayerClass.getPlayerStat("neededXP") +
                 "XP needed to reach level " + (PlayerClass.getPlayerStat("playerLevel") + 1));
+        System.out.println(">> " + combatant.getName() + " dropped " + combatant.getGoldDrop() + " gold pieces!");
+        PlayerClass.incrementPlayerStat("Gold", combatant.getGoldDrop());
+        PlayerClass.refillHealthAndMana();
         if (combatant.getXpYield() + PlayerClass.getPlayerStat("curXP") >=
             PlayerClass.getPlayerStat("neededXP")){
             System.out.println(">> You level up!");
         }
         StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         return combatant.getXpYield();
+    }
+    public static void processHit(Foe combatant, int thisDex, int otherDex, int atkChoice,
+                                  int thisStr, int otherStr) {
+        boolean isACrit = rollForCrit(thisDex, otherDex, atkChoice);
+
+        int dmgDealt = calcDamageAfterArmour(calcDamage(thisDex, otherDex,
+                        thisStr, otherStr, atkChoice, isACrit, false, false),
+                combatant.getArmour());
+        combatant.increaseHealth(-dmgDealt);
+        if (isACrit) {
+            System.out.println(">> You deal a dizzying critical blow to " + combatant.getName() +
+                    " for " + dmgDealt + "!");
+        } else {
+            System.out.println(">> You strike " + combatant.getName() + " for " + dmgDealt + "!");
+        }
+    }
+    public static int processEnemyHit(Map<String, Integer> foeMap, Foe combatant) throws Exception {
+        boolean isACrit = foeMap.get("isCrit") == 1;
+        String enemyAtkFlavour = isACrit ? " fiercely" : "";
+        enemyAtkFlavour += switch (foeMap.get("attackType")) {
+            case 0:
+                yield " strikes you with a quick jab ";
+            case 1:
+                yield " attacks you ";
+            case 2:
+                yield " launches a mighty swing at you ";
+            default:
+                throw new Exception("Foe attack type mismatch! Expected 0, 1, or 2, got "
+                        + foeMap.get("attackType"));
+        };
+        String dmgText = ">> " + combatant.getName() + enemyAtkFlavour + "for " +
+                foeMap.get("damageOut") + " damage";
+        if (foeMap.get("damageBlocked") != 0) {
+            dmgText += " (" + foeMap.get("damageBlocked") + " blocked)";
+        }
+        dmgText += "!";
+        System.out.println(dmgText);
+        PlayerClass.incrementHealth(-foeMap.get("damageOut"));
+        if (PlayerClass.checkForDeath(true)) {
+            return -1;
+        }
+        return 0;
     }
 }

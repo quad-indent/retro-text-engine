@@ -11,10 +11,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 public class ClipPlayer implements LineListener {
-
     private final static Path tunezPath;
     private final static Clip djBooth;
-
+    private static int currentTune = -1;
+    public static int getCurrentTune() {
+        return currentTune;
+    }
+    public static void setCurrentTune(int currentTune) {
+        ClipPlayer.currentTune = currentTune;
+    }
     static {
         tunezPath = Paths.get(System.getProperty("user.dir"), "tunes");
         try {
@@ -48,6 +53,9 @@ public class ClipPlayer implements LineListener {
         return matchesFound.get(0).split("\\.")[1];
     }
     public static void playTune(int tuneID) {
+        if (tuneID == getCurrentTune()) {
+            return;
+        }
         String fileFormat = getFileFormatOfTune(tuneID);
         if (fileFormat == null) {
             return;
@@ -62,6 +70,7 @@ public class ClipPlayer implements LineListener {
                 getDjBooth().open(audioInS);
                 getDjBooth().start();
                 getDjBooth().loop(Clip.LOOP_CONTINUOUSLY);
+                setCurrentTune(tuneID);
             }
         } catch (Exception e) {
             e.printStackTrace();

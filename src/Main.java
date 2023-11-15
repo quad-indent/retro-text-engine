@@ -9,9 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
-        Inventory.initInventory(null);
-        InventoryCache.parseFile(null);
+    public static void oldDisplayTest() {
+        // leaving this for...idk what reason
         List<List<String>> stringz = new ArrayList<>();
         List<String> tempie = new ArrayList<>();
         tempie.add("A warm gun");
@@ -29,8 +28,12 @@ public class Main {
         tempie.add("Father's");
         stringz.add(new ArrayList<>(tempie));
         tempie.clear();
-
         Inventory.displaySideBySide(stringz, 5, 5, true);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Inventory.initInventory(null);
+        InventoryCache.parseFile(null);
         StoryBlockMaster bard = new StoryBlockMaster(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);

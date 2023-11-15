@@ -152,12 +152,84 @@ public class StoryBlock {
         return -1;
     }
 
+    public String getRelevantStatAtChoiceStr(String choiceStr) {
+        String tempie = removeBracketAndWhiteSpace(choiceStr);
+        return "";
+    }
+
     public String getPromptText() {
         return promptText;
     }
 
     public List<String> getRawChoices() { return choices; }
-    public List<String> getChoices() {
+
+    public void appendBlockCopy(List<String> tempChoices,
+                                List<Integer> tempChoiceDestinations,
+                                List<String[]> tempCombatantInfo,
+                                List<Boolean> tempIsEnding,
+                                List<Boolean> tempAreStatChecks,
+                                List<Boolean> tempAreHiddenStatChecks,
+                                List<Integer> tempStatVal,
+                                List<String> tempRelevantStat,
+                                int i) {
+        tempChoices.add(this.getRawChoices().get(i));
+        tempChoiceDestinations.add(this.getChoiceDestinations().get(i));
+        tempCombatantInfo.add(this.getCombatantInfo().get(i));
+        tempIsEnding.add(this.getIsEnding().get(i));
+        tempAreStatChecks.add(this.getAreStatChecks().get(i));
+        tempAreHiddenStatChecks.add(this.getAreHiddenStatChecks().get(i));
+        tempStatVal.add(this.getStatVal().get(i));
+        tempRelevantStat.add(this.getRelevantStat().get(i));
+    }
+    public StoryBlock refineCurStoryBlock() {
+        StoryBlock tempie = new StoryBlock(this.getPromptText(), this.getTuneToPlay());
+        List<String> tempChoices = new ArrayList<>();
+        List<Integer> tempChoiceDestinations = new ArrayList<>();
+        List<String[]> tempCombatantInfo = new ArrayList<>();
+        List<Boolean> tempIsEnding = new ArrayList<>();
+        List<Boolean> tempAreStatChecks = new ArrayList<>();
+        List<Boolean> tempAreHiddenStatChecks = new ArrayList<>();
+        List<Integer> tempStatVal = new ArrayList<>();
+        List<String> tempRelevantStat = new ArrayList<>();
+        boolean addAppendage = false;
+        for (int i=0; i<this.getRawChoices().size() + 1; i++) {
+            if (addAppendage) {
+                appendBlockCopy(tempChoices, tempChoiceDestinations, tempCombatantInfo,
+                        tempIsEnding, tempAreStatChecks, tempAreHiddenStatChecks, tempStatVal,
+                        tempRelevantStat, i-1);
+            }
+            if (i == this.getRawChoices().size()) {
+                break;
+            }
+            addAppendage = false;
+            if (!(this.getAreHiddenStatChecks().get(i) || this.isStatCheckAtChoiceID(i))) {
+                // If not any kind of stat check, just append to list
+                addAppendage = true;
+                continue;
+            }
+            if (this.getRelevantStat().get(i).matches("^[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
+                // if item-check
+                Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
+                // does not have requisite item
+                if (itemInQuestion == null) {
+                    continue;
+                }
+                addAppendage = true;
+            } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
+                // if unknown (to player) stat check
+                addAppendage = true;
+            } else if (PlayerClass.statComparer(this.getStatVal().get(i), this.getRelevantStat().get(i))) {
+                // If a HIDDEN stat check, only display if check passes
+                addAppendage = true;
+            }
+        }
+        tempie.initChoices(tempChoices, tempChoiceDestinations, tempCombatantInfo, tempIsEnding,
+                tempAreStatChecks, tempAreHiddenStatChecks, tempStatVal, tempRelevantStat);
+        return tempie;
+    }
+    public List<String> getChoices() throws Exception {
+        // skipping checks here and focusing on prettifying stats, as the choices are assumed to be passable already
+        // (as in, put through refinement prior to call
         List<String> returnChoices = new ArrayList<String>();
         for (int i=0; i<this.getRawChoices().size(); i++) {
             if (!(this.getAreHiddenStatChecks().get(i) || this.isStatCheckAtChoiceID(i))) {
@@ -172,12 +244,11 @@ public class StoryBlock {
             } else if (prettifiedStat.equalsIgnoreCase("curMana")) {
                 prettifiedStat = "Current Mana";
             }
-
             if (this.getRelevantStat().get(i).matches("^[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
                 // if item-check
                 Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
                 if (itemInQuestion == null) {
-                    continue;
+                    throw new Exception("Failed to retrieve item info!");
                 }
                 returnChoices.add("[give " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
             } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {

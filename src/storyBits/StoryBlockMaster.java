@@ -118,7 +118,7 @@ public class StoryBlockMaster {
         return tempStoryID;
     }
 
-    public void showMeSomeStories() {
+    public void showMeSomeStories() throws Exception {
         for (StoryBlock x : storyObj) {
             System.out.println(x.getPromptText());
             for (String c : x.getChoices())
