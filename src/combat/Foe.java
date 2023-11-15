@@ -1,5 +1,7 @@
 package combat;
 
+import foeTypes.Automaton;
+import foeTypes.Goblin;
 import player.PlayerClass;
 
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class Foe {
+    public static final Map<String, Class<? extends Foe>> foeMap;
     private String name;
     private int level;
     private int curHealth;
@@ -24,7 +27,6 @@ public abstract class Foe {
     public int getSpecialAttackChance() {
         return specialAttackChance;
     }
-
     public void setSpecialAttackChance(int specialAttackChance) {
         this.specialAttackChance = specialAttackChance;
     }
@@ -83,11 +85,11 @@ public abstract class Foe {
         this.strength = strength;
     }
     public void generateStrength(int baseVal, int levelDivisor, int randomLow, int randomHighLevelDivisor) {
-        this.setIntellect(baseVal + genLevelDivisorVal(levelDivisor) +
+        this.setStrength(baseVal + genLevelDivisorVal(levelDivisor) +
                 CombatUtils.genRandomNum(randomLow, getLevel() / randomHighLevelDivisor));
     }
     public void generateStrength(int baseVal, double levelDivisor, int randomLow, double randomHighLevelDivisor) {
-        this.setIntellect(baseVal + genLevelDivisorVal(levelDivisor) +
+        this.setStrength(baseVal + genLevelDivisorVal(levelDivisor) +
                 CombatUtils.genRandomNum(randomLow, (int)Math.round(getLevel() / randomHighLevelDivisor)));
     }
 
@@ -148,7 +150,7 @@ public abstract class Foe {
         this.maxHealth = maxHealth;
     }
     public void generateMaxHealth(int baseVal, int levelMulLow, int levelMulHigh) {
-        this.setMaxHealth(6 + getLevel() * CombatUtils.genRandomNum(1, 3));
+        this.setMaxHealth(baseVal + getLevel() * CombatUtils.genRandomNum(levelMulLow, levelMulHigh));
         this.setCurHealth(getMaxHealth());
     }
     public int getCurMana() {
@@ -169,7 +171,11 @@ public abstract class Foe {
             this.curHealth = Math.max(0, this.curHealth);
         }
     }
-
+    static {
+        foeMap = new LinkedHashMap<>();
+        foeMap.put("goblin", Goblin.class);
+        foeMap.put("automaton", Automaton.class);
+    }
     public Foe(String name, int level, int curHealth, int maxHealth, int mana, int maxMana,
                int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop,
                int numAttacksPerTurn, int specialAttackChance) {
@@ -188,7 +194,6 @@ public abstract class Foe {
         this.numAttacksPerTurn = numAttacksPerTurn;
         this.specialAttackChance = specialAttackChance;
     }
-
     public abstract String specialAttackPreProc();
     public abstract void specialAttackPostProc();
     protected int genLevelDivisorVal(int levelDivisor) {

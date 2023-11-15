@@ -95,18 +95,9 @@ public class StoryDisplayer {
     private static Foe getFoe(StoryBlock curObj, int rawChoicePicked) {
         String[] combatantInfo = curObj.getCombatantInfo().get(rawChoicePicked);
         Foe currentFoe;
-        switch (combatantInfo[0].toLowerCase()) {
-            case "goblin":
-                currentFoe = new Goblin(combatantInfo[1], true, 0, 0,
-                        0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0);
-                break;
-            default:
-                currentFoe = new Goblin("Errornimus", true, 0,
-                        0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0);
-        }
-        return currentFoe;
+        return FoeFactory.retrieveFoe(combatantInfo[0], combatantInfo[1], true,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0);
     }
 
     public static int[] getChoiceOptions(List<String> choicez, boolean hasInventoryChoice,
