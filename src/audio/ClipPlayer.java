@@ -52,7 +52,7 @@ public class ClipPlayer implements LineListener {
         }
         return matchesFound.get(0).split("\\.")[1];
     }
-    public static void playTune(int tuneID) {
+    public static void playTune(int tuneID) throws Exception {
         if (tuneID == getCurrentTune()) {
             return;
         }
@@ -73,7 +73,7 @@ public class ClipPlayer implements LineListener {
                 setCurrentTune(tuneID);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new Exception("Failed to play " + tunePath + "! Error: " + e.getMessage());
         }
     }
 }

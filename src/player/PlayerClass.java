@@ -353,6 +353,7 @@ public class PlayerClass {
     public static int loadCharacter() {
         int playerStoryPage = 0;
         try {
+            System.out.println("Attempting to parse character sheet . . .");
             FileReader infoReader = new FileReader(getDesiredSaveDest());
             Scanner storyReader = new Scanner(infoReader);
             setPlayerName(storyReader.nextLine());

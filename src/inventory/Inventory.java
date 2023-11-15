@@ -183,6 +183,7 @@ public class Inventory {
             inventoryConfigFile = "inventoryConfig.txt";
         }
         try {
+            System.out.println("Attempting to parse inventory and equipment config at " + inventoryConfigFile + ". . .");
             FileReader confReader = new FileReader(inventoryConfigFile);
             Scanner confScanner = new Scanner(confReader);
             List<String> linez = new ArrayList<>();

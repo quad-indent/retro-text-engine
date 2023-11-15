@@ -2,6 +2,7 @@ package combat;
 
 import foeTypes.Automaton;
 import foeTypes.Goblin;
+import foeTypes.Undead;
 
 public class FoeFactory {
     public static Foe retrieveFoe(String foeType, String foeName, boolean matchPlayerLv, int relativeLvOffset,
@@ -10,12 +11,16 @@ public class FoeFactory {
                                   int armour, int goldDrop, int numAttacksPerTurn, int specialAttackChance) {
         return switch (foeType.toLowerCase()) {
             case "goblin" -> new Goblin(foeName, matchPlayerLv, relativeLvOffset, absLvOffset, curHealth, maxHealth,
-                    curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop, numAttacksPerTurn,
-                    specialAttackChance);
+                curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop, numAttacksPerTurn,
+                specialAttackChance);
             case "automaton" ->
-                    new Automaton(foeName, matchPlayerLv, relativeLvOffset, absLvOffset, curHealth, maxHealth,
-                            curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop, numAttacksPerTurn,
-                            specialAttackChance);
+                new Automaton(foeName, matchPlayerLv, relativeLvOffset, absLvOffset, curHealth, maxHealth,
+                        curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop, numAttacksPerTurn,
+                        specialAttackChance);
+            case "undead" ->
+                new Undead(foeName, matchPlayerLv, relativeLvOffset, absLvOffset, curHealth, maxHealth,
+                        curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop, numAttacksPerTurn,
+                        specialAttackChance);
             default -> new Goblin("Errornimus", true, 0,
                     0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0,

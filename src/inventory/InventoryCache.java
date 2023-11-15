@@ -30,11 +30,11 @@ public class InventoryCache {
         }
         return null;
     }
-    public static void parseFile(String fileName) {
+    public static void processFile(String fileName) {
         if (fileName == null || fileName.isEmpty()) {
             fileName = "itemTable.txt";
         }
-        System.out.println("Attempting to open " + fileName);
+        System.out.println("Attempting to parse " + fileName + ". . .");
         List<String> itemEntries = FileParser.parseFile(fileName);
         List<List<String>> splitItemEntries = new ArrayList<>();
         assert itemEntries != null;

@@ -32,10 +32,14 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
+        // AuthorizationService.enterCredentials();
+
         Inventory.initInventory(null);
-        InventoryCache.parseFile(null);
+        InventoryCache.processFile(null);
         StoryBlockMaster bard = new StoryBlockMaster(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);
     }
 }
+
+// todo: maybe implement option of small character creation with just name and story page for minimal gamez?

@@ -12,12 +12,13 @@ public abstract class FileParser {
             fileName = "textAdv.txt";
         }
         try {
-            System.out.println("Attempting to open " + fileName);
+            System.out.println("Attempting to open " + fileName + ". . .");
             List<String> storyLines = new ArrayList<String>();
             FileReader storyFile = new FileReader(fileName);
             Scanner storyReader = new Scanner(storyFile);
+            String thisLine = "";
             while (storyReader.hasNextLine()) {
-                String thisLine = storyReader.nextLine();
+                thisLine = storyReader.nextLine();
                 if (!thisLine.startsWith("["))
                     continue;
                 storyLines.add(thisLine);
