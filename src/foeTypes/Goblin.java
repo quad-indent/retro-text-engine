@@ -8,9 +8,10 @@ public class Goblin extends Foe {
     public Goblin(String specificName, boolean matchPlayerLv, int relativeLvOffset,
                   int absLvOffset, int curHealth, int maxHealth, int curMana,
                   int maxMana, int xpYield, int strength, int dexterity, int intellect,
-                  int armour, int goldDrop) {
+                  int armour, int goldDrop, int numAttacksPerTurn, int specialAttackChance) {
         super("Goblin " + specificName, 0, curHealth, maxHealth,
-                curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop);
+                curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop,
+                numAttacksPerTurn, specialAttackChance);
         super.setLevel(CombatUtils.genEnemyLevel(matchPlayerLv, relativeLvOffset, absLvOffset));
         if (maxHealth <= 0) {
             super.generateMaxHealth(6, 1, 3);
@@ -33,9 +34,20 @@ public class Goblin extends Foe {
         if (goldDrop <= 0) {
             super.generateGoldDrop(0, 4, 6);
         }
+        if (numAttacksPerTurn <= 0) {
+            super.setNumAttacksPerTurn(1);
+        }
+        if (specialAttackChance <= 0) {
+            super.setSpecialAttackChance(45);
+        }
     }
     @Override
-    public void specialAttack() {
-
+    public String specialAttackPreProc() {
+        super.setNumAttacksPerTurn(2);
+        return this.getName() + " winds up for a quick flurry of two attacks!";
+    }
+    @Override
+    public void specialAttackPostProc() {
+        super.setNumAttacksPerTurn(1);
     }
 }

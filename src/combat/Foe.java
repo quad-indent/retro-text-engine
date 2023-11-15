@@ -18,7 +18,22 @@ public abstract class Foe {
     private int dexterity;
     private int intellect;
     private int armour;
+    private int numAttacksPerTurn;
+    private int specialAttackChance;
     private int goldDrop;
+    public int getSpecialAttackChance() {
+        return specialAttackChance;
+    }
+
+    public void setSpecialAttackChance(int specialAttackChance) {
+        this.specialAttackChance = specialAttackChance;
+    }
+    public int getNumAttacksPerTurn() {
+        return numAttacksPerTurn;
+    }
+    public void setNumAttacksPerTurn(int numAttacksPerTurn) {
+        this.numAttacksPerTurn = numAttacksPerTurn;
+    }
     public int getGoldDrop() {
         return goldDrop;
     }
@@ -156,7 +171,8 @@ public abstract class Foe {
     }
 
     public Foe(String name, int level, int curHealth, int maxHealth, int mana, int maxMana,
-               int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop) {
+               int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop,
+               int numAttacksPerTurn, int specialAttackChance) {
         this.name = name;
         this.level = level;
         this.curHealth = curHealth;
@@ -169,9 +185,12 @@ public abstract class Foe {
         this.intellect = intellect;
         this.armour = armour;
         this.goldDrop = goldDrop;
+        this.numAttacksPerTurn = numAttacksPerTurn;
+        this.specialAttackChance = specialAttackChance;
     }
 
-    public abstract void specialAttack();
+    public abstract String specialAttackPreProc();
+    public abstract void specialAttackPostProc();
     protected int genLevelDivisorVal(int levelDivisor) {
         return levelDivisor == 0 ? 0 : getLevel() / levelDivisor;
     }

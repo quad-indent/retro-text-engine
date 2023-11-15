@@ -99,12 +99,12 @@ public class StoryDisplayer {
             case "goblin":
                 currentFoe = new Goblin(combatantInfo[1], true, 0, 0,
                         0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0);
+                        0, 0, 0, 0, 0, 0, 0);
                 break;
             default:
                 currentFoe = new Goblin("Errornimus", true, 0,
                         0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0);
+                        0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
         return currentFoe;
     }

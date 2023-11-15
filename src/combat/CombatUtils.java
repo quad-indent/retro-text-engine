@@ -314,6 +314,7 @@ public class CombatUtils {
         int thisStr = PlayerClass.getPlayerStat("Strength");
         int otherStr = combatant.getStrength();
         boolean isAHit = false;
+        boolean isEnemySpecialAttacking = false;
         Map<String, Integer> foeMap = new LinkedHashMap<>();
         while (true) {
             StoryDisplayer.displayCombatants(combatant);
@@ -327,21 +328,32 @@ public class CombatUtils {
                         " evades your attack!");
             }
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
-            foeMap.putAll(combatant.launchAttack());
-            // attackType = 0 for quick, 1 for normal, 2 for strong
-            // isCrit = 0 for non-crit, 1 for crit
-            // attackHit = 0 or 1
-            // damageOut = damage after having applied player's armour
-            String dmgText = "";
             if (combatant.isDead())
                 break;
-            isAHit = foeMap.get("isHit") == 1;
-            if (isAHit) {
-                if (processEnemyHit(foeMap, combatant) == -1) {
-                    return -1;
+            if (isEnemySpecialAttacking) {
+                // If special attack debuffs player str/dex/int,
+                // or raises combatant's armour, let player's attack go thru first
+                // no harm either if special attack is purely offensive
+                combatant.specialAttackPostProc();
+            }
+            if (genRandomNum(1, 100) <= combatant.getSpecialAttackChance()) {
+                isEnemySpecialAttacking = true;
+                System.out.println(">> " + combatant.specialAttackPreProc());
+            }
+            for (int i = 0; i < combatant.getNumAttacksPerTurn(); i++) {
+                foeMap.putAll(combatant.launchAttack());
+                // attackType = 0 for quick, 1 for normal, 2 for strong
+                // isCrit = 0 for non-crit, 1 for crit
+                // attackHit = 0 or 1
+                // damageOut = damage after having applied player's armour
+                isAHit = foeMap.get("isHit") == 1;
+                if (isAHit) {
+                    if (processEnemyHit(foeMap, combatant) == -1) {
+                        return -1;
+                    }
+                } else {
+                    System.out.println(">> You dodge " + combatant.getName() + "'s attack!");
                 }
-            } else {
-                System.out.println(">> You dodge " + combatant.getName() + "'s attack!");
             }
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         }
