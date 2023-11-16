@@ -128,10 +128,10 @@ public class StoryBlockMaster {
 
     public String[] produceCombatantInfo(ArrayList<String> tempStoryBit) {
         int tempStorySize = tempStoryBit.size();
-        if (tempStorySize < SplitReturnsEnum.COMBAT_PROMPT.val) {
+        if (tempStorySize < ReturnsAndDataEnums.COMBAT_PROMPT.val) {
             return null;
         }
-        int combatantRange = tempStorySize == SplitReturnsEnum.COMBAT_PROMPT.val ? 3 : 4;
+        int combatantRange = tempStorySize == ReturnsAndDataEnums.COMBAT_PROMPT.val ? 3 : 4;
         // last ID of combatant info will be 3 if level is not specified; otherwise 4
         String[] combatantInfo = new String[combatantRange - 1]; // 2 or 3 values
         for (int i = 2; i <= combatantRange; i++) // combatant info starts at ID 2
@@ -153,7 +153,7 @@ public class StoryBlockMaster {
         // storybits can be placed in the textAdv.txt file out of order
         // and still be parsed and initialised properly
         for (ArrayList<String> storyLine : splitResultz) {
-            if (storyLine.size() == SplitReturnsEnum.STORY_PROMPT.val || storyLine.get(1).toLowerCase().contains("tune")) {
+            if (storyLine.size() == ReturnsAndDataEnums.STORY_PROMPT.val || storyLine.get(1).toLowerCase().contains("tune")) {
                 // if is pure story thing
                 int tuneToPlay = -1;
                 if (storyLine.get(1).toLowerCase().contains("tune")) {

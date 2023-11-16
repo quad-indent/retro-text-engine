@@ -1,5 +1,7 @@
 import combat.CombatUtils;
 import player.PlayerClass;
+import storyBits.FileParser;
+import storyBits.GlobalConf;
 import storyBits.StoryBlockMaster;
 import storyBits.StoryDisplayer;
 
@@ -7,6 +9,7 @@ import inventory.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Main {
     public static void oldDisplayTest() {
@@ -32,14 +35,15 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        // AuthorizationService.enterCredentials();
-
-        Inventory.initInventory(null);
-        InventoryCache.processFile(null);
+        GlobalConf.initGlobalConf(
+                FileParser.prettifyParsedPlayerSheetConfig(Objects.requireNonNull(
+                        FileParser.parseFile("PlayerSheetConfig.txt"))));
+        if (!GlobalConf.isMinimalConfig()) {
+            Inventory.initInventory(null);
+            InventoryCache.processItemCache(null);
+        }
         StoryBlockMaster bard = new StoryBlockMaster(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);
     }
 }
-
-// todo: maybe implement option of small character creation with just name and story page for minimal gamez?

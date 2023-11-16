@@ -4,11 +4,16 @@ import inventory.ArmourItem;
 import inventory.Inventory;
 import inventory.Item;
 import inventory.WeaponItem;
+import storyBits.GlobalConf;
+import storyBits.ReturnsAndDataEnums;
 import storyBits.StoryBlockMaster;
 import storyBits.StoryDisplayer;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class PlayerClass {
     private static final String DEFAULT_PLAYER_FILE_NAME = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
@@ -227,7 +232,6 @@ public class PlayerClass {
             }
         }
     }
-
     public static int initPlayer(String characterSheetPath) {
         if (characterSheetPath == null)
             characterSheetPath = DEFAULT_PLAYER_FILE_NAME;
@@ -267,6 +271,11 @@ public class PlayerClass {
                 "this beginning, and who knows, maybe we will meet again down the line!");
         System.out.println(">> Tell me, what is your name?");
         setPlayerName(StoryDisplayer.awaitChoiceInput(false, true));
+        if (GlobalConf.isMinimalConfig()) {
+            System.out.println("I do look forward to seeing you navigate what lies ahead, " + getPlayerName() + ".");
+            StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
+            return;
+        }
         System.out.println(">> Tell me about yourself, " + getPlayerName() + ". Would you prefer to have a little chat about yourself, " +
                 "or simply provide me with the precise information about your strengths and weaknesses?");
         System.out.println(">> [1] - Let's do this properly\n>> [2] - Let's skip the small talk");
@@ -282,7 +291,6 @@ public class PlayerClass {
                 break;
         }
     }
-
     public static int saveCharacter(int curPage) {
         try {
             FileWriter fileWriter = new FileWriter(getDesiredSaveDest());
@@ -294,10 +302,13 @@ public class PlayerClass {
             return 1;
         }
     }
-
     private static PrintWriter getPrintWriter(FileWriter fileWriter, int curPage) {
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.println(getPlayerName());
+        if (GlobalConf.isMinimalConfig()) {
+            printWriter.println(curPage);
+            return printWriter;
+        }
         for (Integer baseLv : getPlayerBaseVals().values())
             printWriter.println(baseLv);
         printWriter.println(getArmour());
@@ -352,16 +363,30 @@ public class PlayerClass {
 
     public static int loadCharacter() {
         int playerStoryPage = 0;
+        int numLinezPresent = -1;
         try {
+            Stream<String> fileStream = Files.lines(Paths.get(getDesiredSaveDest()));
+            numLinezPresent = (int)fileStream.count();
+            if (numLinezPresent != ReturnsAndDataEnums.FULL_CONF_LINES.val && !GlobalConf.isMinimalConfig() ||
+                    numLinezPresent != ReturnsAndDataEnums.MINMAL_CONF_LINES.val && GlobalConf.isMinimalConfig()) {
+                throw new AssertionError("Got malformed player sheet data! " +
+                        "Expected " + ReturnsAndDataEnums.FULL_CONF_LINES + " lines of info; got " +
+                        numLinezPresent + " instead!");
+            }
             System.out.println("Attempting to parse character sheet . . .");
             FileReader infoReader = new FileReader(getDesiredSaveDest());
             Scanner storyReader = new Scanner(infoReader);
-            setPlayerName(storyReader.nextLine());
-            getPlayerBaseVals().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
-            setArmour(Integer.parseInt(storyReader.nextLine()));
-            getPlayerAtts().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
-            playerStoryPage = Integer.parseInt(storyReader.nextLine());
-            Inventory.initInventoryFromSave(storyReader);
+            if (!GlobalConf.isMinimalConfig()) {
+                setPlayerName(storyReader.nextLine());
+                getPlayerBaseVals().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+                setArmour(Integer.parseInt(storyReader.nextLine()));
+                getPlayerAtts().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+                playerStoryPage = Integer.parseInt(storyReader.nextLine());
+                Inventory.initInventoryFromSave(storyReader);
+            } else {
+                setPlayerName(storyReader.nextLine());
+                playerStoryPage = Integer.parseInt(storyReader.nextLine());
+            }
             storyReader.close();
             return playerStoryPage;
         } catch (IOException e) {

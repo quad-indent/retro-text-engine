@@ -30,7 +30,7 @@ public class InventoryCache {
         }
         return null;
     }
-    public static void processFile(String fileName) {
+    public static void processItemCache(String fileName) {
         if (fileName == null || fileName.isEmpty()) {
             fileName = "itemTable.txt";
         }
