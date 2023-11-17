@@ -1,5 +1,6 @@
 import combat.CombatUtils;
 import player.PlayerClass;
+import player.PlayerKeywordz;
 import storyBits.FileParser;
 import storyBits.GlobalConf;
 import storyBits.StoryBlockMaster;
@@ -37,12 +38,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         GlobalConf.initGlobalConf(
                 FileParser.prettifyParsedPlayerSheetConfig(Objects.requireNonNull(
-                        FileParser.parseFile("PlayerSheetConfig.txt"))));
+                        FileParser.parseFile("PlayerSheetConfig.txt", "[", false))));
         if (!GlobalConf.isMinimalConfig()) {
             Inventory.initInventory(null);
             InventoryCache.processItemCache(null);
         }
         StoryBlockMaster bard = new StoryBlockMaster(null);
+        PlayerKeywordz.initAllNamez(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);
     }

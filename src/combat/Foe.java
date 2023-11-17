@@ -3,13 +3,13 @@ package combat;
 import foeTypes.Automaton;
 import foeTypes.Goblin;
 import player.PlayerClass;
+import player.PlayerKeywordz;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class Foe {
-    public static final Map<String, Class<? extends Foe>> foeMap;
     private String name;
     private int level;
     private int curHealth;
@@ -171,11 +171,6 @@ public abstract class Foe {
             this.curHealth = Math.max(0, this.curHealth);
         }
     }
-    static {
-        foeMap = new LinkedHashMap<>();
-        foeMap.put("goblin", Goblin.class);
-        foeMap.put("automaton", Automaton.class);
-    }
     public Foe(String name, int level, int curHealth, int maxHealth, int mana, int maxMana,
                int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop,
                int numAttacksPerTurn, int specialAttackChance) {
@@ -214,16 +209,16 @@ public abstract class Foe {
         attackInfo.put("damageOut", 0);
         attackInfo.put("attackType", attackType);
         attackInfo.put("damageBlocked", 0);
-        if (!CombatUtils.rollForHit(getDexterity(), PlayerClass.getPlayerStat("Dexterity"),
-                getStrength(), PlayerClass.getPlayerStat("Strength"), attackType)) {
+        if (!CombatUtils.rollForHit(getDexterity(), PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName()),
+                getStrength(), PlayerClass.getPlayerStat(PlayerKeywordz.getStrengthName()), attackType)) {
             return attackInfo;
         } else {
             boolean isCrit = CombatUtils.rollForCrit(getDexterity(),
-                    PlayerClass.getPlayerStat("Dexterity"), attackType);
-            int dmgRaw = CombatUtils.calcDamage(getDexterity(), PlayerClass.getPlayerStat("Dexterity"),
-                    getStrength(), PlayerClass.getPlayerStat("Strength"), attackType, isCrit,
+                    PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName()), attackType);
+            int dmgRaw = CombatUtils.calcDamage(getDexterity(), PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName()),
+                    getStrength(), PlayerClass.getPlayerStat(PlayerKeywordz.getStrengthName()), attackType, isCrit,
                     false, false);
-            attackInfo.put("damageBlocked", CombatUtils.calcDamageShieldBlocked(dmgRaw));
+            attackInfo.put("damageBlocked", CombatUtils.calcDamageShieldBlocked());
             dmgRaw -= attackInfo.get("damageBlocked");
             dmgRaw = CombatUtils.calcDamageAfterArmour(dmgRaw, PlayerClass.getPlayerStat("armour"));
             attackInfo.put("damageOut", dmgRaw);

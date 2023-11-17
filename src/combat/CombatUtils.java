@@ -2,6 +2,7 @@ package combat;
 
 import inventory.Inventory;
 import inventory.WeaponItem;
+import player.PlayerKeywordz;
 import storyBits.StoryDisplayer;
 import player.PlayerClass;
 
@@ -14,12 +15,14 @@ import java.util.logging.Logger;
 
 public class CombatUtils {
 
-    public static int calcDamageShieldBlocked(int dmgIn) {
+    public static int calcDamageShieldBlocked() {
         if (Arrays.stream(Inventory.getEquippedWeapons()).noneMatch(WeaponItem::isShield)) {
             return 0;
         }
-        int minBlock = Arrays.stream(Inventory.getEquippedWeapons()).mapToInt(WeaponItem::getMinDmg).sum();
-        int maxBlock = Arrays.stream(Inventory.getEquippedWeapons()).mapToInt(WeaponItem::getMaxDmg).sum();
+        int minBlock = Arrays.stream(Inventory.getEquippedWeapons())
+                .filter(it -> it != null && it.isShield()).mapToInt(WeaponItem::getMinDmg).sum();
+        int maxBlock = Arrays.stream(Inventory.getEquippedWeapons())
+                .filter(it -> it != null && it.isShield()).mapToInt(WeaponItem::getMaxDmg).sum();
         return genRandomNum(minBlock, maxBlock);
     }
     public static int scaleWepDmg(int dmgVal, String scalingStat) {
@@ -87,7 +90,7 @@ public class CombatUtils {
         // qRange = Math.max(qRange, 1);
         int rMin = (int) (minOut + qPicked * qRange);
         int rMax = (int) (minOut + qPicked * qRange + qRange);
-        int resultar = genRandomNum(rMin, rMin);
+        int resultar = genRandomNum(rMin, rMax);
         return Math.min(resultar, rMax);
     }
 
@@ -239,14 +242,15 @@ public class CombatUtils {
         int[] rollWeightz;
         rollWeightz = switch (attackType) {
             case 0:
-                yield new int[]{55, 30, 15};
+                yield new int[]{50, 20, 5, 25};
             case 1:
-                yield new int[]{28, 55, 17};
+                yield new int[]{28, 24, 20, 28};
             case 2:
-                yield new int[]{20, 35, 45};
+                yield new int[]{10, 30, 45, 15};
             default:
                 yield new int[]{25, 25, 25, 25};
         };
+        // hidden chances of whether dmg output will be closer to lowest or highest possibility
         int boonRoll = genRandomNumWeighted(minDmg + minDmgBoon, maxDmg + maxDmgBoon, rollWeightz);
         return (int)(boonRoll * dmgMultiplier);
     }
@@ -271,9 +275,9 @@ public class CombatUtils {
         int[] maxHitVals = new int[3];
         int[] critChances = new int[3];
         int[] hitChances = new int[3];
-        int thisDex = PlayerClass.getPlayerStat("Dexterity");
+        int thisDex = PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName());
         int otherDex = combatant.getDexterity();
-        int thisStr = PlayerClass.getPlayerStat("Strength");
+        int thisStr = PlayerClass.getPlayerStat(PlayerKeywordz.getStrengthName());
         int otherStr = combatant.getStrength();
         int thisMinDmg;
         int thisMaxDmg;
@@ -310,9 +314,9 @@ public class CombatUtils {
     }
     public static int combatLoop(Foe combatant) throws Exception {
         int atkChoice = -1;
-        int thisDex = PlayerClass.getPlayerStat("Dexterity");
+        int thisDex = PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName());
         int otherDex = combatant.getDexterity();
-        int thisStr = PlayerClass.getPlayerStat("Strength");
+        int thisStr = PlayerClass.getPlayerStat(PlayerKeywordz.getStrengthName());
         int otherStr = combatant.getStrength();
         boolean isAHit = false;
         boolean isEnemySpecialAttacking = false;
@@ -359,12 +363,14 @@ public class CombatUtils {
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         }
         System.out.println(">> " + combatant.getName() + " lies dead before you. You have gained " +
-                combatant.getXpYield() + "XP and now have " +
+                combatant.getXpYield() + " " + PlayerKeywordz.getxPAbbr() + " and now have " +
                 (PlayerClass.getPlayerStat("curXP") + combatant.getXpYield()) +
-                " out of " + PlayerClass.getPlayerStat("neededXP") +
-                "XP needed to reach level " + (PlayerClass.getPlayerStat("playerLevel") + 1));
-        System.out.println(">> " + combatant.getName() + " dropped " + combatant.getGoldDrop() + " gold pieces!");
-        PlayerClass.incrementPlayerStat("Gold", combatant.getGoldDrop());
+                " out of " + PlayerClass.getPlayerStat("neededXP") + " " + PlayerKeywordz.getxPAbbr() +
+                " needed to reach " + PlayerKeywordz.getLevelName().toLowerCase() + " " +
+                (PlayerClass.getPlayerStat("playerLevel") + 1));
+        System.out.println(">> " + combatant.getName() + " dropped " + combatant.getGoldDrop() + " " +
+                PlayerKeywordz.getCurrencyName().toLowerCase() + "!");
+        PlayerClass.incrementPlayerCurrency(combatant.getGoldDrop(), true);
         PlayerClass.refillHealthAndMana();
         if (combatant.getXpYield() + PlayerClass.getPlayerStat("curXP") >=
             PlayerClass.getPlayerStat("neededXP")){

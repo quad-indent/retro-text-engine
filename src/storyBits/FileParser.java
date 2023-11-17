@@ -5,10 +5,11 @@ import java.io.FileReader;
 import java.util.*;
 
 public class FileParser {
-    public static List<String> parseFile(String fileName) {
+    public static List<String> parseFile(String fileName, String hasToStartWith, boolean negateStartStr) {
         if (fileName == null || fileName.isEmpty()) {
             fileName = "textAdv.txt";
         }
+        boolean shouldSkipLine;
         try {
             System.out.println("Attempting to open " + fileName + ". . .");
             List<String> storyLines = new ArrayList<String>();
@@ -17,7 +18,11 @@ public class FileParser {
             String thisLine = "";
             while (storyReader.hasNextLine()) {
                 thisLine = storyReader.nextLine();
-                if (!thisLine.startsWith("["))
+                shouldSkipLine = !thisLine.startsWith(hasToStartWith);
+                if (negateStartStr) {
+                    shouldSkipLine = !shouldSkipLine;
+                }
+                if (shouldSkipLine)
                     continue;
                 storyLines.add(thisLine);
             }

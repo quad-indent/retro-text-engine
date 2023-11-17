@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-public class ClipPlayer implements LineListener {
+public class ClipPlayer {
     private final static Path tunezPath;
     private final static Clip djBooth;
     private static String currentTune = "";
@@ -33,10 +33,6 @@ public class ClipPlayer implements LineListener {
     }
     public static Clip getDjBooth() {
         return djBooth;
-    }
-    @Override
-    public void update(LineEvent event) {
-        return;
     }
     public static String getFileFormatOfTune(String tuneName) {
         List<File> filezInDir = Arrays.stream(Objects.requireNonNull(getTunezPath().toFile().listFiles())).
@@ -76,28 +72,4 @@ public class ClipPlayer implements LineListener {
             throw new Exception("Failed to play " + tunePath + "! Error: " + e.getMessage());
         }
     }
-//    public static void playTune(int tuneID) throws Exception {
-//        if (tuneID == getCurrentTune()) {
-//            return;
-//        }
-//        String fileFormat = getFileFormatOfTune(tuneID);
-//        if (fileFormat == null) {
-//            return;
-//        }
-//        Path tunePath = getTunezPath().resolve(Integer.toString(tuneID) + "." + fileFormat);
-//        try (InputStream in = new FileInputStream(tunePath.toString())) {
-//            InputStream bufferedInS = new BufferedInputStream(in);
-//            try (AudioInputStream audioInS = AudioSystem.getAudioInputStream(bufferedInS)) {
-//                if (getDjBooth().isActive()) {
-//                    getDjBooth().close();
-//                }
-//                getDjBooth().open(audioInS);
-//                getDjBooth().start();
-//                getDjBooth().loop(Clip.LOOP_CONTINUOUSLY);
-//                setCurrentTune(tuneID);
-//            }
-//        } catch (Exception e) {
-//            throw new Exception("Failed to play " + tunePath + "! Error: " + e.getMessage());
-//        }
-//    }
 }

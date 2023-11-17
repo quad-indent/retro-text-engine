@@ -35,7 +35,7 @@ public class InventoryCache {
             fileName = "itemTable.txt";
         }
         System.out.println("Attempting to parse " + fileName + ". . .");
-        List<String> itemEntries = FileParser.parseFile(fileName);
+        List<String> itemEntries = FileParser.parseFile(fileName, "[", false);
         List<List<String>> splitItemEntries = new ArrayList<>();
         assert itemEntries != null;
         for (String itemEntry : itemEntries) {

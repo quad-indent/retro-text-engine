@@ -10,7 +10,7 @@ public class StoryBlockMaster {
     }
     public StoryBlockMaster(String storyFile) {
         storyObj = new ArrayList<StoryBlock>();
-        List<String> storyData = FileParser.parseFile(storyFile);
+        List<String> storyData = FileParser.parseFile(storyFile, "[", false);
         if (storyData == null) {
             System.out.println("File could not be parsed!");
             return;

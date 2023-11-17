@@ -7,6 +7,7 @@ import player.PlayerClass;
 
 import java.util.*;
 import audio.ClipPlayer;
+import player.PlayerKeywordz;
 
 interface inputVerificator {
     Boolean checkInput(int i, int[] x);
@@ -220,26 +221,33 @@ public class StoryDisplayer {
         return healthBar.toString();
     }
     public static void displayCombatants(Foe combatant) {
-        System.out.println(combatant.getName() + " (Level " + combatant.getLevel() + ")");
+        System.out.println(combatant.getName() + " (" + PlayerKeywordz.getLevelName() + " " + combatant.getLevel() + ")");
         System.out.println(genHealthBar(combatant, -1));
-        System.out.println(combatant.getCurHealth() + " / " + combatant.getMaxHealth() + " HP\t\tSTR: " +
+        System.out.println(combatant.getCurHealth() + " / " + combatant.getMaxHealth() + " " +
+                PlayerKeywordz.getHealthName() + "\t\t" + PlayerKeywordz.getStrAbbr() + ": " +
                 combatant.getStrength());
-        System.out.println(combatant.getcurMana() + " / " + combatant.getMaxMana() + " Mana\t\tDEX: " +
+        System.out.println(combatant.getcurMana() + " / " + combatant.getMaxMana() + " " +
+                PlayerKeywordz.getManaName() + "\t\t" + PlayerKeywordz.getDexAbbr() + ": " +
                 combatant.getDexterity());
-        System.out.println("Armour: " + combatant.getArmour() + "\t\tINT: " + combatant.getIntellect());
+        System.out.println("Armour: " + combatant.getArmour() + "\t\t" +
+                PlayerKeywordz.getIntAbbr() + ": " + combatant.getIntellect());
         System.out.println("\n>>>>>>>>>> VS <<<<<<<<<<\n");
-        System.out.println(PlayerClass.getPlayerName() + " (Level " + PlayerClass.getPlayerStat("playerLevel") +
+        System.out.println(PlayerClass.getPlayerName() + " (" + PlayerKeywordz.getLevelName() + " " +
+                PlayerClass.getPlayerStat("playerLevel") +
                 ", " + PlayerClass.getPlayerStat("curXP") + " / " + PlayerClass.getPlayerStat("neededXP") +
                 ")");
         System.out.println(genHealthBar(null, -1));
         System.out.println(PlayerClass.getPlayerStat("curHealth") + " / " +
-                PlayerClass.getPlayerStat("maxHealth") + " HP\t\tSTR: " +
-                PlayerClass.getPlayerStat("Strength"));
+                PlayerClass.getPlayerStat("maxHealth") + " " + PlayerKeywordz.getHealthName() + "\t\t" +
+                PlayerKeywordz.getStrAbbr() + ": " +
+                PlayerClass.getPlayerStat(PlayerKeywordz.getStrengthName()));
         System.out.println(PlayerClass.getPlayerStat("curMana") + " / " +
-                PlayerClass.getPlayerStat("maxMana") + " Mana\t\tDEX: " +
-                PlayerClass.getPlayerStat("Dexterity"));
-        System.out.println("Armour: " + PlayerClass.getPlayerStat("Armour") + "\t\tINT: " +
-                PlayerClass.getPlayerStat("Intellect"));
+                PlayerClass.getPlayerStat("maxMana") + " " + PlayerKeywordz.getManaName() + "\t\t" +
+                PlayerKeywordz.getDexAbbr() + ": " +
+                PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName()));
+        System.out.println("Armour: " + PlayerClass.getPlayerStat("Armour") + "\t\t" +
+                PlayerKeywordz.getIntAbbr() + ": " +
+                PlayerClass.getPlayerStat(PlayerKeywordz.getIntellectName()));
     }
 
     public static int[] genOptionsArr(int highestOptionVal) {
