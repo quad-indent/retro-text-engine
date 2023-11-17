@@ -190,6 +190,7 @@ public class Inventory {
             int tempArmourSlotz = 0;
             while (confScanner.hasNextLine())
                 linez.add(confScanner.nextLine());
+            confScanner.close();
             assert linez.size() >= 3;
             assert linez.get(linez.size()-1).contains("=");
             int equalSignLinez = 0;

@@ -1,4 +1,4 @@
-[0][Tune0] You awake, cold and alone. Do you 
+[0][Tune:0] You awake, cold and alone. Do you 
 [0.1] Scream
 [0.1] Cry
 [1] Regardless, your attempts have no effect. You should do something useful. Do you
@@ -7,20 +7,20 @@
 [2] You now stand up and look around the room. Darkness all around. Do you
 [2.4] Look for a door
 [2.5] Look for a light source
-[3][Tune1] You really should stop it and try something else. Do you
+[3][Tune:1] You really should stop it and try something else. Do you
 [3.2] Get up
 [3.6] Scream yet again
 [4] Every part of every wall feels like it's made of solid bricks. No handle in sight
 [4.2] Oh well.
 [5] You manage to find something that feels like candle and some flint
 [5.7] You strike the candle alight
-[6][Tune2] Your scream awakes something mean!
+[6][Tune:bolt_action_love] Your scream awakes something mean!
 [6.8][Goblin][Goblin Sentry] Prepare for trouble!
-[7][Tune4] The match is struck, a blazing starlight ahead!
+[7][Tune:4] The match is struck, a blazing starlight ahead!
 [7.END] Woo!
-[8][Tune4] What a fight that was!
+[8][Tune:4] What a fight that was!
 [8.9] Woo!
-[9][Tune3] Reward time
+[9][Tune:3] Reward time
 [9.10][Intellect+1] Take a scroll
 [9.10][curHealth+5] Take a sip from the fountain
 [9.10][curHealth+max] Jump into the fountain

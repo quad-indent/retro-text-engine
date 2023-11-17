@@ -8,6 +8,7 @@ import player.PlayerClass;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
@@ -226,7 +227,7 @@ public class CombatUtils {
 
         int minDmgBoon = 0;
         int maxDmgBoon = 0;
-        for (WeaponItem wep: Arrays.stream(Inventory.getEquippedWeapons()).toList()) {
+        for (WeaponItem wep: Arrays.stream(Inventory.getEquippedWeapons()).filter(Objects::nonNull).toList()) {
             minDmgBoon += scaleWepDmg(wep.getMinDmg(), wep);
             maxDmgBoon += scaleWepDmg(wep.getMaxDmg(), wep);
         }

@@ -296,6 +296,7 @@ public class PlayerClass {
             FileWriter fileWriter = new FileWriter(getDesiredSaveDest());
             PrintWriter printWriter = getPrintWriter(fileWriter, curPage);
             printWriter.close();
+            fileWriter.close();
             return 0;
         } catch (IOException e) {
             System.out.println("Error! Could not create player save file \"" + getDesiredSaveDest() + "\"");

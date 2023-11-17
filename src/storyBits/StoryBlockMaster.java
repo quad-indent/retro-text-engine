@@ -155,9 +155,9 @@ public class StoryBlockMaster {
         for (ArrayList<String> storyLine : splitResultz) {
             if (storyLine.size() == ReturnsAndDataEnums.STORY_PROMPT.val || storyLine.get(1).toLowerCase().contains("tune")) {
                 // if is pure story thing
-                int tuneToPlay = -1;
-                if (storyLine.get(1).toLowerCase().contains("tune")) {
-                    tuneToPlay = Integer.parseInt(storyLine.get(1).toLowerCase().split("tune")[1]);
+                String tuneToPlay = "";
+                if (storyLine.get(1).toLowerCase().contains("tune:")) {
+                    tuneToPlay = storyLine.get(1).toLowerCase().split("tune:")[1];
                 }
                 storyObj.add(new StoryBlock(storyLine.get(storyLine.size() - 1), tuneToPlay));
                 continue;
