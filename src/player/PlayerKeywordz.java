@@ -1,10 +1,10 @@
 package player;
 
 import storyBits.FileParser;
+import storyBits.StoryDisplayer;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerKeywordz {
     private static String levelName = "Level";
@@ -212,37 +212,47 @@ public class PlayerKeywordz {
         }
     }
 
-    public static void initAllNamez(String statsTableFileName) {
+    public static void initAllNamez(String statsTableFileName) throws Exception {
         if (statsTableFileName == null) {
             statsTableFileName = "statsTable.txt";
         }
         List<String> namez = FileParser.parseFile(statsTableFileName, "#", true);
-        int minorStatCtr = 0;
-        try {
-            if (namez == null) {
-                throw new NullPointerException();
+        if (namez == null) {
+            throw new NullPointerException();
+        }
+        Map<String, String> parsedz = new LinkedHashMap<>();
+        for (String thisLine: namez) {
+            List<String> keyValPair= Arrays.stream(thisLine.split("::"))
+                    .map(StoryDisplayer::removeWhiteSpace).toList();
+            if (keyValPair.size() > 2) {
+                throw new Exception("Received malformed data in " + statsTableFileName + "!");
             }
-            setCurrencyName(namez.remove(0));
-            setLevelName(namez.remove(0));
-            setXPName(namez.remove(0));
-            setxPAbbr(namez.remove(0));
-            setHealthName(namez.remove(0));
-            setManaName(namez.remove(0));
-            setStrengthName(namez.remove(0));
-            setStrAbbr(namez.remove(0));
-            setStrengthDesc(namez.remove(0));
-            setDexterityName(namez.remove(0));
-            setDexAbbr(namez.remove(0));
-            setDexteritDesc(namez.remove(0));
-            setIntellectName(namez.remove(0));
-            setIntAbbr(namez.remove(0));
-            setIntellectDesc(namez.remove(0));
-            setKeenEyeName(namez.remove(0));
-            addMinorStatName(getKeenEyeName());
-            addMinorStatDesc(namez.remove(0));
-            while (namez.size() > 1) {
-                addMinorStatName(namez.remove(0));
-                addMinorStatDesc(namez.remove(0));
+            parsedz.put(keyValPair.get(0), keyValPair.get(1));
+        }
+        int minorStatCtr = 1;
+        try {
+            setCurrencyName(parsedz.get("Currency name"));
+            setLevelName(parsedz.get("Name for displaying level"));
+            setXPName(parsedz.get("Experience name"));
+            setxPAbbr(parsedz.get("Abbreviation for experience"));
+            setHealthName(parsedz.get("Name for health"));
+            setManaName(parsedz.get("Name for Mana"));
+            setStrengthName(parsedz.get("Name for strength"));
+            setStrAbbr(parsedz.get("Abbreviation for strength"));
+            setStrengthDesc(parsedz.get("Description for strength"));
+            setDexterityName(parsedz.get("Name for dexterity"));
+            setDexAbbr(parsedz.get("Abbreviation for dexterity"));
+            setDexteritDesc(parsedz.get("Description for dexterity"));
+            setIntellectName(parsedz.get("Name for intellect"));
+            setIntAbbr(parsedz.get("Abbreviation for intellect"));
+            setIntellectDesc(parsedz.get("Description for intellect"));
+            setKeenEyeName(parsedz.get("Name for Keen Eye"));
+            addMinorStatName(parsedz.get("Name for Keen Eye"));
+            addMinorStatDesc(parsedz.get("Description for Keen Eye"));
+            while (!parsedz.get("Name for extra talent #" + (minorStatCtr)).isEmpty()) {
+                addMinorStatName(parsedz.get("Name for extra talent #" + (minorStatCtr)));
+                addMinorStatDesc(parsedz.get("Description for talent #" + (minorStatCtr)));
+                minorStatCtr++;
             }
             setNumMinorStatz(Arrays.stream(getMinorStats()).filter(Objects::nonNull).toList().size());
         } catch (NullPointerException e) {

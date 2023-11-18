@@ -1,5 +1,8 @@
 package audio;
 
+import combat.CombatUtils;
+import storyBits.StoryDisplayer;
+
 import javax.sound.sampled.*;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -34,6 +37,17 @@ public class ClipPlayer {
     public static Clip getDjBooth() {
         return djBooth;
     }
+    public static String[] getTuneInfo(String rawTune) throws Exception {
+        String[] splitz = new String[]{"", "loop"};
+        String[] actualSplitz = rawTune.split(",");
+        if (actualSplitz.length > 2) {
+            throw new Exception("Malformed tune data!");
+        }
+        for (int i = 0; i < actualSplitz.length; i++) {
+            splitz[i] = StoryDisplayer.removeWhiteSpace(actualSplitz[i]);
+        }
+        return splitz;
+    }
     public static String getFileFormatOfTune(String tuneName) {
         List<File> filezInDir = Arrays.stream(Objects.requireNonNull(getTunezPath().toFile().listFiles())).
                 filter(file -> !file.isDirectory()).toList();
@@ -49,7 +63,16 @@ public class ClipPlayer {
         return matchesFound.get(0).split("\\.")[1];
     }
     public static void playTune(String tuneName) throws Exception {
+        String[] parsedTune = getTuneInfo(tuneName);
+        String loopOption = parsedTune[1];
+        tuneName = parsedTune[0];
         if (tuneName.equalsIgnoreCase(getCurrentTune())) {
+            return;
+        }
+        if (tuneName.equalsIgnoreCase("none")) {
+            if (getDjBooth().isActive()) {
+                getDjBooth().close();
+            }
             return;
         }
         String fileFormat = getFileFormatOfTune(tuneName);
@@ -65,7 +88,9 @@ public class ClipPlayer {
                 }
                 getDjBooth().open(audioInS);
                 getDjBooth().start();
-                getDjBooth().loop(Clip.LOOP_CONTINUOUSLY);
+                if (loopOption.equalsIgnoreCase("loop")) {
+                    getDjBooth().loop(Clip.LOOP_CONTINUOUSLY);
+                }
                 setCurrentTune(tuneName);
             }
         } catch (Exception e) {

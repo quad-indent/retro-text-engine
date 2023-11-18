@@ -1,23 +1,20 @@
 # If you have opted for minimal character creation, none of the changes here will matter
 #
+# Please only update the values AFTER the colon
 #
 # Define the name of the currency used in the game in the line below:
-Gold
+  Currency name::		 Gold
 #
 # Now, some basics. Here, you can re-define how some words are displayed,
 # such as "level" (maybe you want "age", or "mastery"),
 # "health" (maybe you'd prefer "structural integrity"), etc etc
 # Change the lines that don't begin with # to have them reflected in the game
-# Level
-Level
-# Experience
-Experience
-# Abbreviation for experience
-XP
-# Health
-Health
-# Mana
-Mana
+#
+  Name for displaying level::	Level
+  Experience name::		Experience
+  Abbreviation for experience::	XP
+  Name for health:: 		Health
+  Name for Mana:: 		Mana
 #
 # These next three stats determine some important things, so their description should
 # reflect what they correspond to, but you can assign them different names. By default:
@@ -26,15 +23,15 @@ Mana
 # Intellect does absolutely nothing except boosting max mana (WIP)
 # Please also include abbreviations for the stats (For combat)
 #
-Strength
-STR
-boosts your max health and accuracy of your strong attacks
-Dexterity
-DEX
-boosts your critical-strike chance and accuracy of your quick attacks
-Intellect
-INT
-boosts your max mana and your spell power (WIP, useless to pick)
+  Name for strength:: 		Strength
+  Abbreviation for strength:: 	STR
+  Description for strength:: 	boosts your max health and accuracy of your strong attacks
+  Name for dexterity::		Dexterity
+  Abbreviation for dexterity::	DEX
+  Description for dexterity::	boosts your critical-strike chance and accuracy of your quick attacks
+  Name for intellect::		Intellect
+  Abbreviation for intellect::	INT
+  Description for intellect::	boosts your max mana and your spell power (WIP, useless to pick)
 #
 # The following stats can have their own descriptions, as they don't directly
 # affect any calculations, 
@@ -44,14 +41,16 @@ boosts your max mana and your spell power (WIP, useless to pick)
 # Please include descriptions below each talent name
 # Please include at MOST six talents (not counting strength/dex/int)
 # If for whatever reason you don't wish to provide a description,
-# Please still include an empty line
-Keen Eye
-how good you are at spotting what is meant to be hidden. Also, boosts the amount of gold you find
-Diplomacy
-how good you are at convincing others to do what you want them to
-Subterfuge
-for staying out of sight and opening locks you're not supposed to
-Arcana
-your knowledge of the world beyond this one: rites, rituals, old tongues, incantations
-Willpower
-your ability to persevere, even when every part of your body is breaking
+# Please still leave the line intact
+  Name for Keen Eye::		Keen Eye
+  Description for Keen Eye::	how good you are at spotting what is meant to be hidden. Also, boosts the amount of gold you find
+  Name for extra talent #1::	Diplomacy
+  Description for talent #1::	how good you are at convincing others to do what you want them to
+  Name for extra talent #2::	Subterfuge
+  Description for talent #2::	for staying out of sight and opening locks you're not supposed to
+  Name for extra talent #3::	Arcana
+  Description for talent #3::	your knowledge of the world beyond this one: rites, rituals, old tongues, incantations
+  Name for extra talent #4::	Willpower
+  Description for talent #4::	your ability to persevere, even when every part of your body is breaking
+  Name for extra talent #5::	
+  Description for talent #5::	
