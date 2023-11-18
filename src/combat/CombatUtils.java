@@ -228,12 +228,8 @@ public class CombatUtils {
             }
         }
 
-        int minDmgBoon = 0;
-        int maxDmgBoon = 0;
-        for (WeaponItem wep: Arrays.stream(Inventory.getEquippedWeapons()).filter(Objects::nonNull).toList()) {
-            minDmgBoon += scaleWepDmg(wep.getMinDmg(), wep);
-            maxDmgBoon += scaleWepDmg(wep.getMaxDmg(), wep);
-        }
+        int minDmgBoon = Inventory.getEquippedWeaponBoonz(true);
+        int maxDmgBoon = Inventory.getEquippedWeaponBoonz(false);
 
         if (returnMinDmg)
             return minDmg + minDmgBoon;

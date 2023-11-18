@@ -3,11 +3,8 @@ package inventory;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import combat.CombatUtils;
 import player.PlayerClass;
-import storyBits.StoryBlockMaster;
 import storyBits.StoryDisplayer;
 
 public class Inventory {
@@ -218,7 +215,6 @@ public class Inventory {
             setEquippedNecks(new Item[getNeckSlots()]);
         } catch (FileNotFoundException e) {
             System.out.println("Error! " + inventoryConfigFile + " not found!");
-            return;
         } catch (AssertionError e) {
             System.out.println("Error! " + inventoryConfigFile + " misconfigured!\n" +
                     "Needs to include the following (at the end, each as a new line):\n" +
@@ -248,7 +244,7 @@ public class Inventory {
         List<List<String>> loopList = new ArrayList<>();
         List<List<String>> updatedList = new ArrayList<>();
         List<String> tempForUpdatedList = new ArrayList<>();
-        int longestListInLoop = -1;
+        int longestListInLoop;
         while (true) {
             loopList.clear();
             for (int i = 0; i < columnzToUse; i++) {
@@ -283,9 +279,9 @@ public class Inventory {
                     lineStr.append(strings.get(entryListIndexer));
                 }
                 if (!featureLilArrowz)
-                    System.out.println(lineStr.toString());
+                    System.out.println(lineStr);
                 else
-                    System.out.println(">> " + lineStr.toString());
+                    System.out.println(">> " + lineStr);
                 lineStr = new StringBuilder();
             }
             if (!featureLilArrowz)
@@ -442,21 +438,42 @@ public class Inventory {
         }
         return 0;
     }
+    public static int getEquippedWeaponBoonz(boolean returnMinDmg) {
+        int tally = 0;
+        int idToSkip = -1;
+        for (WeaponItem equippedWep: getEquippedWeapons()) {
+            if (equippedWep == null) {
+                break;
+            }
+            if (!equippedWep.isIs1H()) {
+                if (equippedWep.getItemID() == idToSkip) {
+                    idToSkip = -1;
+                    continue;
+                }
+                idToSkip = equippedWep.getItemID();
+            }
+            tally += returnMinDmg ? equippedWep.getMinDmg() : equippedWep.getMaxDmg();
+        }
+        return tally;
+    }
     public static int equipWeapon(WeaponItem weaponToEquip, int eqSlot, boolean procStatz,
                                   boolean overrideRecs) {
         if (!(PlayerClass.playerPassesReq(weaponToEquip.getStatRequirements()) ||
                 overrideRecs)) {
             return 4; // reqs not passed
         }
-        int foundEqSlot1 = -1;
-        int foundEqSlot2 = -1;
-        if (eqSlot != -1) {
+        int foundEqSlot1;
+        int foundEqSlot2;
+        if (eqSlot != -1 && weaponToEquip.isIs1H()) {
             if (getEquippedWeapons()[eqSlot] != null)
                 return 1; // weapon already equipped there
             getEquippedWeapons()[eqSlot] = weaponToEquip;
             return 0;
+        } else if (eqSlot != -1) {
+            foundEqSlot1 = eqSlot;
+        } else {
+            foundEqSlot1 = getAvailableEquipmentID("weapon", -1);
         }
-        foundEqSlot1 = getAvailableEquipmentID("weapon", -1);
         if (foundEqSlot1 == -1)
             return 2; // no slots available
         if (!weaponToEquip.isIs1H()) {
@@ -667,7 +684,7 @@ public class Inventory {
     public static List<List<String>> prepareItemSeriesDisplay(int startingInvID, int entriesToDisplay,
                                                               eqCats itemCat, Item[] provideItemz) {
         Item[] itemzToHandle = new Item[]{};
-        String prependerFlavour = "";
+        String prependerFlavour;
         if (provideItemz != null) {
             itemzToHandle = provideItemz.clone();
         } else {
@@ -864,7 +881,7 @@ public class Inventory {
         for (String option : eqOptionz) {
             System.out.println(option);
         }
-        int exitChoice = -1;
+        int exitChoice;
         eqCats curCat = strToEqCat(itemInQuestion.getItemType());
         while (true) {
             exitChoice = StoryDisplayer.awaitChoiceInput(eqOptionz.size() + 1);
@@ -887,12 +904,12 @@ public class Inventory {
         }
     }
     public static int displayInventoryOrEq(eqCats catToDisp, boolean isEquipping) {
-        int curChoice = -1;
-        int curStartIndex = -1;
+        int curChoice;
+        int curStartIndex;
         int curInvPage = 1;
-        int prevPageBind = -1;
-        int nextPageBind = -1;
-        int exitBind = -1;
+        int prevPageBind;
+        int nextPageBind;
+        int exitBind;
         int totalPages = getTotalPages(catToDisp);
         Item[] displayCopy = craftItemArray(catToDisp, isEquipping);
         String pagenamer = switch (catToDisp) {
@@ -923,7 +940,6 @@ public class Inventory {
             optionz.clear();
             prevPageBind = -1;
             nextPageBind = -1;
-            exitBind = -1;
             curStartIndex = (curInvPage - 1) * 6;
             displaySideBySide(prepareItemSeriesDisplay(curStartIndex, 6, catToDisp,
                             displayCopy), 3, 10, true);
