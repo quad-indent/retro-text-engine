@@ -197,7 +197,6 @@ public class PlayerClass {
                     incrementPlayerStat("curHealth", 5);
                 }
                 getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);
-                return;
             } else if (getPlayerAtts().containsKey(stat)) {
                 getPlayerAtts().put(stat, getPlayerAtts().get(stat) + byHowMuch);
             } else {
@@ -209,27 +208,13 @@ public class PlayerClass {
     private static void handleHealthAndManaIncr(int byHowMuch, String stat) {
         if (byHowMuch == Integer.MIN_VALUE) {
             switch (stat.toLowerCase()) {
-                case ("curhealth") -> {
-                    getPlayerBaseVals().put("curHealth", 0);
-                }
-                case ("curmana") -> {
-                    getPlayerBaseVals().put("curMana", 0);
-                }
-                default -> {
-                    return;
-                }
+                case ("curhealth") -> getPlayerBaseVals().put("curHealth", 0);
+                case ("curmana") -> getPlayerBaseVals().put("curMana", 0);
             }
         } else if (byHowMuch == Integer.MAX_VALUE) {
             switch (stat.toLowerCase()) {
-                case ("curhealth") -> {
-                    getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("maxHealth"));
-                }
-                case ("curmana") -> {
-                    getPlayerBaseVals().put("curMana", getPlayerBaseVals().get("maxMana"));
-                }
-                default -> {
-                    return;
-                }
+                case ("curhealth") -> getPlayerBaseVals().put("curHealth", getPlayerBaseVals().get("maxHealth"));
+                case ("curmana") -> getPlayerBaseVals().put("curMana", getPlayerBaseVals().get("maxMana"));
             }
         } else {
             getPlayerBaseVals().put(stat, getPlayerBaseVals().get(stat) + byHowMuch);

@@ -2,9 +2,9 @@ package inventory;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.security.Key;
 import java.util.*;
 
+import combat.CombatUtils;
 import player.PlayerClass;
 import player.PlayerKeywordz;
 import storyBits.FileParser;
@@ -92,7 +92,11 @@ public class Inventory {
             return null;
         }
         returnal = filteredInv.get(0);
-        getInventorySpace().remove(filteredInv.get(0));
+        if (removeAllInstances) {
+            getInventorySpace().removeIf(i -> i.getItemID() == itemID);
+        } else {
+            getInventorySpace().remove(filteredInv.get(0));
+        }
         return returnal;
     }
 
@@ -468,9 +472,10 @@ public class Inventory {
         }
         return 0;
     }
-    public static int getEquippedWeaponBoonz(boolean returnMinDmg) {
+    public static int getEquippedWeaponBoonz(boolean returnMinDmg, boolean applyScaling) {
         int tally = 0;
         int idToSkip = -1;
+        int curDmg = -1;
         for (WeaponItem equippedWep: getEquippedWeapons()) {
             if (equippedWep == null) {
                 break;
@@ -482,7 +487,11 @@ public class Inventory {
                 }
                 idToSkip = equippedWep.getItemID();
             }
-            tally += returnMinDmg ? equippedWep.getMinDmg() : equippedWep.getMaxDmg();
+            curDmg = returnMinDmg ? equippedWep.getMinDmg() : equippedWep.getMaxDmg();
+            if (applyScaling) {
+                curDmg = CombatUtils.scaleWepDmg(curDmg, equippedWep);
+            }
+            tally +=  curDmg;
         }
         return tally;
     }
@@ -658,7 +667,7 @@ public class Inventory {
         populateInventoryFromSave(saveValz);
     }
 
-    public static Item[] craftItemArray(eqCats eqCat, boolean isEquipping) {
+    public static Item[] craftItemArray(eqCats eqCat, boolean isEquipping, String armourCat) {
         Item[] arrTempie = new Item[]{};
         if (isEquipping) {
             String stringifiedCat = (switch (eqCat) {
@@ -668,9 +677,16 @@ public class Inventory {
                 case TRINKETZ -> "trinket";
                 default -> "None";
             });
-            return getInventorySpace().stream().filter(curInvIt ->
-                    curInvIt.getItemType().equals(stringifiedCat) &&
-                    PlayerClass.playerPassesReq(curInvIt.getStatRequirements())).toArray(Item[]::new);
+            if (eqCat != eqCats.ARMOUR) {
+                return getInventorySpace().stream().filter(curInvIt ->
+                        curInvIt.getItemType().equals(stringifiedCat) &&
+                                PlayerClass.playerPassesReq(curInvIt.getStatRequirements())).toArray(Item[]::new);
+            } else {
+                return getInventorySpace().stream().filter(curInvIt ->
+                        curInvIt.getItemType().equals(stringifiedCat) &&
+                                ((ArmourItem)curInvIt).getArmourSlot().equals(armourCat) &&
+                                PlayerClass.playerPassesReq(curInvIt.getStatRequirements())).toArray(Item[]::new);
+            }
         }
         return (switch (eqCat) {
             case WEAPONZ:
@@ -723,13 +739,14 @@ public class Inventory {
         });
     }
     public static List<List<String>> prepareItemSeriesDisplay(int startingInvID, int entriesToDisplay,
-                                                              eqCats itemCat, Item[] provideItemz) throws Exception {
+                                                              eqCats itemCat, Item[] provideItemz,
+                                                              String armourCat) throws Exception {
         Item[] itemzToHandle = new Item[]{};
         String prependerFlavour;
         if (provideItemz != null) {
             itemzToHandle = provideItemz.clone();
         } else {
-            itemzToHandle = craftItemArray(itemCat, false);
+            itemzToHandle = craftItemArray(itemCat, false, armourCat);
         }
         prependerFlavour = (switch (itemCat) {
             case WEAPONZ:
@@ -763,7 +780,7 @@ public class Inventory {
                 }
                 tempie.addAll(Objects.requireNonNull(
                         inspectItem(itemzToHandle[i], false, true, i,
-                        itemCat)));
+                        itemCat, armourCat)));
             }
             preparedItemz.add(new ArrayList<>(tempie));
         }
@@ -826,9 +843,12 @@ public class Inventory {
     }
     public static List<String> inspectItem(Item itemInQuestion, boolean includedLilArrowz,
                                            boolean returnList, int rawIndex,
-                                           eqCats itemCat) throws Exception {
+                                           eqCats itemCat, String armourCat) throws Exception {
         List<String> itemDescFieldz = new ArrayList<>();
         List<String> eqOptionz = new ArrayList<>();
+        if (itemInQuestion instanceof ArmourItem) {
+            armourCat = ((ArmourItem)itemInQuestion).getArmourSlot();
+        }
         if (itemInQuestion == null || itemInQuestion.getItemID() == -1) {
             itemDescFieldz.add("Empty");
             if (returnList)
@@ -844,11 +864,11 @@ public class Inventory {
                 System.out.println(option);
             }
             int exitChoice = -1;
-            Item[] availables = craftItemArray(itemCat, true);
+            Item[] availables = craftItemArray(itemCat, true, armourCat);
             while (exitChoice != 1) {
                 exitChoice = StoryDisplayer.awaitChoiceInput(eqOptionz.size() + 1);
                 if (exitChoice == 0) {
-                    int itemtoEquip = displayInventoryOrEq(itemCat, true);
+                    int itemtoEquip = displayInventoryOrEq(itemCat, true, armourCat);
                     if (itemtoEquip == -1) {
                         return null;
                     }
@@ -924,6 +944,10 @@ public class Inventory {
         }
         int exitChoice;
         eqCats curCat = strToEqCat(itemInQuestion.getItemType());
+        String armourCat = "";
+        if (itemInQuestion instanceof ArmourItem) {
+            armourCat = ((ArmourItem)itemInQuestion).getArmourSlot();
+        }
         while (true) {
             exitChoice = StoryDisplayer.awaitChoiceInput(eqOptionz.size() + 1);
             if (exitChoice == eqOptionz.size() - 1) {
@@ -933,18 +957,19 @@ public class Inventory {
                 handleUnequpping(curCat, itemInQuestion, rawIndex);
                 return 0;
             } else if (exitChoice == 0) { // swap
-                int replacementPicked = displayInventoryOrEq(curCat, true);
+                int replacementPicked = displayInventoryOrEq(curCat, true, armourCat);
                 if (replacementPicked == -1) {
                     return -1;
                 }
-                Item[] availables = craftItemArray(curCat, true);
+                Item[] availables = craftItemArray(curCat, true, armourCat);
                 handleUnequpping(curCat, itemInQuestion, rawIndex);
                 handleEquipping(curCat, replacementPicked, rawIndex, availables);
                 return 0;
             }
         }
     }
-    public static int displayInventoryOrEq(eqCats catToDisp, boolean isEquipping) throws Exception {
+    public static int displayInventoryOrEq(eqCats catToDisp, boolean isEquipping,
+                                           String armourType) throws Exception {
         int curChoice;
         int curStartIndex;
         int curInvPage = 1;
@@ -952,7 +977,7 @@ public class Inventory {
         int nextPageBind;
         int exitBind;
         int totalPages = getTotalPages(catToDisp);
-        Item[] displayCopy = craftItemArray(catToDisp, isEquipping);
+        Item[] displayCopy = craftItemArray(catToDisp, isEquipping, armourType);
         String pagenamer = switch (catToDisp) {
             case WEAPONZ:
                 yield "Weapons";
@@ -970,7 +995,7 @@ public class Inventory {
         }
         List<String> optionz = new ArrayList<>();
         while (true) {
-            displayCopy = craftItemArray(catToDisp, isEquipping);
+            displayCopy = craftItemArray(catToDisp, isEquipping, armourType);
             if (catToDisp == eqCats.INVENTORY && !isEquipping) {
                 System.out.println(">> " + PlayerClass.getPlayerName());
                 System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
@@ -983,7 +1008,7 @@ public class Inventory {
             nextPageBind = -1;
             curStartIndex = (curInvPage - 1) * 6;
             displaySideBySide(prepareItemSeriesDisplay(curStartIndex, 6, catToDisp,
-                            displayCopy), 3, 10, true);
+                            displayCopy, armourType), 3, 10, true);
             if (!isEquipping)
                 System.out.println(">> View:");
             else
@@ -1024,7 +1049,7 @@ public class Inventory {
                 return -1;
             if (!isEquipping) {
                 if (inspectItem(displayCopy[curStartIndex + curChoice], true, false,
-                        curStartIndex + curChoice, catToDisp) == null) {
+                        curStartIndex + curChoice, catToDisp, armourType) == null) {
                     return 0;
                 }
                 handleItemInspectionChoices(displayCopy[curStartIndex + curChoice], catToDisp,
@@ -1161,7 +1186,7 @@ public class Inventory {
             default -> eqCats.INVENTORY;
         };
         // redundant but hopefully clearer
-        displayInventoryOrEq(picked, false);
+        displayInventoryOrEq(picked, false, "");
     }
 }
 

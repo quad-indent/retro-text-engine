@@ -12,8 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Logger;
-
 public class CombatUtils {
 
     public static int calcDamageShieldBlocked() {
@@ -227,8 +225,8 @@ public class CombatUtils {
             }
         }
 
-        int minDmgBoon = Inventory.getEquippedWeaponBoonz(true);
-        int maxDmgBoon = Inventory.getEquippedWeaponBoonz(false);
+        int minDmgBoon = Inventory.getEquippedWeaponBoonz(true, true);
+        int maxDmgBoon = Inventory.getEquippedWeaponBoonz(false, true);
 
         if (returnMinDmg)
             return minDmg + minDmgBoon;

@@ -5,10 +5,7 @@ import inventory.Item;
 import player.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 public class StoryBlock {
     private String promptText;
     private List<String> choices = new ArrayList<>();
@@ -110,10 +107,10 @@ public class StoryBlock {
 
     public StoryBlock(String tempPromptText, String tempTuneToPlay) {
         promptText = tempPromptText;
-        choices = new ArrayList<String>();
-        combatantInfo = new ArrayList<String[]>();
-        isEnding = new ArrayList<Boolean>();
-        choiceDestinations = new ArrayList<Integer>();
+        choices = new ArrayList<>();
+        combatantInfo = new ArrayList<>();
+        isEnding = new ArrayList<>();
+        choiceDestinations = new ArrayList<>();
         areHiddenStatChecks = new ArrayList<>();
         areStatChecks = new ArrayList<>();
         statVal = new ArrayList<>();
@@ -150,11 +147,6 @@ public class StoryBlock {
             }
         }
         return -1;
-    }
-
-    public String getRelevantStatAtChoiceStr(String choiceStr) {
-        String tempie = removeBracketAndWhiteSpace(choiceStr);
-        return "";
     }
 
     public String getPromptText() {
@@ -230,7 +222,7 @@ public class StoryBlock {
     public List<String> getChoices() throws Exception {
         // skipping checks here and focusing on prettifying stats, as the choices are assumed to be passable already
         // (as in, put through refinement prior to call
-        List<String> returnChoices = new ArrayList<String>();
+        List<String> returnChoices = new ArrayList<>();
         for (int i=0; i<this.getRawChoices().size(); i++) {
             if (!(this.getAreHiddenStatChecks().get(i) || this.isStatCheckAtChoiceID(i))) {
                 // If not any kind of stat check, just append to list

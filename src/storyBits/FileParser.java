@@ -19,7 +19,7 @@ public class FileParser {
         try {
             GlobalConf.issueLog("Attempting to open " + fileName + ". . .",
                     GlobalConf.SEVERITY_LEVEL_INFO);
-            List<String> storyLines = new ArrayList<String>();
+            List<String> storyLines = new ArrayList<>();
             FileReader storyFile = new FileReader(fileName);
             Scanner storyReader = new Scanner(storyFile);
             String thisLine = "";

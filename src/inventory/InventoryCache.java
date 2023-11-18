@@ -41,7 +41,7 @@ public class InventoryCache {
         List<List<String>> splitItemEntries = new ArrayList<>();
         assert itemEntries != null;
         for (String itemEntry : itemEntries) {
-            ArrayList<String> splits = new ArrayList<String>(List.of(itemEntry.split("]")));
+            ArrayList<String> splits = new ArrayList<>(List.of(itemEntry.split("]")));
             splits.replaceAll(String::trim);
             splits.replaceAll(e -> e.replaceAll("\\[", ""));
             addItemToCache(Integer.parseInt(splits.remove(0)), splits);

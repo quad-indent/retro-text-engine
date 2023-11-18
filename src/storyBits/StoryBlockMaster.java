@@ -1,7 +1,7 @@
 package storyBits;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class StoryBlockMaster {
@@ -10,7 +10,7 @@ public class StoryBlockMaster {
         return storyObj;
     }
     public StoryBlockMaster(String storyFile) throws Exception {
-        storyObj = new ArrayList<StoryBlock>();
+        storyObj = new ArrayList<>();
         List<String> storyData = FileParser.parseFile(storyFile, "[", false);
         if (storyData == null) {
             System.out.println("File could not be parsed!");
@@ -19,14 +19,14 @@ public class StoryBlockMaster {
         List<ArrayList<String>> tempStoryBits = genTempStoryBits(storyData);
 
         int tempStoryID = 0;
-        List<String> tempChoices = new ArrayList<String>();
-        List<Integer> tempDestinationBlocks = new ArrayList<Integer>();
-        List<String[]> tempCombatant = new ArrayList<String[]>();
-        List<Boolean> tempIsEnding = new ArrayList<Boolean>();
-        List<Boolean> tempIsStatCheck = new ArrayList<Boolean>();
-        List<Boolean> tempIsHiddenCheck = new ArrayList<Boolean>();
-        List<Integer> tempStatValue = new ArrayList<Integer>();
-        List<String> tempRelevantStat = new ArrayList<String>();
+        List<String> tempChoices = new ArrayList<>();
+        List<Integer> tempDestinationBlocks = new ArrayList<>();
+        List<String[]> tempCombatant = new ArrayList<>();
+        List<Boolean> tempIsEnding = new ArrayList<>();
+        List<Boolean> tempIsStatCheck = new ArrayList<>();
+        List<Boolean> tempIsHiddenCheck = new ArrayList<>();
+        List<Integer> tempStatValue = new ArrayList<>();
+        List<String> tempRelevantStat = new ArrayList<>();
         for (ArrayList<String> tempStoryBit : tempStoryBits) {
             // iterates over story-bits that are not just prompts, i.e. have choices to pick from
             tempStoryID = processPrompt(tempChoices, tempDestinationBlocks, tempCombatant, tempIsEnding,
@@ -70,7 +70,7 @@ public class StoryBlockMaster {
         tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
 
         if (!stringContainsAny(tempStoryBit.get(2), new char[]{'+', '-', '<', '>', ':'}) ||
-                tempStoryBit.size() <= 3) {
+                tempStoryBit.size() == 3) {
             // combat info and stat boosts or checks are always >3 in size
             if (tempStoryBit.size() > 3) {
                 tempCombatant.add(produceCombatantInfo(tempStoryBit)); // empty str arr if none
@@ -149,7 +149,7 @@ public class StoryBlockMaster {
             ArrayList<String> splitResult = stringSplitter(storyLine);
             splitResultz.add(splitResult);
         }
-        splitResultz.sort((o1, o2) -> Integer.parseInt(o1.get(0)) - Integer.parseInt(o2.get(0)));
+        splitResultz.sort(Comparator.comparingInt(o -> Integer.parseInt(o.get(0))));
         // By running the loop above and subsequent sorting,
         // storybits can be placed in the textAdv.txt file out of order
         // and still be parsed and initialised properly
@@ -171,12 +171,12 @@ public class StoryBlockMaster {
     }
 
     public ArrayList<String> stringSplitter(String line) {
-        ArrayList<String> splits = new ArrayList<String>(List.of(line.split("]")));
+        ArrayList<String> splits = new ArrayList<>(List.of(line.split("]")));
         splits.replaceAll(String::trim);
         // breaks up the initial line by ]
         // also removes trailing whitespace
 
-        ArrayList<String> rawNodeData = new ArrayList<String>(List.of(splits.get(0).split("\\.")));
+        ArrayList<String> rawNodeData = new ArrayList<>(List.of(splits.get(0).split("\\.")));
         // Takes the first item, which is always info on story segment, and breaks it up by .
 
         for (int i = 1; i < splits.size(); i++) {
@@ -192,7 +192,7 @@ public class StoryBlockMaster {
     public static boolean stringContainsAny(String sourceStr, char[] charsToMatch) {
         for (char i: sourceStr.toCharArray()) {
             for (char j: charsToMatch) {
-                if (Character.compare(i, j) == 0) { return true; }
+                if (i == j) { return true; }
             }
         }
         return false;

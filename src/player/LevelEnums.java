@@ -8,7 +8,7 @@ public enum LevelEnums
     LV_16(195000), LV_17(225000), LV_18(265000), LV_19(305000), LV_20(355000);
     public final int val;
     public final static int[] XPArray;
-    private LevelEnums(int val)
+    LevelEnums(int val)
     {
         this.val = val;
     }

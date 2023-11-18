@@ -1,7 +1,6 @@
 package storyBits;
 
 import combat.*;
-import foeTypes.*;
 import inventory.Inventory;
 import player.PlayerClass;
 
@@ -58,7 +57,7 @@ public class StoryDisplayer {
                     pureChoiceLen + choiceAdditions); // +2 since allowing inv and eq view
             if (rawChoicePicked >= pureChoiceLen && rawChoicePicked < pureChoiceLen + choiceAdditions) {
                 if (rawChoicePicked == pureChoiceLen)
-                    Inventory.displayInventoryOrEq(Inventory.eqCats.INVENTORY, false);
+                    Inventory.displayInventoryOrEq(Inventory.eqCats.INVENTORY, false, "");
                 else
                     Inventory.displayEquipment();
                 continue;
@@ -102,7 +101,6 @@ public class StoryDisplayer {
 
     private static Foe getFoe(StoryBlock curObj, int rawChoicePicked) {
         String[] combatantInfo = curObj.getCombatantInfo().get(rawChoicePicked);
-        Foe currentFoe;
         return FoeFactory.retrieveFoe(combatantInfo[0], combatantInfo[1], true,
                 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0);
@@ -134,13 +132,9 @@ public class StoryDisplayer {
 
     public static int awaitChoiceInput(int highestOptionVal) {
         int[] options = genOptionsArr(highestOptionVal);
-        inputVerificator checker = (input, arr) -> {
-            return Arrays.stream(arr).anyMatch(e -> e == input);
-        };
+        inputVerificator checker = (input, arr) -> Arrays.stream(arr).anyMatch(e -> e == input);
         while (true) {
             String playerInput = getRawPlayerInput();
-//            if (highestOptionVal == -1)
-//                return -1;
             int parsedInput;
             try {
                 parsedInput = Integer.parseInt(playerInput);
@@ -178,7 +172,7 @@ public class StoryDisplayer {
         }
         return awaitChoiceInput(optionz.length);
     }
-    public static int[] awaitChoiceInputWithIncrement(int highestOptionVal, String breakWord) {
+    public static int[] awaitChoiceInputWithIncrement(int highestOptionVal, String breakWord) throws Exception {
         // int[] options = genOptionsArr(highestOptionVal);
         String playerInput;
         int lastCharID;
@@ -199,7 +193,7 @@ public class StoryDisplayer {
                 int statVal = lastChar == '+' ? 1 : -1;
                 return new int[]{statChoicer, statVal};
             } catch (NumberFormatException e) {
-                continue;
+                GlobalConf.issueLog(e.getMessage(), GlobalConf.SEVERITY_LEVEL_WARNING, false);
             }
         }
     }

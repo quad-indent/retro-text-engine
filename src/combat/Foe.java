@@ -1,7 +1,5 @@
 package combat;
 
-import foeTypes.Automaton;
-import foeTypes.Goblin;
 import player.PlayerClass;
 import player.PlayerKeywordz;
 
@@ -202,7 +200,7 @@ public abstract class Foe {
         // isCrit = 0 for non-crit, 1 for crit
         // attackHit = 0 or 1
         // damageOut = damage after having applied player's armour
-        Map<String, Integer> attackInfo = new LinkedHashMap<String, Integer>();
+        Map<String, Integer> attackInfo = new LinkedHashMap<>();
         int attackType = genAttackType();
         attackInfo.put("isCrit", 0);
         attackInfo.put("isHit", 0);

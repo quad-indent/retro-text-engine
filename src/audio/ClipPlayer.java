@@ -1,6 +1,5 @@
 package audio;
 
-import combat.CombatUtils;
 import storyBits.GlobalConf;
 import storyBits.StoryDisplayer;
 
