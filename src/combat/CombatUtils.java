@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class CombatUtils {
 
     public static int calcDamageShieldBlocked() {
-        if (Arrays.stream(Inventory.getEquippedWeapons()).noneMatch(WeaponItem::isShield)) {
+        if (Arrays.stream(Inventory.getEquippedWeapons()).filter(Objects::nonNull).noneMatch(WeaponItem::isShield)) {
             return 0;
         }
         int minBlock = Arrays.stream(Inventory.getEquippedWeapons())
@@ -60,8 +60,6 @@ public class CombatUtils {
         } else if (maxOut - minOut == 2) {
             // 3 possibilities
             if (qWeightz[3] > 0) {
-                System.out.println("Warning: " +
-                        "Got 3 possible outcomes, and four quarter weights. Use 3 instead for this one!");
                 double tempie = (double) qWeightz[3] / 3;
                 for (int i = 0; i < 3; i++) {
                     qWeightz[i] += (int) tempie;
