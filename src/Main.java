@@ -38,7 +38,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         GlobalConf.initGlobalConf(
                 FileParser.prettifyParsedPlayerSheetConfig(Objects.requireNonNull(
-                        FileParser.parseFile("PlayerSheetConfig.txt", "[", false))));
+                        FileParser.parseFile(FileParser.joinConfigFolder("PlayerSheetConfig.txt"),
+                                "[", false))));
         if (!GlobalConf.isMinimalConfig()) {
             Inventory.initInventory(null);
             InventoryCache.processItemCache(null);
@@ -46,6 +47,6 @@ public class Main {
         StoryBlockMaster bard = new StoryBlockMaster(null);
         PlayerKeywordz.initAllNamez(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
-        StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage);
+        StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage, false);
     }
 }

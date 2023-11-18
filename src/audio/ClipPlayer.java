@@ -1,6 +1,7 @@
 package audio;
 
 import combat.CombatUtils;
+import storyBits.GlobalConf;
 import storyBits.StoryDisplayer;
 
 import javax.sound.sampled.*;
@@ -41,7 +42,7 @@ public class ClipPlayer {
         String[] splitz = new String[]{"", "loop"};
         String[] actualSplitz = rawTune.split(",");
         if (actualSplitz.length > 2) {
-            throw new Exception("Malformed tune data!");
+            GlobalConf.issueLog("Malformed tune data!", GlobalConf.SEVERITY_LEVEL_ERROR, true);
         }
         for (int i = 0; i < actualSplitz.length; i++) {
             splitz[i] = StoryDisplayer.removeWhiteSpace(actualSplitz[i]);
@@ -94,7 +95,9 @@ public class ClipPlayer {
                 setCurrentTune(tuneName);
             }
         } catch (Exception e) {
-            throw new Exception("Failed to play " + tunePath + "! Error: " + e.getMessage());
+            GlobalConf.issueLog("Failed to play " + tunePath + "! Error: " + e.getMessage(),
+                    GlobalConf.SEVERITY_LEVEL_ERROR,
+                    true);
         }
     }
 }

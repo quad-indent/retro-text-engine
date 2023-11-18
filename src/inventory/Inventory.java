@@ -2,9 +2,13 @@ package inventory;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.security.Key;
 import java.util.*;
 
 import player.PlayerClass;
+import player.PlayerKeywordz;
+import storyBits.FileParser;
+import storyBits.GlobalConf;
 import storyBits.StoryDisplayer;
 
 public class Inventory {
@@ -175,12 +179,14 @@ public class Inventory {
     public static void setCurrentGold(int tempCurrentGold) {
         currentGold = tempCurrentGold;
     }
-    public static void initInventory(String inventoryConfigFile) {
+    public static void initInventory(String inventoryConfigFile) throws Exception {
         if (inventoryConfigFile == null) {
-            inventoryConfigFile = "inventoryConfig.txt";
+            inventoryConfigFile = FileParser.joinConfigFolder("inventoryConfig.txt");
         }
         try {
-            System.out.println("Attempting to parse inventory and equipment config at " + inventoryConfigFile + ". . .");
+            GlobalConf.issueLog("Attempting to parse inventory and equipment config at "
+                            + inventoryConfigFile + ". . .",
+                    GlobalConf.SEVERITY_LEVEL_INFO);
             FileReader confReader = new FileReader(inventoryConfigFile);
             Scanner confScanner = new Scanner(confReader);
             List<String> linez = new ArrayList<>();
@@ -214,11 +220,14 @@ public class Inventory {
             setEquippedWeapons(new WeaponItem[getWeaponSlots()]);
             setEquippedNecks(new Item[getNeckSlots()]);
         } catch (FileNotFoundException e) {
-            System.out.println("Error! " + inventoryConfigFile + " not found!");
+            GlobalConf.issueLog("Error! " + inventoryConfigFile + " not found!", GlobalConf.SEVERITY_LEVEL_ERROR,
+                    true);
         } catch (AssertionError e) {
-            System.out.println("Error! " + inventoryConfigFile + " misconfigured!\n" +
-                    "Needs to include the following (at the end, each as a new line):\n" +
-                    "trinketSLots = VALUE\nneckSlots = VALUE\nweaponSlots = VALUE");
+            GlobalConf.issueLog("Error! " + inventoryConfigFile + " misconfigured!\n" +
+                            "Needs to include the following (at the end, each as a new line):\n" +
+                            "trinketSLots = VALUE\nneckSlots = VALUE\nweaponSlots = VALUE",
+                    GlobalConf.SEVERITY_LEVEL_ERROR,
+                    true);
         }
     }
 
@@ -298,6 +307,27 @@ public class Inventory {
         StringBuilder originalStrBuilder = new StringBuilder(originalStr);
         originalStrBuilder.append(" ".repeat(Math.max(0, maxWidth + marginSpace - originalStrBuilder.length())));
         return originalStrBuilder.toString();
+    }
+    public static List<String> simpleStringWrapper(String strToSplit, int maxWidth) {
+        if (maxWidth == -1) {
+            maxWidth = MAX_CONSOLE_CHARS - 3;
+        }
+        List<String> returnalList = new ArrayList<>();
+        StringBuilder loopStr = new StringBuilder();
+        loopStr.append(">> ");
+        for (String word : strToSplit.split(" ")) {
+            if (loopStr.length() + word.length() > maxWidth) {
+                returnalList.add(loopStr.toString());
+                loopStr = new StringBuilder(">> ");
+                loopStr.append(word).append(" ");
+                continue;
+            }
+            loopStr.append(word).append(" ");
+        }
+        if (returnalList.isEmpty() || !returnalList.get(returnalList.size()-1).contentEquals(loopStr)) {
+            returnalList.add(loopStr.toString());
+        }
+        return returnalList;
     }
     public static List<String> stringWrapper(String strToSplit, int columnsAccepted, int marginSpace) {
         // If opting to display text in several columns,
@@ -388,7 +418,7 @@ public class Inventory {
         };
     }
 
-    public static int equipTrinketOrNeck(Item itemToEquip, int eqSlot, boolean procStatz) {
+    public static int equipTrinketOrNeck(Item itemToEquip, int eqSlot, boolean procStatz) throws Exception {
         if (!PlayerClass.playerPassesReq(itemToEquip.getStatRequirements())) {
             return 4; // reqs not passed
         }
@@ -419,7 +449,7 @@ public class Inventory {
         }
         return 0;
     }
-    public static int equipArmour(ArmourItem armourToEquip, boolean procStatz, boolean overrideReqs) {
+    public static int equipArmour(ArmourItem armourToEquip, boolean procStatz, boolean overrideReqs) throws Exception {
         if (!(PlayerClass.playerPassesReq(armourToEquip.getStatRequirements()) ||
                 overrideReqs)) {
             return 4; // reqs not passed
@@ -457,7 +487,7 @@ public class Inventory {
         return tally;
     }
     public static int equipWeapon(WeaponItem weaponToEquip, int eqSlot, boolean procStatz,
-                                  boolean overrideRecs) {
+                                  boolean overrideRecs) throws Exception {
         if (!(PlayerClass.playerPassesReq(weaponToEquip.getStatRequirements()) ||
                 overrideRecs)) {
             return 4; // reqs not passed
@@ -489,7 +519,7 @@ public class Inventory {
         }
         return 0; // success
     }
-    public static Item unequipTrinketOrNeck(int slotIdx, boolean unequipTrinket) {
+    public static Item unequipTrinketOrNeck(int slotIdx, boolean unequipTrinket) throws Exception {
         Item[] itemUsed = unequipTrinket ? getEquippedTrinkets() : getEquippedNecks();
         if (slotIdx >= itemUsed.length) {
             return null;
@@ -505,7 +535,7 @@ public class Inventory {
         PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         return itemCopy;
     }
-    public static ArmourItem unequipArmour(String armourSlot) {
+    public static ArmourItem unequipArmour(String armourSlot) throws Exception {
         if (!getEquippedArmour().containsKey(armourSlot)) {
             return null; // no such slot
         }
@@ -519,7 +549,7 @@ public class Inventory {
         PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
         return armourCopy;
     }
-    public static WeaponItem unequipWeapon(int weaponIDToUnequip) {
+    public static WeaponItem unequipWeapon(int weaponIDToUnequip) throws Exception {
         if (getWeaponSlots() <= weaponIDToUnequip || getEquippedWeapons()[weaponIDToUnequip] == null) {
             return null; // failure
         }
@@ -541,7 +571,7 @@ public class Inventory {
         return weaponCopy;
     }
 
-    public static void initInventoryFromSave(Scanner playerScanner) {
+    public static void populateInventoryFromSave(String[] saveValz) {
         // this gets called once PlayerClass' parsing of character data is done
         // and picks where it left off to initialise inventory
         // idx 0 contains what's currently equipped
@@ -549,26 +579,27 @@ public class Inventory {
         String[] itemIDLinez = new String[2];
         try {
             for (int i = 0; i < 2; i++) {
-                itemIDLinez[i] = playerScanner.nextLine();
+                itemIDLinez[i] = saveValz[i];
                 if (i == 0) {
                     setMalformedEq(false);
                 } else {
                     setMalformedInv(false);
                 }
             }
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | IndexOutOfBoundsException e) {
             System.out.println("Inventory data not found! Aborting inventory loading. . .");
             return;
         }
         try {
             for (String curStrID : itemIDLinez[0].split(" ")) {
+                // this is equipment
                 int curID = Integer.parseInt(curStrID);
                 List<String> curItemSpecs = InventoryCache.getItem(curID);
                 switch (strToEqCat(curItemSpecs.get(0).toLowerCase())) {
                     case WEAPONZ:
                         equipWeapon(((WeaponItem) Objects
                                         .requireNonNull(Item.smartItemInit(curID, curItemSpecs))),
-                                    -1, false, true);
+                                -1, false, true);
                         break;
                     case ARMOUR:
                         equipArmour((ArmourItem) Objects.requireNonNull(
@@ -580,14 +611,16 @@ public class Inventory {
                                 -1, false);
                         break;
                     default:
-                        throw new Exception();
+                        GlobalConf.issueLog("Malformed equipment data in save file! Aborting . . .",
+                                GlobalConf.SEVERITY_LEVEL_ERROR,
+                                true);
                 }
             }
         } catch (Exception e) {
-            System.out.println("Malformed equipment data in save file! Aborting . . .");
             return;
         }
         try {
+            // and this is inv
             String[] idsToIterate = itemIDLinez[1].split(" ");
             for (int i = 0; i < idsToIterate.length; i++) {
                 int curID = Integer.parseInt(idsToIterate[i]);
@@ -609,12 +642,20 @@ public class Inventory {
                                 .add((Item) Objects.requireNonNull(Item.smartItemInit(curID, curItemSpecs)));
                         break;
                     default:
-                        throw new Exception();
+                        GlobalConf.issueLog("Malformed inventory data in save file! Aborting . . .",
+                                GlobalConf.SEVERITY_LEVEL_ERROR, true);
                 }
             }
         } catch (Exception e) {
-            System.out.println("Malformed inventory data in save file! " + e.getMessage() + " Aborting . . .");
+            System.out.println("Error message: " + e.getMessage());
         }
+    }
+    public static void populateInventoryFromSave(Scanner playerScanner) {
+        String []saveValz = new String[2];
+        for (int i = 0; i < 2; i++) {
+            saveValz[i] = playerScanner.nextLine();
+        }
+        populateInventoryFromSave(saveValz);
     }
 
     public static Item[] craftItemArray(eqCats eqCat, boolean isEquipping) {
@@ -682,7 +723,7 @@ public class Inventory {
         });
     }
     public static List<List<String>> prepareItemSeriesDisplay(int startingInvID, int entriesToDisplay,
-                                                              eqCats itemCat, Item[] provideItemz) {
+                                                              eqCats itemCat, Item[] provideItemz) throws Exception {
         Item[] itemzToHandle = new Item[]{};
         String prependerFlavour;
         if (provideItemz != null) {
@@ -741,7 +782,7 @@ public class Inventory {
         return optionz;
     }
 
-    public static void handleEquipping(eqCats itemCat, int itemToEquipInvIdx, int eqSlot, Item[] availables) {
+    public static void handleEquipping(eqCats itemCat, int itemToEquipInvIdx, int eqSlot, Item[] availables) throws Exception {
         switch (itemCat) {
             case WEAPONZ:
                 Inventory.equipWeapon(((WeaponItem)
@@ -764,7 +805,7 @@ public class Inventory {
         }
     }
 
-    public static void handleUnequpping(eqCats itemCat, Item itemInQuestion, int equippedAtIndex) {
+    public static void handleUnequpping(eqCats itemCat, Item itemInQuestion, int equippedAtIndex) throws Exception {
         Item tempieItem = null;
         switch (itemCat) {
             case ARMOUR:
@@ -785,7 +826,7 @@ public class Inventory {
     }
     public static List<String> inspectItem(Item itemInQuestion, boolean includedLilArrowz,
                                            boolean returnList, int rawIndex,
-                                           eqCats itemCat) {
+                                           eqCats itemCat) throws Exception {
         List<String> itemDescFieldz = new ArrayList<>();
         List<String> eqOptionz = new ArrayList<>();
         if (itemInQuestion == null || itemInQuestion.getItemID() == -1) {
@@ -873,7 +914,7 @@ public class Inventory {
     }
 
     public static int handleItemInspectionChoices(Item itemInQuestion, eqCats itemCat, int rawIndex,
-                                                  boolean isEquipping) {
+                                                  boolean isEquipping) throws Exception {
         List<String> eqOptionz = inspectionChoiceMaker
                 (itemInQuestion.getItemID(), isEquipping);
         // at this point it's NOT guaranteed that the options are:
@@ -903,7 +944,7 @@ public class Inventory {
             }
         }
     }
-    public static int displayInventoryOrEq(eqCats catToDisp, boolean isEquipping) {
+    public static int displayInventoryOrEq(eqCats catToDisp, boolean isEquipping) throws Exception {
         int curChoice;
         int curStartIndex;
         int curInvPage = 1;
@@ -935,7 +976,7 @@ public class Inventory {
                 System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
                         " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
             }
-            System.out.println(">> Gold: " + Inventory.getCurrentGold());
+            System.out.println(">> " + PlayerKeywordz.getCurrencyName() + ": " + Inventory.getCurrentGold());
             System.out.println(">> " + pagenamer + " page " + curInvPage + " of " + totalPages + "\n>>");
             optionz.clear();
             prevPageBind = -1;
@@ -1078,7 +1119,7 @@ public class Inventory {
                 yield null;
         };
     }
-    public static void displayEquipment() {
+    public static void displayEquipment() throws Exception {
         int curChoice = -1;
         String[] optionz = new String[]{"Weapons", "Armour", "Neck", "Trinkets", "Return"};
         while (true) {
@@ -1088,7 +1129,7 @@ public class Inventory {
             System.out.println(">> " +
                     PlayerClass.getPlayerStat("curHealth") + "/" + PlayerClass.getPlayerStat("maxHealth") + " HP");
             System.out.println(">> " + PlayerClass.getPlayerStat("Armour") + " Armour");
-            System.out.println(">> Gold: " + Inventory.getCurrentGold());
+            System.out.println(">> " + PlayerKeywordz.getCurrencyName() + ": " + Inventory.getCurrentGold());
             for (Map.Entry<String, Integer> curEntry : PlayerClass.getPlayerAtts().entrySet()) {
                 System.out.println(">> " + curEntry.getKey() + ": " + curEntry.getValue());
             }
@@ -1110,7 +1151,7 @@ public class Inventory {
         }
     }
 
-    public static void inspectEquipmentSection(int eqSection) {
+    public static void inspectEquipmentSection(int eqSection) throws Exception {
         // weaponz - 0, armour - 1, neck - 2, trinketz - 3
         eqCats picked = switch (eqSection) {
             case 0 -> eqCats.WEAPONZ;

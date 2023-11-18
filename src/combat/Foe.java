@@ -197,7 +197,7 @@ public abstract class Foe {
     protected int genLevelDivisorVal(double levelDivisor) {
         return levelDivisor == 0 ? 0 : (int)Math.round(getLevel() / levelDivisor);
     }
-    public Map<String, Integer> launchAttack() {
+    public Map<String, Integer> launchAttack() throws Exception {
         // attackType = 0 for quick, 1 for normal, 2 for strong
         // isCrit = 0 for non-crit, 1 for crit
         // attackHit = 0 or 1

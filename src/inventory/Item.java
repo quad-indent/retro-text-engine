@@ -87,11 +87,11 @@ public class Item {
     }
 
     public static Object smartItemInit(int itemID, List<String> argz) {
-        assert argz.size() >= 4 : "misconfigured data! Check your itemTable.txt file";
+        assert argz.size() >= 4 : "misconfigured data! Check your configs/itemTable.txt file";
         String itemType = argz.get(itEnum.I_TYPE.val);
         assert itemType.equals("weapon") || itemType.equals("armour") || itemType.equals("trinket") ||
                 itemType.equals("neck") || itemType.equals("junk") || itemType.equals("quest") :
-                "misconfigured data! Check your itemTable.txt file";
+                "misconfigured data! Check your configs/itemTable.txt file";
         String itemName = argz.get(itEnum.I_NAME.val);
         String itemDesc = argz.get(itEnum.I_DESC.val);
         int itemSellsFor = Integer.parseInt(argz.get(itEnum.I_SELLSFOR.val));
@@ -123,7 +123,7 @@ public class Item {
             if (StoryBlockMaster.stringContainsAny(stat, new char[]{'+', '-'})) {
                 String[] splittie = stat.split("[+-]");
                 assert splittie.length == 2 : "Misconfigured item named " + rawStatz.get(1) +
-                        " in itemTable.txt found!";
+                        " in configs/itemTable.txt found!";
                 boolean isPositive = stat.contains("+");
                 returnal.put(splittie[0], isPositive ?
                         Integer.parseInt(splittie[1]) : Integer.parseInt(splittie[1]) * -1);
@@ -137,7 +137,7 @@ public class Item {
             if (StoryBlockMaster.stringContainsAny(stat, new char[]{'>', '<'})) {
                 String[] splittie = stat.split("[><]");
                 assert splittie.length == 2 : "Misconfigured item named " + rawStatz.get(1) +
-                        " in itemTable.txt found!";
+                        " in configs/itemTable.txt found!";
                 boolean isPositive = stat.contains(">");
                 returnal.put(splittie[0], isPositive ?
                         Integer.parseInt(splittie[1]) : Integer.parseInt(splittie[1]) * -1);

@@ -1,0 +1,48 @@
+[0]How kind of you to humour me. Tell me, then: What is mightier? The pen, or the sword?
+[0.1][Intellect+2]The pen
+[0.2][Strength+2]The sword
+[0.3][Dexterity+2]A knife in the back
+[1]One wonders if that's because you truly think it superior, or simply because wielding the pen is the upper limit of what your physique allows
+[1.4]Continue
+[2]I imagine a world in which everyone shares your attitude to be a scorched wasteland. I wonder if that's what you aim for
+[2.4]Continue
+[3]Schemes, poisons, intrigue - such pretty words and sophisticated methods to describe a coward's work
+[3.4]Continue
+[4]Perhaps my judgement was made in haste. Let me posit a real question. Imagine yourself an executioner. You stand next to the condemned upon the gallows. Your leg has just kicked the stool from beneath their feet. You suddenly see the high judge approach, shouting "Stop the execution!". The condemned is already swinging, but they're innocent! It is imperative that you save them. What do you do?
+[4.5][Strength+3]Wrap yourself around their legs to hold them up
+[4.5][Dexterity+3]Produce a knife and throw it at the rope to cut it
+[4.5][Intellect+3]Prop up the chair for them to stand back on
+[5]Marvellous! Now, then. Tell me about what you value; what guides you; what you respect
+[5.6][Diplomacy+3]A silver tongue
+[5.7][Subterfuge+3]A quiet approach
+[5.8][Arcana+3]Insight into the world beyond
+[5.9][Willpower+3]Perservering where others may fall
+[5.10][Keen Eye+3]Spotting what others might miss
+[6]No pick can open hearts and penetrate minds - words can
+[6.11][Intellect+1]Continue
+[7]All it takes is a single moment of someone lowering their guard just enough. You know how to spot that moment well
+[7.11][Dexterity+1]Continue
+[8]Some think that there is no more to this world than meets the eye. You know this not to be case
+[8.11][Intellect+1]Continue
+[9]Where there is enough will, flesh and mind can withstand nigh anything. Push your thresholds. Become indestructible
+[9.11][Strength+1]Continue
+[10]Although used by most, few hone their sight to the extent you have. You know exactly where to look to find what was not meant to be seen
+[10.11][Dexterity+1]Continue
+[11]And now, pick a trinket that you would like to be buried with
+[11.12]A coin
+[11.13]An opulent ring
+[11.14]A silver needle
+[11.15]A feather
+[11.16]A candle
+[12]The ferryman's toll must be paid
+[12.17][Arcana+1]Continue
+[13]hose who remain should remember you by how keen your eye was for riches
+[13.17][Keen Eye+1]Continue
+[14]He himself might his quietus make with a bare bodkin. Or someone else's. A trinket befitting of a rogue to be buried with
+[14.17][Subterfuge+1]Continue
+[15]So that you might find peace in death as you had sought to bring it amongst the living through diplomacy
+[15.17][Diplomacy+1]Continue
+[16]Should you wake from this slumber, you will have a source of light at the ready, to persevere and march on once more
+[16.17][Willpower+1]Continue
+[17]What a curious soul you are, ^PLAYERNAME^. I do look forward to seeing you navigate what lies ahead. But, for now, do take a look at what you've wound up with. Oh, and do feel free to adjust before you embark on your journey!
+[17.END]Continue

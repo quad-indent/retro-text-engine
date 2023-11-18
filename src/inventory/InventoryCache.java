@@ -3,6 +3,8 @@ package inventory;
 import java.util.*;
 
 import storyBits.FileParser;
+import storyBits.GlobalConf;
+
 public class InventoryCache {
     private static Map<Integer, List<String>> itemsCache = new LinkedHashMap<>();
 
@@ -30,11 +32,11 @@ public class InventoryCache {
         }
         return null;
     }
-    public static void processItemCache(String fileName) {
+    public static void processItemCache(String fileName) throws Exception {
         if (fileName == null || fileName.isEmpty()) {
-            fileName = "itemTable.txt";
+            fileName = FileParser.joinConfigFolder("itemTable.txt");
         }
-        System.out.println("Attempting to parse " + fileName + ". . .");
+        GlobalConf.issueLog("Attempting to parse " + fileName + ". . .", GlobalConf.SEVERITY_LEVEL_INFO);
         List<String> itemEntries = FileParser.parseFile(fileName, "[", false);
         List<List<String>> splitItemEntries = new ArrayList<>();
         assert itemEntries != null;

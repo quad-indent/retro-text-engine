@@ -1,6 +1,7 @@
 package player;
 
 import storyBits.FileParser;
+import storyBits.GlobalConf;
 import storyBits.StoryDisplayer;
 
 import java.util.*;
@@ -213,18 +214,20 @@ public class PlayerKeywordz {
 
     public static void initAllNamez(String statsTableFileName) throws Exception {
         if (statsTableFileName == null) {
-            statsTableFileName = "statsTable.txt";
+            statsTableFileName = FileParser.joinConfigFolder("statsTable.txt");
         }
         List<String> namez = FileParser.parseFile(statsTableFileName, "#", true);
         if (namez == null) {
-            throw new NullPointerException();
+            GlobalConf.issueLog("Got a null value in the statsTable.txt file! Aborting!",
+                    GlobalConf.SEVERITY_LEVEL_ERROR, true);
         }
         Map<String, String> parsedz = new LinkedHashMap<>();
         for (String thisLine: namez) {
             List<String> keyValPair= Arrays.stream(thisLine.split("::"))
                     .map(StoryDisplayer::removeWhiteSpace).toList();
             if (keyValPair.size() > 2) {
-                throw new Exception("Received malformed data in " + statsTableFileName + "!");
+                GlobalConf.issueLog("Received malformed data in " + statsTableFileName + "!",
+                        GlobalConf.SEVERITY_LEVEL_ERROR, true);
             }
             parsedz.put(keyValPair.get(0), keyValPair.get(1));
         }
@@ -255,8 +258,9 @@ public class PlayerKeywordz {
             }
             setNumMinorStatz(Arrays.stream(getMinorStats()).filter(Objects::nonNull).toList().size());
         } catch (NullPointerException e) {
-            System.out.println("Error attempting to parse " + statsTableFileName + "! " +
-                    "Some names may have been initialised unsuccessfully!");
+            GlobalConf.issueLog("Error attempting to parse " + statsTableFileName + "! " +
+                    "Some names may have been initialised unsuccessfully!",
+                    GlobalConf.SEVERITY_LEVEL_ERROR, true);
         }
     }
 }

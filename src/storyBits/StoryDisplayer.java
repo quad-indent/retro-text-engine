@@ -25,8 +25,10 @@ public class StoryDisplayer {
     public static void setCurIndex(int curIndex) {
         StoryDisplayer.curIndex = curIndex;
     }
-
-    public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt) throws Exception {
+    public static String replaceTxtWithKeywordz(String raw) {
+        return raw.replaceAll("\\^PLAYERNAME\\^", PlayerClass.getPlayerName());
+    }
+    public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt, boolean suppressInvAndEq) throws Exception {
         setCurIndex(beginAt);
         StoryBlock curObj = storyObj.get(getCurIndex()).refineCurStoryBlock();
         int nextChoice;
@@ -39,12 +41,17 @@ public class StoryDisplayer {
         if (!Inventory.isMalformedInv()) {
             choiceAdditions++;
         }
+        if (suppressInvAndEq) {
+            choiceAdditions = 0;
+        }
         while (getCurIndex() < storyObj.size()) {
-            System.out.println(">> " + curObj.getPromptText());
+            for (String str: Inventory.simpleStringWrapper(curObj.getPromptText(), -1)) {
+                System.out.println(replaceTxtWithKeywordz(str));
+            }
             ClipPlayer.playTune(curObj.getTuneToPlay());
             List<String> currentChoicez = curObj.getChoices();
-            printChoiceOptions(currentChoicez, !Inventory.isMalformedInv(),
-                    !Inventory.isMalformedEq());
+            printChoiceOptions(currentChoicez, !(Inventory.isMalformedInv() || suppressInvAndEq),
+                    !(Inventory.isMalformedEq() || suppressInvAndEq));
             pureChoiceLen = getChoiceOptions(currentChoicez, false, false).length;
 
             rawChoicePicked = awaitChoiceInput(

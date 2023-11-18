@@ -3,6 +3,7 @@ package combat;
 import inventory.Inventory;
 import inventory.WeaponItem;
 import player.PlayerKeywordz;
+import storyBits.GlobalConf;
 import storyBits.StoryDisplayer;
 import player.PlayerClass;
 
@@ -38,15 +39,15 @@ public class CombatUtils {
             return minOut;
         return ThreadLocalRandom.current().nextInt(minOut, maxOut + 1);
     }
-    public static int genRandomNumWeighted(int minOut, int maxOut, int[] qWeightz) throws AssertionError {
+    public static int genRandomNumWeighted(int minOut, int maxOut, int[] qWeightz) throws AssertionError, Exception {
         // the weightz are expected to be {chance for lowest quartile of range, chance for 2nd, 3rd, and top quartile}
         // thirds or halves can be used as well, and regardless they need to sum up to 100
         if (qWeightz.length > 4) {
-            throw new AssertionError("Up to four values for the weight quarters " +
-                    "expected, got " + qWeightz.length + "!");
+            GlobalConf.issueLog("Up to four values for the weight quarters " +
+                    "expected, got " + qWeightz.length + "!", GlobalConf.SEVERITY_LEVEL_ERROR, true);
         } else if (Arrays.stream(qWeightz).sum() != 100) {
-            throw new AssertionError("The weights need to sum to 100! " +
-                    "(exclamation point, not factorial)");
+            GlobalConf.issueLog("The weights need to sum to 100! " +
+                    "(exclamation point, not factorial)", GlobalConf.SEVERITY_LEVEL_ERROR, true);
         }
         if (minOut == maxOut)
             return minOut;
@@ -173,7 +174,7 @@ public class CombatUtils {
 
     public static int calcDamage(int thisDex, int otherDex, int thisStr, int otherStr,
                                      int attackType, boolean isCrit,
-                                     boolean returnMinDmg, boolean returnMaxDmg) {
+                                     boolean returnMinDmg, boolean returnMaxDmg) throws Exception {
         // 0 - quick
         // 1 - normal
         // 2 - strong
@@ -248,7 +249,7 @@ public class CombatUtils {
         int boonRoll = genRandomNumWeighted(minDmg + minDmgBoon, maxDmg + maxDmgBoon, rollWeightz);
         return (int)(boonRoll * dmgMultiplier);
     }
-    public static <T> void decreaseHealth(T obj, int byHowMuch) {
+    public static <T> void decreaseHealth(T obj, int byHowMuch) throws Exception {
         if (!(obj instanceof Foe)) {
             PlayerClass.incrementPlayerStat("curHealth", -byHowMuch);
         } else {
@@ -261,7 +262,7 @@ public class CombatUtils {
         return Math.min(curValue, highestAcceptable);
     }
 
-    public static String[] genAttackChoices(Foe combatant) {
+    public static String[] genAttackChoices(Foe combatant) throws Exception {
         // thisDex and thisStr will always be the player's, as the enemy
         // doesn't need to see its options
         String[] choicez = new String[3];
@@ -374,7 +375,7 @@ public class CombatUtils {
         return combatant.getXpYield();
     }
     public static void processHit(Foe combatant, int thisDex, int otherDex, int atkChoice,
-                                  int thisStr, int otherStr) {
+                                  int thisStr, int otherStr) throws Exception {
         boolean isACrit = rollForCrit(thisDex, otherDex, atkChoice);
 
         int dmgDealt = calcDamageAfterArmour(calcDamage(thisDex, otherDex,
@@ -399,8 +400,11 @@ public class CombatUtils {
             case 2:
                 yield " launches a mighty swing at you ";
             default:
-                throw new Exception("Foe attack type mismatch! Expected 0, 1, or 2, got "
-                        + foeMap.get("attackType"));
+                GlobalConf.issueLog("Foe attack type mismatch! Expected 0, 1, or 2, got "
+                        + foeMap.get("attackType"),
+                        GlobalConf.SEVERITY_LEVEL_ERROR,
+                        true);
+                yield null;
         };
         String dmgText = ">> " + combatant.getName() + enemyAtkFlavour + "for " +
                 foeMap.get("damageOut") + " damage";

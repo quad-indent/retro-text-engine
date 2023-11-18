@@ -7,14 +7,14 @@
 [2] You now stand up and look around the room. Darkness all around. Do you
 [2.4] Look for a door
 [2.5] Look for a light source
-[3][Tune:None] You really should stop it and try something else. Do you
+[3][Tune:baroness_descends] You really should stop it and try something else. Do you
 [3.2] Get up
 [3.6] Scream yet again
 [4] Every part of every wall feels like it's made of solid bricks. No handle in sight
 [4.2] Oh well.
 [5] You manage to find something that feels like candle and some flint
 [5.7] You strike the candle alight
-[6][Tune:bolt_action_love,noloop] Your scream awakes something mean!
+[6][Tune:bolt_action_love,loop] Your scream awakes something mean!
 [6.8][Goblin][Goblin Sentry] Prepare for trouble!
 [7][Tune:triumphant_byte] The match is struck, a blazing starlight ahead!
 [7.END] Woo!

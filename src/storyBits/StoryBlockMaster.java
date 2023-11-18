@@ -1,5 +1,6 @@
 package storyBits;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public class StoryBlockMaster {
     public ArrayList<StoryBlock> getStoryObj() {
         return storyObj;
     }
-    public StoryBlockMaster(String storyFile) {
+    public StoryBlockMaster(String storyFile) throws Exception {
         storyObj = new ArrayList<StoryBlock>();
         List<String> storyData = FileParser.parseFile(storyFile, "[", false);
         if (storyData == null) {

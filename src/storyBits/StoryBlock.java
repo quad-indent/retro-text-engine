@@ -248,7 +248,8 @@ public class StoryBlock {
                 // if item-check
                 Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
                 if (itemInQuestion == null) {
-                    throw new Exception("Failed to retrieve item info!");
+                    GlobalConf.issueLog("Failed to retrieve item info!", GlobalConf.SEVERITY_LEVEL_ERROR,
+                            true);
                 }
                 returnChoices.add("[give " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
             } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
