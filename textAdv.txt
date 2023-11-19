@@ -1,5 +1,5 @@
 [0][Tune:sleepy_plessow] You awake, cold and alone. Do you 
-[0.1] Scream
+[0.1][item+0] Scream
 [0.1] Cry
 [1] Regardless, your attempts have no effect. You should do something useful. Do you
 [1.2] Get up

@@ -1,5 +1,6 @@
 package inventory;
 
+import storyBits.GlobalConf;
 import storyBits.StoryBlockMaster;
 
 import java.util.LinkedHashMap;
@@ -86,12 +87,20 @@ public class Item {
         }
     }
 
-    public static Object smartItemInit(int itemID, List<String> argz) {
-        assert argz.size() >= 4 : "misconfigured data! Check your configs/itemTable.txt file";
+    public static Item smartItemInit(int itemID) throws Exception {
+        return (Item) smartItemInit(itemID, InventoryCache.getItem(itemID));
+    }
+    public static Object smartItemInit(int itemID, List<String> argz) throws Exception {
+        if (argz.size() < 4) {
+            GlobalConf.issueLog("Misconfigured data! Check your configs/itemTable.txt file",
+                    GlobalConf.SEVERITY_LEVEL_WARNING, false);
+        }
         String itemType = argz.get(itEnum.I_TYPE.val);
-        assert itemType.equals("weapon") || itemType.equals("armour") || itemType.equals("trinket") ||
-                itemType.equals("neck") || itemType.equals("junk") || itemType.equals("quest") :
-                "misconfigured data! Check your configs/itemTable.txt file";
+        if (!(itemType.equals("weapon") || itemType.equals("armour") || itemType.equals("trinket") ||
+                itemType.equals("neck") || itemType.equals("junk") || itemType.equals("quest"))) {
+            GlobalConf.issueLog("Misconfigured data! Check your configs/itemTable.txt file",
+                    GlobalConf.SEVERITY_LEVEL_WARNING, false);
+        }
         String itemName = argz.get(itEnum.I_NAME.val);
         String itemDesc = argz.get(itEnum.I_DESC.val);
         int itemSellsFor = Integer.parseInt(argz.get(itEnum.I_SELLSFOR.val));

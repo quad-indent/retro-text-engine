@@ -50,3 +50,6 @@ public class Main {
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage, false);
     }
 }
+
+//Only one thing to be done
+//Bestow items upon player in the story ting

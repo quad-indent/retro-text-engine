@@ -2,6 +2,8 @@ package storyBits;
 
 import combat.*;
 import inventory.Inventory;
+import inventory.InventoryCache;
+import inventory.Item;
 import player.PlayerClass;
 
 import java.util.*;
@@ -82,6 +84,8 @@ public class StoryDisplayer {
                 String relevantStat = curObj.getRelevantStat().get(rawChoicePicked);
                 if (relevantStat.equals("curXP")) {
                     PlayerClass.incrementXP(curObj.getStatVal().get(rawChoicePicked));
+                } else if (relevantStat.equalsIgnoreCase("item")) {
+                    Inventory.addItemToInventory(Item.smartItemInit(curObj.getStatVal().get(rawChoicePicked)));
                 } else if (!relevantStat.matches("^[0-9]\\d*$")) {
                     // if it's not numeric, i.e., if it's not an item
                     PlayerClass.incrementPlayerStat(relevantStat,
