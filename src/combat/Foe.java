@@ -2,6 +2,7 @@ package combat;
 
 import player.PlayerClass;
 import player.PlayerKeywordz;
+import storyBits.GlobalConf;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -22,6 +23,16 @@ public abstract class Foe {
     private int numAttacksPerTurn;
     private int specialAttackChance;
     private int goldDrop;
+    private String specialAttackMsg;
+
+    public String getSpecialAttackMsg() {
+        return specialAttackMsg;
+    }
+
+    public void setSpecialAttackMsg(String specialAttackMsg) {
+        this.specialAttackMsg = specialAttackMsg;
+    }
+
     public int getSpecialAttackChance() {
         return specialAttackChance;
     }
@@ -169,6 +180,25 @@ public abstract class Foe {
             this.curHealth = Math.max(0, this.curHealth);
         }
     }
+    public Foe (Map<String, String> argz) {
+        this.name = argz.get("name");
+        this.level = Integer.parseInt(argz.get("level"));
+        this.curHealth = Integer.parseInt(argz.get("health"));
+        this.maxHealth = Integer.parseInt(argz.get("health"));
+        this.curMana = Integer.parseInt(argz.get("mana"));
+        this.maxMana = Integer.parseInt(argz.get("mana"));
+        this.xpYield = argz.get("experience yield").equalsIgnoreCase("default") ?
+                Foe.genXPYield(this.level) :
+                Integer.parseInt(argz.get("experience yield"));
+        this.strength = Integer.parseInt(argz.get(PlayerKeywordz.getStrengthName().toLowerCase()));
+        this.dexterity = Integer.parseInt(argz.get(PlayerKeywordz.getDexterityName().toLowerCase()));
+        this.intellect = Integer.parseInt(argz.get(PlayerKeywordz.getIntellectName().toLowerCase()));
+        this.armour = Integer.parseInt(argz.get("armour"));
+        this.goldDrop = Integer.parseInt(argz.get(PlayerKeywordz.getCurrencyName().toLowerCase() + " drop"));
+        this.numAttacksPerTurn = Integer.parseInt(argz.get("numAttacksPerTurn"));
+        this.specialAttackChance = Integer.parseInt(argz.get("specialAttackChance"));
+        this.specialAttackMsg = argz.getOrDefault("specialAttackMessage", "");
+    }
     public Foe(String name, int level, int curHealth, int maxHealth, int mana, int maxMana,
                int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop,
                int numAttacksPerTurn, int specialAttackChance) {
@@ -194,6 +224,11 @@ public abstract class Foe {
     }
     protected int genLevelDivisorVal(double levelDivisor) {
         return levelDivisor == 0 ? 0 : (int)Math.round(getLevel() / levelDivisor);
+    }
+    public String parseSpecialAtkMsg() {
+        String thisMsg = getSpecialAttackMsg();
+        thisMsg = thisMsg.replaceAll("foeName ", this.getName());
+        return thisMsg;
     }
     public Map<String, Integer> launchAttack() throws Exception {
         // attackType = 0 for quick, 1 for normal, 2 for strong

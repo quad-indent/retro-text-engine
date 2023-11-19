@@ -1,4 +1,5 @@
 import combat.CombatUtils;
+import combat.FoeParser;
 import player.PlayerClass;
 import player.PlayerKeywordz;
 import storyBits.FileParser;

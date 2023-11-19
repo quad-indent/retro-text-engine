@@ -3,8 +3,19 @@ package combat;
 import foeTypes.Automaton;
 import foeTypes.Goblin;
 import foeTypes.Undead;
+import foeTypes.foeArchetypes.BasicFoe;
+import foeTypes.foeArchetypes.MultiAttacker;
+import storyBits.GlobalConf;
+
+import java.util.Map;
 
 public class FoeFactory {
+    public static Foe retrieveFoe(Map<String, String> foeParamz) {
+        return switch (foeParamz.get("specialAttackType").toLowerCase()) {
+            case "multiAttacker" -> new MultiAttacker(foeParamz);
+            default -> new BasicFoe(foeParamz);
+        };
+    }
     public static Foe retrieveFoe(String foeType, String foeName, boolean matchPlayerLv, int relativeLvOffset,
                                   int absLvOffset, int curHealth, int maxHealth, int curMana,
                                   int maxMana, int xpYield, int strength, int dexterity, int intellect,

@@ -10,32 +10,36 @@ public class Goblin extends Foe {
         super("Goblin " + specificName, 0, curHealth, maxHealth,
                 curMana, maxMana, xpYield, strength, dexterity, intellect, armour, goldDrop,
                 numAttacksPerTurn, specialAttackChance);
-        super.setLevel(CombatUtils.genEnemyLevel(matchPlayerLv, relativeLvOffset, absLvOffset));
-        if (maxHealth <= 0) {
+    }
+    public void runCheckz() {
+        if (super.getLevel() <= 0) {
+            super.setLevel(CombatUtils.genEnemyLevel(true, 0, 0));
+        }
+        if (super.getMaxHealth() <= 0) {
             super.generateMaxHealth(6, 1, 3);
         }
-        if (xpYield <= 0) {
+        if (super.getXpYield() <= 0) {
             super.setXpYield(Foe.genXPYield(super.getLevel()));
         }
-        if (strength <= 0) {
+        if (super.getStrength() <= 0) {
             super.generateStrength(7, 3., 1, 2.);
         }
-        if (dexterity <= 0) {
+        if (super.getDexterity() <= 0) {
             super.generateDexterity(9, 2., 2, 2.);
         }
-        if (intellect <= 0) {
+        if (super.getIntellect() <= 0) {
             super.generateIntellect(3, 4., 0, -1);
         }
-        if (armour <= 0) {
+        if (super.getArmour() <= 0) {
             super.generateArmour(2, 0, 2., 1.5);
         }
-        if (goldDrop <= 0) {
+        if (super.getGoldDrop() <= 0) {
             super.generateGoldDrop(0, 4, 6);
         }
-        if (numAttacksPerTurn <= 0) {
+        if (super.getNumAttacksPerTurn() <= 0) {
             super.setNumAttacksPerTurn(1);
         }
-        if (specialAttackChance <= 0) {
+        if (super.getSpecialAttackChance() <= 0) {
             super.setSpecialAttackChance(45);
         }
     }
