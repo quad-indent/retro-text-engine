@@ -72,8 +72,8 @@ public class Item {
         this.statBoons = statBoons;
     }
 
-    public Item(int itemID, String name, String description, String itemType, int itemValue, Map<String, Integer> statBoons,
-                Map<String, Integer> statRequirements) {
+    public Item(int itemID, String name, String description, String itemType, int itemValue,
+                Map<String, Integer> statBoons, Map<String, Integer> statRequirements) {
         this.itemID = itemID;
         this.name = name;
         this.description = description;
@@ -115,13 +115,13 @@ public class Item {
                 int maxDmg = Integer.parseInt(argz.get(itEnum.I_MAXDMG.val));
                 String scalingStat = argz.get(itEnum.I_SCALESTAT.val);
                 boolean isShield = argz.get(itEnum.I_ISSHIELD.val).equalsIgnoreCase("shield");
-                return new WeaponItem(itemID, itemName, itemDesc, itemSellsFor, assembleStatBoonz(argz), assembleStatReqz(argz),
-                        minDmg, maxDmg, is1H, isShield, scalingStat);
+                return new WeaponItem(itemID, itemName, itemDesc, itemSellsFor, assembleStatBoonz(argz),
+                        assembleStatReqz(argz), minDmg, maxDmg, is1H, isShield, scalingStat);
             case "armour":
                 String armourSlot = argz.get(itEnum.I_ARMOURSLOT.val);
                 int armourBonus = Integer.parseInt(argz.get(itEnum.I_ARMOURVAL.val));
-                return new ArmourItem(itemID, itemName, itemDesc, itemSellsFor, assembleStatBoonz(argz), assembleStatReqz(argz),
-                        armourSlot, armourBonus);
+                return new ArmourItem(itemID, itemName, itemDesc, itemSellsFor, assembleStatBoonz(argz),
+                        assembleStatReqz(argz), armourSlot, armourBonus);
         }
         return null;
     }

@@ -146,7 +146,7 @@ public class PlayerKeywordz {
         PlayerKeywordz.dexterityName = dexterityName;
     }
 
-    public static String getDexteritDesc() {
+    public static String getDexterityDesc() {
         return dexteritDesc;
     }
 
@@ -250,7 +250,8 @@ public class PlayerKeywordz {
             setKeenEyeName(parsedz.get("Name for Keen Eye"));
             addMinorStatName(parsedz.get("Name for Keen Eye"));
             addMinorStatDesc(parsedz.get("Description for Keen Eye"));
-            while (!parsedz.get("Name for extra talent #" + (minorStatCtr)).isEmpty()) {
+            while (parsedz.containsKey("Name for extra talent #" + (minorStatCtr)) &&
+                    !parsedz.get("Name for extra talent #" + (minorStatCtr)).isEmpty()) {
                 addMinorStatName(parsedz.get("Name for extra talent #" + (minorStatCtr)));
                 addMinorStatDesc(parsedz.get("Description for talent #" + (minorStatCtr)));
                 minorStatCtr++;

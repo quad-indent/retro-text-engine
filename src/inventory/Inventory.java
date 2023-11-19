@@ -799,7 +799,8 @@ public class Inventory {
         return optionz;
     }
 
-    public static void handleEquipping(eqCats itemCat, int itemToEquipInvIdx, int eqSlot, Item[] availables) throws Exception {
+    public static void handleEquipping(eqCats itemCat, int itemToEquipInvIdx,
+                                       int eqSlot, Item[] availables) throws Exception {
         switch (itemCat) {
             case WEAPONZ:
                 Inventory.equipWeapon(((WeaponItem)
@@ -998,7 +999,8 @@ public class Inventory {
             displayCopy = craftItemArray(catToDisp, isEquipping, armourType);
             if (catToDisp == eqCats.INVENTORY && !isEquipping) {
                 System.out.println(">> " + PlayerClass.getPlayerName());
-                System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
+                System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") +
+                        " (" + PlayerClass.getPlayerStat("xp") +
                         " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
             }
             System.out.println(">> " + PlayerKeywordz.getCurrencyName() + ": " + Inventory.getCurrentGold());
@@ -1149,7 +1151,8 @@ public class Inventory {
         String[] optionz = new String[]{"Weapons", "Armour", "Neck", "Trinkets", "Return"};
         while (true) {
             System.out.println(">> " + PlayerClass.getPlayerName());
-            System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") + " (" + PlayerClass.getPlayerStat("xp") +
+            System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") +
+                    " (" + PlayerClass.getPlayerStat("xp") +
                     " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
             System.out.println(">> " +
                     PlayerClass.getPlayerStat("curHealth") + "/" + PlayerClass.getPlayerStat("maxHealth") + " HP");
@@ -1189,9 +1192,3 @@ public class Inventory {
         displayInventoryOrEq(picked, false, "");
     }
 }
-
-// todo: maybe run equipment req pass checks over whole equipment when unequipping
-// (if a stat bestowed by the unequipped item fails to fulfill criteria for other items to be equipped)
-// todo: include item/gold checks - done!
-// todo: forgot to remove inventory item upon passed check - fix!!!
-// !!!

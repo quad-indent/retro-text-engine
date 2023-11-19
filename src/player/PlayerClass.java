@@ -491,17 +491,19 @@ public class PlayerClass {
         for (Map.Entry<String, Integer> curStat : getPlayerAtts().entrySet()) {
             System.out.println(">> [" + printCtr++ + "] " + curStat.getKey() + " - " + curStat.getValue());
         }
-        System.out.println(">> Major traits:\n>> Strength boosts your max health and accuracy of your strong attacks");
-        System.out.println(">> Dexterity boosts your critical-strike chance and accuracy of your quick attacks");
-        System.out.println(">> Intellect boosts your max mana and your spell power (WIP, useless to pick)");
+        System.out.println(">> Major traits:\n>> " + PlayerKeywordz.getStrengthName() + ": " +
+                PlayerKeywordz.getStrengthDesc());
+        System.out.println(">> " + PlayerKeywordz.getDexterityName() + ": " + PlayerKeywordz.getDexterityDesc());
+        System.out.println(">> " + PlayerKeywordz.getIntellectName() + ": " + PlayerKeywordz.getIntellectDesc());
         System.out.println(">> However, the accuracy of your attacks is also determined by your foe's stats!");
-        System.out.println("\n>> Minor traits that have no direct use in combat, but may prove invaluable in exploration and story elements!");
-        System.out.println(">> Diplomacy - how good you are at convincing others to do what you want them to");
-        System.out.println(">> Subterfuge - for staying out of sight and opening locks you're not supposed to");
-        System.out.println(">> Arcana - your knowledge of the world beyond this one: rites, rituals, old tongues, incantations");
-        System.out.println(">> Willpower - your ability to persevere, even when every part of your body is breaking");
-        System.out.println(">> Keen Eye - how good you are at spotting what is meant to be hidden. Also, boosts the amount of gold you find");
-        System.out.println(">> You can increase or decrease (so as to undo assignment of what you currently have) your stats by\n" +
+        System.out.println("\n>> Minor traits that have no direct use in combat, but may prove " +
+                "invaluable in exploration and story elements!");
+        for (int i = 0; i < PlayerKeywordz.getNumMinorStatz(); i++) {
+            System.out.println(">> " + PlayerKeywordz.getMinorStats()[i] + " - " +
+                    PlayerKeywordz.getMinorStatDescs()[i]);
+        }
+        System.out.println(">> You can increase or decrease " +
+                "(so as to undo assignment of what you currently have) your stats by\n" +
                 "writing the trait's corresponding number and a + or -, for instance 1+ to increase strength");
         System.out.println(">> Once you're happy with the distribution and have spent all points, write [done]");
     }

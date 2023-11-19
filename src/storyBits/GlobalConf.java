@@ -25,7 +25,7 @@ public class GlobalConf {
             severity <= logVerbosity ||
             shouldRaiseException) {
             String lilPreamble = switch (severity) {
-                case SEVERITY_LEVEL_ERROR -> "Error !";
+                case SEVERITY_LEVEL_ERROR -> "Error! ";
                 case SEVERITY_LEVEL_WARNING -> "Warning! ";
                 case SEVERITY_LEVEL_INFO -> "";
                 default -> null;
