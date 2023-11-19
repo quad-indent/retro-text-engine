@@ -1,1 +1,1 @@
-Will add a proper README when project is in a usable-enough state
+For now, please consult the wiki at https://github.com/Jan-bog/oldtimey-rpg-engine/wiki
