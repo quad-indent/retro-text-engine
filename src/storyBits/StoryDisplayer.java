@@ -106,9 +106,6 @@ public class StoryDisplayer {
     private static Foe getFoe(StoryBlock curObj, int rawChoicePicked) throws Exception {
         String[] combatantInfo = curObj.getCombatantInfo().get(rawChoicePicked);
         return FoeParser.parseFoe(combatantInfo[0], combatantInfo[1]);
-//        return FoeFactory.retrieveFoe(combatantInfo[0], combatantInfo[1], true,
-//                0, 0, 0, 0, 0, 0, 0,
-//                0, 0, 0, 0, 0, 0, 0);
     }
 
     public static int[] getChoiceOptions(List<String> choicez, boolean hasInventoryChoice,

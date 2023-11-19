@@ -1,4 +1,4 @@
-package foeTypes.foeArchetypes;
+package foeTypes;
 
 import combat.Foe;
 import player.PlayerClass;

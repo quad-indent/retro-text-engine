@@ -1,9 +1,9 @@
 package combat;
 
-import foeTypes.foeArchetypes.ArmourBooster;
-import foeTypes.foeArchetypes.ArmourShredder;
-import foeTypes.foeArchetypes.BasicFoe;
-import foeTypes.foeArchetypes.MultiAttacker;
+import foeTypes.ArmourBooster;
+import foeTypes.ArmourShredder;
+import foeTypes.BasicFoe;
+import foeTypes.MultiAttacker;
 import player.PlayerClass;
 import storyBits.FileParser;
 import storyBits.GlobalConf;
