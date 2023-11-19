@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/oldtimey-rpg.iml" filepath="$PROJECT_DIR$/oldtimey-rpg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/oldtimey_rpg_engine.iml" filepath="$PROJECT_DIR$/oldtimey_rpg_engine.iml" />
     </modules>
   </component>
 </project>

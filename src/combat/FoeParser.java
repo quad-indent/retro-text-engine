@@ -55,38 +55,10 @@ public class FoeParser {
     }
 
     public static Foe parseFoe(String foeName, String overrideDispName) throws Exception {
-        if (!foeName.endsWith("Config.txt")) {
-            foeName += "Config.txt";
-        }
-        if (!foeName.startsWith("enemyConfigs/")) {
-            foeName = "enemyConfigs/" + foeName;
-        }
-        List<String> shit = FileParser.parseFile(foeName, "#", true);
+        List<String> parsedLinez = verifyAndOpenFile(foeName);
         Map<String, String> parsedValz = new LinkedHashMap<>();
-        String tempKey, tempVal;
-        for (String curLine: shit) {
-            String[] splitz = curLine.split("::");
-            if (splitz.length != 2) {
-                GlobalConf.issueLog("Expected value in custom Foe file to be a key::value pair, " +
-                        "got " + splitz.length + " elements instead! Faulty line: " +
-                        curLine, GlobalConf.SEVERITY_LEVEL_ERROR, false);
-                continue;
-            }
-            tempKey = StoryDisplayer.removeWhiteSpace(splitz[0]);
-            tempVal = StoryDisplayer.removeWhiteSpace(splitz[1]);
-            tempVal = tempVal.replaceAll("matchPlayerLevel", String.valueOf(PlayerClass.getPlayerStat("playerLevel")));
-            tempVal = tempVal.replaceAll("playerLevel", String.valueOf(PlayerClass.getPlayerStat("playerLevel")));
-            tempVal = tempVal.replaceAll("playerName", PlayerClass.getPlayerName());
-            tempVal = tempVal.replaceAll("getLevel", parsedValz.getOrDefault("level", ""));
-
-            String calcResultz = tempVal;
-            try {
-                calcResultz = String.valueOf((int)(MathsParser.eval(handleRandomNumz(tempVal))));
-            } catch (Exception ignored) {
-
-            }
-            tempVal = calcResultz;
-            parsedValz.put(tempKey, tempVal);
+        for (String curLine: parsedLinez) {
+            processLine(curLine, parsedValz);
         }
         if (!overrideDispName.isEmpty()) {
             parsedValz.put("name", overrideDispName);
@@ -97,5 +69,44 @@ public class FoeParser {
             case "armourshredder" -> new ArmourShredder(parsedValz);
             default -> new BasicFoe(parsedValz);
         };
+    }
+    private static List<String> verifyAndOpenFile(String fileName) throws Exception {
+        if (!fileName.endsWith("Config.txt")) {
+            fileName += "Config.txt";
+        }
+        if (!fileName.startsWith("enemyConfigs/")) {
+            fileName = "enemyConfigs/" + fileName;
+        }
+        List<String> parsedLinez = FileParser.parseFile(fileName, "#", true);
+        if (parsedLinez == null) {
+            GlobalConf.issueLog("Parsing of " + fileName + " failed!", GlobalConf.SEVERITY_LEVEL_ERROR,
+                    true);
+        }
+        return parsedLinez;
+    }
+    private static void processLine(String curLine, Map<String, String> parsedValz) throws Exception {
+        String[] splitz = curLine.split("::");
+        String tempKey, tempVal;
+        if (splitz.length != 2) {
+            GlobalConf.issueLog("Expected value in custom Foe file to be a key::value pair, " +
+                    "got " + splitz.length + " elements instead! Faulty line: " +
+                    curLine, GlobalConf.SEVERITY_LEVEL_ERROR, false);
+            return;
+        }
+        tempKey = StoryDisplayer.removeWhiteSpace(splitz[0]);
+        tempVal = StoryDisplayer.removeWhiteSpace(splitz[1]);
+        tempVal = tempVal.replaceAll("matchPlayerLevel", String.valueOf(PlayerClass.getPlayerStat("playerLevel")));
+        tempVal = tempVal.replaceAll("playerLevel", String.valueOf(PlayerClass.getPlayerStat("playerLevel")));
+        tempVal = tempVal.replaceAll("playerName", PlayerClass.getPlayerName());
+        tempVal = tempVal.replaceAll("getLevel", parsedValz.getOrDefault("level", ""));
+
+        String calcResultz = tempVal;
+        try {
+            calcResultz = String.valueOf((int)(MathsParser.eval(handleRandomNumz(tempVal))));
+        } catch (Exception ignored) {
+
+        }
+        tempVal = calcResultz;
+        parsedValz.put(tempKey, tempVal);
     }
 }
