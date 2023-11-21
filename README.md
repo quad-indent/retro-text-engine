@@ -1,1 +1,1 @@
-For now, please consult the wiki at https://github.com/Jan-bog/oldtimey-rpg-engine/wiki
+For now, please consult the wiki at [asd](oldtimey-rpg-engine/wiki)
