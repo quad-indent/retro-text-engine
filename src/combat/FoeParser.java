@@ -1,9 +1,6 @@
 package combat;
 
-import foeTypes.ArmourBooster;
-import foeTypes.ArmourShredder;
-import foeTypes.BasicFoe;
-import foeTypes.MultiAttacker;
+import foeTypes.*;
 import player.PlayerClass;
 import storyBits.FileParser;
 import storyBits.GlobalConf;
@@ -67,6 +64,7 @@ public class FoeParser {
             case "multiattacker" -> new MultiAttacker(parsedValz);
             case "armourbooster" -> new ArmourBooster(parsedValz);
             case "armourshredder" -> new ArmourShredder(parsedValz);
+            case "multitalented" -> new MultiTalented(parsedValz);
             default -> new BasicFoe(parsedValz);
         };
     }

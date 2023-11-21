@@ -217,6 +217,23 @@ public abstract class Foe {
         this.numAttacksPerTurn = numAttacksPerTurn;
         this.specialAttackChance = specialAttackChance;
     }
+
+    public void mimicAnother(Foe another) {
+        this.name = another.getName();
+        this.level = another.getLevel();
+        this.curHealth = another.getCurHealth();
+        this.maxHealth = another.getMaxHealth();
+        this.curMana = another.getCurMana();
+        this.maxMana = another.getMaxMana();
+        this.xpYield = another.getXpYield();
+        this.strength = another.getStrength();
+        this.dexterity = another.getDexterity();
+        this.intellect = another.getIntellect();
+        this.armour = another.getArmour();
+        this.goldDrop = another.getGoldDrop();
+        this.numAttacksPerTurn = another.getNumAttacksPerTurn();
+        this.specialAttackChance = another.getSpecialAttackChance();
+    }
     public abstract String specialAttackPreProc();
     public abstract void specialAttackPostProc();
     protected int genLevelDivisorVal(int levelDivisor) {
@@ -227,7 +244,7 @@ public abstract class Foe {
     }
     public String parseSpecialAtkMsg() {
         String thisMsg = getSpecialAttackMsg();
-        thisMsg = thisMsg.replaceAll("foeName ", this.getName());
+        thisMsg = thisMsg.replaceAll("foeName", this.getName());
         return thisMsg;
     }
     public Map<String, Integer> launchAttack() throws Exception {

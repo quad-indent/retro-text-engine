@@ -32,7 +32,7 @@ public class ArmourBooster extends Foe {
     @Override
     public String specialAttackPreProc() {
         setOldSelfArmour(super.getArmour());
-        super.setArmour((int)Math.round(super.getArmour() * getArmourBoostVal()));
+        super.setArmour((int)Math.round(super.getArmour() * (getArmourBoostVal() / 100.)));
         String thisMsg = super.parseSpecialAtkMsg();
         thisMsg = thisMsg.replaceAll("increasedArmour ", String.valueOf(super.getArmour()));
         thisMsg = thisMsg.replaceAll("normalArmour", String.valueOf(getOldSelfArmour()));

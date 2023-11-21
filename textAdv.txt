@@ -15,7 +15,7 @@
 [5] You manage to find something that feels like candle and some flint
 [5.7] You strike the candle alight
 [6][Tune:bolt_action_love,loop] Your scream awakes something mean!
-[6.8][Undead][Rob] Prepare for trouble!
+[6.8][jackofalltrades][Rob] Prepare for trouble!
 [7][Tune:triumphant_byte] The match is struck, a blazing starlight ahead!
 [7.END] Woo!
 [8][Tune:triumphant_byte] What a fight that was!

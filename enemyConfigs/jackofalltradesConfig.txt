@@ -1,0 +1,33 @@
+  name:: 				Automaton
+  level:: 				playerLevel
+  health::				80 + playerLevel * genRandomNum(1, 3)
+  mana:: 				0
+# Experience yield can be set to "default" (without quotation marks) or specific number
+  experience yield:: 			default
+  strength:: 				2 + playerLevel / 1.2 + genRandomNum(1, getLevel * 2)
+  dexterity:: 				2 + playerLevel / 2 + genRandomNum(2, getLevel / 5)
+  intellect:: 				2 + playerLevel / 2 + genRandomNum(2, getLevel / 5)
+  armour:: 				15 + getLevel / 1.1 + genRandomNum(getLevel / 1.1, getLevel * 3)
+  gold drop:: 				51 + genRandomNum(getLevel * 2, getLevel * 5)
+  numAttacksPerTurn:: 			1
+  specialAttackChance:: 		100
+# Available special attacks type (precisely ONE HAS to be declared):
+# # BasicFoe - no special attacks
+# # MultiAttacker - has a special attack where it strikes multiple times
+# # # Uncomment (remove #) "attacksWhenMultiAttacking" and set it if choosing the above type
+# # ArmourShredder - has a special attack that scales player's armour by a specified percentage for a turn, e.g. if the player has 100 armour, the value of 75 will result in (100 * 0.75) = 75 armour for the round. You can also go above 100 to grant player more armour, if you choose to
+# # # Uncomment "armourShredVal" and set it if choosing the above type
+# # ArmourBooster - similar to ArmourShredder, except applies the armour% to itself rather than player. I.e, if this foe has 100 armour and the value is 150, for the next round, it would have 150 armour
+# # # Uncomment "armourBoostVal" for the above type
+  specialAttackType:: 			MultiTalented
+# In the message, you can use foeName, and it will be replaced with the specific foe's name (as per textAdv.txt file) in-game
+  armourBoosterMessage:: 		foeName reassembles its plates, increasing armour from normalArmour to increasedArmour for the next round!
+  multiAttackerMessage::		foeName winds up for multi-attackz!
+#  armourShredderMessage
+# armourBoosterMessage
+# specialAttackMessage may feature special values. Include those special values where applicable:
+# ArmourShredder: special values decreasedArmour and normalArmour. Use them like so: "Space Cowboy shreds your armour, reducing it from normalArmour to decreasedArmour!"
+# ArmourBooster: special values increasedArmour and normalArmour. Use them like above
+  attacksWhenMultiAttacking:: 		3
+# armourShredVal:: 			75
+  armourBoostVal:: 			150
