@@ -95,7 +95,6 @@ public class FoeParser {
         }
         tempKey = StoryDisplayer.removeWhiteSpace(splitz[0]);
         tempVal = StoryDisplayer.removeWhiteSpace(splitz[1]);
-        tempVal = tempVal.replaceAll("matchPlayerLevel", String.valueOf(PlayerClass.getPlayerStat("playerLevel")));
         tempVal = tempVal.replaceAll("playerLevel", String.valueOf(PlayerClass.getPlayerStat("playerLevel")));
         tempVal = tempVal.replaceAll("playerName", PlayerClass.getPlayerName());
         tempVal = tempVal.replaceAll("getLevel", parsedValz.getOrDefault("level", ""));

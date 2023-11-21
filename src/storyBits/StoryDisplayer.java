@@ -46,7 +46,7 @@ public class StoryDisplayer {
             choiceAdditions = 0;
         }
         while (getCurIndex() < storyObj.size()) {
-            for (String str: Inventory.simpleStringWrapper(curObj.getPromptText(), -1)) {
+            for (String str: Inventory.simpleStringWrapper(curObj.getPromptText(), -1, true)) {
                 System.out.println(replaceTxtWithKeywordz(str));
             }
             ClipPlayer.playTune(curObj.getTuneToPlay());
@@ -124,12 +124,12 @@ public class StoryDisplayer {
     public static void printChoiceOptions(List<String> choicez, boolean offerInventory, boolean offerEquipment) {
         int choiceLen = 1;
         for (String choice : choicez) {
-            System.out.println(">> [" + choiceLen++ + "] " + choice);
+            System.out.println(GlobalConf.getPromtTextPrefix() + "[" + choiceLen++ + "] " + choice);
         }
         if (offerInventory)
-            System.out.println(">> [" + choiceLen++ + "] view inventory");
+            System.out.println(GlobalConf.getPromtTextPrefix() + "[" + choiceLen++ + "] view inventory");
         if (offerEquipment)
-            System.out.println(">> [" + choiceLen + "] view equipment");
+            System.out.println(GlobalConf.getPromtTextPrefix() + "[" + choiceLen + "] view equipment");
     }
 
     public static int awaitChoiceInput(int highestOptionVal) {
@@ -160,7 +160,7 @@ public class StoryDisplayer {
             if (!promptConfirmation)
                 return playerInput;
 
-            System.out.println(">> Are you happy with " + playerInput + "? Y/n");
+            System.out.println(GlobalConf.getStoryTextPrefix() + "Are you happy with " + playerInput + "? Y/n");
             String confirmString = scannerObj.nextLine();
             if (confirmString.equalsIgnoreCase("y"))
                 return playerInput;
@@ -170,7 +170,8 @@ public class StoryDisplayer {
     public static int awaitChoiceInputFromOptions(String[] optionz) {
         ListIterator<String> listOptionz = Arrays.asList(optionz).listIterator();
         while (listOptionz.hasNext()) {
-            System.out.println(">> [" + (listOptionz.nextIndex() + 1) + "] " + listOptionz.next());
+            System.out.println(GlobalConf.getPromtTextPrefix() +
+                    "[" + (listOptionz.nextIndex() + 1) + "] " + listOptionz.next());
         }
         return awaitChoiceInput(optionz.length);
     }

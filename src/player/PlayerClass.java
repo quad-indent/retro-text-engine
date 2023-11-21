@@ -277,18 +277,23 @@ public class PlayerClass {
 
     public static void characterCreator() throws Exception {
         playerInitWithSaucyStatz();
-        System.out.println(">> Hello, and welcome to this story. I am your Narrator.\n>> I will always guide you through " +
+        System.out.println(GlobalConf.getStoryTextPrefix() +
+                "Hello, and welcome to this story. I am your Narrator.\n" +
+                GlobalConf.getStoryTextPrefix() + "I will always guide you through " +
                 "this beginning, and who knows, maybe we will meet again down the line!");
-        System.out.println(">> Tell me, what is your name?");
+        System.out.println(GlobalConf.getStoryTextPrefix() + "Tell me, what is your name?");
         setPlayerName(StoryDisplayer.awaitChoiceInput(false, true));
         if (GlobalConf.isMinimalConfig()) {
             System.out.println("I do look forward to seeing you navigate what lies ahead, " + getPlayerName() + ".");
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
             return;
         }
-        System.out.println(">> Tell me about yourself, " + getPlayerName() + ". Would you prefer to have a little chat about yourself, " +
+        System.out.println(GlobalConf.getStoryTextPrefix() +
+                "Tell me about yourself, " + getPlayerName() + ". Would you prefer to have a little chat about yourself, " +
                 "or simply provide me with the precise information about your strengths and weaknesses?");
-        System.out.println(">> [1] - Let's do this properly\n>> [2] - Let's skip the small talk");
+        System.out.println(GlobalConf.getPromtTextPrefix() +
+                "[1] - Let's do this properly\n" +
+                GlobalConf.getPromtTextPrefix() + "[2] - Let's skip the small talk");
         int creatorChoice = StoryDisplayer.awaitChoiceInput(2);
         switch (creatorChoice) {
             case 0:
@@ -422,7 +427,7 @@ public class PlayerClass {
     }
     public static void incrementStatWithSass(String statToIncr, int valToIncrBy, String sassRemark) {
         getPlayerAtts().put(statToIncr, getPlayerAtts().get(statToIncr) + valToIncrBy);
-        System.out.println(">> " + sassRemark);
+        System.out.println(GlobalConf.getStoryTextPrefix() + sassRemark);
     }
     public static void preciseStatPicker(int majorPoints, int minorPoints, Map<String, Integer> playerAttsOld,
                                          boolean isLevelUp) throws Exception {
@@ -431,10 +436,11 @@ public class PlayerClass {
         if (isLevelUp) {
             incrementPlayerStat("curHealth", Integer.MAX_VALUE);
             incrementPlayerStat("curMana", Integer.MAX_VALUE);
-            System.out.println(">> You advance from level " + (getPlayerStat("playerLevel") - 1) +
+            System.out.println(GlobalConf.getStoryTextPrefix() + "You advance from level " +
+                    (getPlayerStat("playerLevel") - 1) +
                     " to level " + getPlayerStat("playerLevel") + "!");
         }
-        System.out.println(">> Your stats are as follows:");
+        System.out.println(GlobalConf.getStoryTextPrefix() + "Your stats are as follows:");
         int printCtr = 1;
         Map<Integer, String> tempStatIDMap = new LinkedHashMap<>();
         for (Map.Entry<String, Integer> curStat : getPlayerAtts().entrySet()) {
@@ -483,29 +489,36 @@ public class PlayerClass {
     }
 
     public static void spamStatDescriptions(int majorPoints, int minorPoints) {
-        System.out.println("\n>> You have [" + majorPoints + "] major trait " +
+        System.out.println("\n" + GlobalConf.getStoryTextPrefix() + "You have [" + majorPoints + "] major trait " +
                 (majorPoints == 1 ? "point" : "points") + ", " +
                 "and [" + minorPoints + "] minor trait " +
                 (minorPoints == 1 ? "point" : "points"));
         int printCtr = 1;
         for (Map.Entry<String, Integer> curStat : getPlayerAtts().entrySet()) {
-            System.out.println(">> [" + printCtr++ + "] " + curStat.getKey() + " - " + curStat.getValue());
+            System.out.println(GlobalConf.getStoryTextPrefix() +
+                    "[" + printCtr++ + "] " + curStat.getKey() + " - " + curStat.getValue());
         }
-        System.out.println(">> Major traits:\n>> " + PlayerKeywordz.getStrengthName() + ": " +
+        System.out.println(GlobalConf.getStoryTextPrefix() + "Major traits:\n" +
+                GlobalConf.getStoryTextPrefix() + PlayerKeywordz.getStrengthName() + ": " +
                 PlayerKeywordz.getStrengthDesc());
-        System.out.println(">> " + PlayerKeywordz.getDexterityName() + ": " + PlayerKeywordz.getDexterityDesc());
-        System.out.println(">> " + PlayerKeywordz.getIntellectName() + ": " + PlayerKeywordz.getIntellectDesc());
-        System.out.println(">> However, the accuracy of your attacks is also determined by your foe's stats!");
-        System.out.println("\n>> Minor traits that have no direct use in combat, but may prove " +
+        System.out.println(GlobalConf.getStoryTextPrefix() + PlayerKeywordz.getDexterityName() + ": " +
+                PlayerKeywordz.getDexterityDesc());
+        System.out.println(GlobalConf.getStoryTextPrefix() + PlayerKeywordz.getIntellectName() + ": " +
+                PlayerKeywordz.getIntellectDesc());
+        System.out.println(GlobalConf.getStoryTextPrefix() + "However, the accuracy of your attacks is also " +
+                "determined by your foe's stats!");
+        System.out.println("\n" + GlobalConf.getStoryTextPrefix() +
+                "Minor traits that have no direct use in combat, but may prove " +
                 "invaluable in exploration and story elements!");
         for (int i = 0; i < PlayerKeywordz.getNumMinorStatz(); i++) {
-            System.out.println(">> " + PlayerKeywordz.getMinorStats()[i] + " - " +
+            System.out.println(GlobalConf.getStoryTextPrefix() + PlayerKeywordz.getMinorStats()[i] + " - " +
                     PlayerKeywordz.getMinorStatDescs()[i]);
         }
-        System.out.println(">> You can increase or decrease " +
+        System.out.println(GlobalConf.getStoryTextPrefix() + "You can increase or decrease " +
                 "(so as to undo assignment of what you currently have) your stats by\n" +
                 "writing the trait's corresponding number and a + or -, for instance 1+ to increase strength");
-        System.out.println(">> Once you're happy with the distribution and have spent all points, write [done]");
+        System.out.println(GlobalConf.getStoryTextPrefix() +
+                "Once you're happy with the distribution and have spent all points, write [done]");
     }
 
     public static boolean statComparer(int compareAgainst, String statName) {
@@ -535,8 +548,8 @@ public class PlayerClass {
         return isDead;
     }
     public static void displayEulogy() {
-        System.out.println(">> And so ends the story of " + getPlayerName());
-        System.out.println(">> There was so much more in store for you, you poor soul");
-        System.out.println(">> May we meet again");
+        System.out.println(GlobalConf.getStoryTextPrefix() + "And so ends the story of " + getPlayerName());
+        System.out.println(GlobalConf.getStoryTextPrefix() + "There was so much more in store for you, you poor soul");
+        System.out.println(GlobalConf.getStoryTextPrefix() + "May we meet again");
     }
 }

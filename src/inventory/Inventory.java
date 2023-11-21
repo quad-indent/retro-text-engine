@@ -294,13 +294,13 @@ public class Inventory {
                 if (!featureLilArrowz)
                     System.out.println(lineStr);
                 else
-                    System.out.println(">> " + lineStr);
+                    System.out.println(GlobalConf.getInvDispPrefix() + lineStr);
                 lineStr = new StringBuilder();
             }
             if (!featureLilArrowz)
                 System.out.println();
             else
-                System.out.println(">>");
+                System.out.println(GlobalConf.getInvDispPrefix());
             updatedList.clear();
             if (textz.isEmpty())
                 return;
@@ -312,17 +312,18 @@ public class Inventory {
         originalStrBuilder.append(" ".repeat(Math.max(0, maxWidth + marginSpace - originalStrBuilder.length())));
         return originalStrBuilder.toString();
     }
-    public static List<String> simpleStringWrapper(String strToSplit, int maxWidth) {
+    public static List<String> simpleStringWrapper(String strToSplit, int maxWidth, boolean isStoryWrapping) {
         if (maxWidth == -1) {
             maxWidth = MAX_CONSOLE_CHARS - 3;
         }
         List<String> returnalList = new ArrayList<>();
         StringBuilder loopStr = new StringBuilder();
-        loopStr.append(">> ");
+        loopStr.append((isStoryWrapping ? GlobalConf.getStoryTextPrefix() : GlobalConf.getInvDispPrefix()));
         for (String word : strToSplit.split(" ")) {
             if (loopStr.length() + word.length() > maxWidth) {
                 returnalList.add(loopStr.toString());
-                loopStr = new StringBuilder(">> ");
+                loopStr = new StringBuilder((isStoryWrapping ? GlobalConf.getStoryTextPrefix() :
+                        GlobalConf.getInvDispPrefix()));
                 loopStr.append(word).append(" ");
                 continue;
             }
@@ -790,12 +791,12 @@ public class Inventory {
     public static List<String> inspectionChoiceMaker(int itemID, boolean isEquipping) {
         List<String> optionz = new ArrayList<>();
         if (itemID != -1 && isEquipping) {
-            optionz.add(">> [1] Swap");
-            optionz.add(">> [2] Unequip");
+            optionz.add(GlobalConf.getInvDispPrefix() + "[1] Swap");
+            optionz.add(GlobalConf.getInvDispPrefix() + "[2] Unequip");
         } else if (isEquipping) {
-            optionz.add(">> [1] Equip");
+            optionz.add(GlobalConf.getInvDispPrefix() + "[1] Equip");
         }
-        optionz.add(">> [" + (optionz.size() + 1) + "] Return");
+        optionz.add(GlobalConf.getInvDispPrefix() + "[" + (optionz.size() + 1) + "] Return");
         return optionz;
     }
 
@@ -856,7 +857,7 @@ public class Inventory {
                 return  itemDescFieldz;
             for (String i : itemDescFieldz) {
                 if (includedLilArrowz)
-                    System.out.println(">> " + i);
+                    System.out.println(GlobalConf.getInvDispPrefix() + i);
                 else
                     System.out.println(i);
             }
@@ -927,7 +928,7 @@ public class Inventory {
             return  itemDescFieldz;
         for (String i : itemDescFieldz) {
             if (includedLilArrowz)
-                System.out.println(">> " + i);
+                System.out.println(GlobalConf.getInvDispPrefix() + i);
             else
                 System.out.println(i);
         }
@@ -998,13 +999,15 @@ public class Inventory {
         while (true) {
             displayCopy = craftItemArray(catToDisp, isEquipping, armourType);
             if (catToDisp == eqCats.INVENTORY && !isEquipping) {
-                System.out.println(">> " + PlayerClass.getPlayerName());
-                System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") +
+                System.out.println(GlobalConf.getInvDispPrefix() + PlayerClass.getPlayerName());
+                System.out.println(GlobalConf.getInvDispPrefix() + "Level " + PlayerClass.getPlayerStat("curLevel") +
                         " (" + PlayerClass.getPlayerStat("xp") +
                         " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
             }
-            System.out.println(">> " + PlayerKeywordz.getCurrencyName() + ": " + Inventory.getCurrentGold());
-            System.out.println(">> " + pagenamer + " page " + curInvPage + " of " + totalPages + "\n>>");
+            System.out.println(GlobalConf.getInvDispPrefix() + PlayerKeywordz.getCurrencyName() + ": " +
+                    Inventory.getCurrentGold());
+            System.out.println(GlobalConf.getInvDispPrefix() + pagenamer + " page " + curInvPage + " of " +
+                    totalPages + "\n" + GlobalConf.getInvDispPrefix());
             optionz.clear();
             prevPageBind = -1;
             nextPageBind = -1;
@@ -1012,9 +1015,9 @@ public class Inventory {
             displaySideBySide(prepareItemSeriesDisplay(curStartIndex, 6, catToDisp,
                             displayCopy, armourType), 3, 10, true);
             if (!isEquipping)
-                System.out.println(">> View:");
+                System.out.println(GlobalConf.getInvDispPrefix() + "View:");
             else
-                System.out.println(">> Replace with:");
+                System.out.println(GlobalConf.getInvDispPrefix() + "Replace with:");
             for (int i = curStartIndex; i < curStartIndex + 6 && i < displayCopy.length; i++) {
                 if (catToDisp == eqCats.INVENTORY) {
                     optionz.add(displayCopy[i].getName());
@@ -1150,26 +1153,27 @@ public class Inventory {
         int curChoice = -1;
         String[] optionz = new String[]{"Weapons", "Armour", "Neck", "Trinkets", "Return"};
         while (true) {
-            System.out.println(">> " + PlayerClass.getPlayerName());
-            System.out.println(">> Level " + PlayerClass.getPlayerStat("curLevel") +
+            System.out.println(GlobalConf.getInvDispPrefix() + PlayerClass.getPlayerName());
+            System.out.println(GlobalConf.getInvDispPrefix() + "Level " + PlayerClass.getPlayerStat("curLevel") +
                     " (" + PlayerClass.getPlayerStat("xp") +
                     " / " + PlayerClass.getPlayerStat("nextXP") + " XP)");
-            System.out.println(">> " +
+            System.out.println(GlobalConf.getInvDispPrefix() +
                     PlayerClass.getPlayerStat("curHealth") + "/" + PlayerClass.getPlayerStat("maxHealth") + " HP");
-            System.out.println(">> " + PlayerClass.getPlayerStat("Armour") + " Armour");
-            System.out.println(">> " + PlayerKeywordz.getCurrencyName() + ": " + Inventory.getCurrentGold());
+            System.out.println(GlobalConf.getInvDispPrefix() + PlayerClass.getPlayerStat("Armour") + " Armour");
+            System.out.println(GlobalConf.getInvDispPrefix() + PlayerKeywordz.getCurrencyName() + ": " +
+                    Inventory.getCurrentGold());
             for (Map.Entry<String, Integer> curEntry : PlayerClass.getPlayerAtts().entrySet()) {
-                System.out.println(">> " + curEntry.getKey() + ": " + curEntry.getValue());
+                System.out.println(GlobalConf.getInvDispPrefix() + curEntry.getKey() + ": " + curEntry.getValue());
             }
-            System.out.println(">>");
+            System.out.println(GlobalConf.getInvDispPrefix());
             String[] ittie = new String[]{"Weapons", "Armour", "Neck", "Trinkets"};
             eqCats[] ittieValz = new eqCats[]{eqCats.WEAPONZ, eqCats.ARMOUR, eqCats.NECKZ, eqCats.TRINKETZ};
             for (int i = 0; i < ittie.length; i++) {
-                System.out.println(">> [" + (i + 1) + "] " + ittie[i] + ":");
+                System.out.println(GlobalConf.getInvDispPrefix() + "[" + (i + 1) + "] " + ittie[i] + ":");
                 displaySideBySide(getEquipmentToDisplay(ittieValz[i], false),
                         5, 5, true);
             }
-            System.out.println(">> Inspect:");
+            System.out.println(GlobalConf.getInvDispPrefix() + "Inspect:");
             curChoice = StoryDisplayer.awaitChoiceInputFromOptions(optionz);
             if (curChoice == 4) {
                 return;

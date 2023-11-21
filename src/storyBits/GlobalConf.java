@@ -3,6 +3,34 @@ package storyBits;
 import java.util.Map;
 
 public class GlobalConf {
+    private static String storyTextPrefix;
+    private static String promtTextPrefix;
+    private static String invDispPrefix;
+
+    public static String getStoryTextPrefix() {
+        return storyTextPrefix;
+    }
+
+    public static void setStoryTextPrefix(String storyTextPrefix) {
+        GlobalConf.storyTextPrefix = storyTextPrefix;
+    }
+
+    public static String getPromtTextPrefix() {
+        return promtTextPrefix;
+    }
+
+    public static void setPromtTextPrefix(String promtTextPrefix) {
+        GlobalConf.promtTextPrefix = promtTextPrefix;
+    }
+
+    public static String getInvDispPrefix() {
+        return invDispPrefix;
+    }
+
+    public static void setInvDispPrefix(String invDispPrefix) {
+        GlobalConf.invDispPrefix = invDispPrefix;
+    }
+
     private static final short LOGS_FULLY_VERBOSE = -1;
     private static final short LOGS_COMPLETE_SUPPRESSION = 0;
     private static final short LOGS_SHOW_ERRORS = 1;
@@ -62,5 +90,21 @@ public class GlobalConf {
             case "LOGS_SHOW_INFO" -> LOGS_SHOW_INFO;
             default -> LOGS_FULLY_VERBOSE;
         });
+        setStoryTextPrefix(parsePrefix(confArgs.getOrDefault("storytextprefix", ">> ")));
+        setPromtTextPrefix(parsePrefix(confArgs.getOrDefault("prompttextprefix", ">> ")));
+        setInvDispPrefix(parsePrefix(confArgs.getOrDefault("inventorytextprefix", ">> ")));
+    }
+
+    private static String parsePrefix(String rawPrefix) {
+        if (!rawPrefix.contains("\"")) {
+            return rawPrefix;
+        }
+        String returnal = StoryDisplayer.removeWhiteSpace(rawPrefix);
+        returnal = returnal.substring(returnal.indexOf("\"") + 1);
+        int finalIdx = returnal.length() - 1;
+        while (returnal.charAt(finalIdx) != '"') {
+            finalIdx--;
+        }
+        return returnal.substring(0, finalIdx);
     }
 }

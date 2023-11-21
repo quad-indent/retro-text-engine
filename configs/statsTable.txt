@@ -1,6 +1,6 @@
 # If you have opted for minimal character creation, none of the changes here will matter
 #
-# Please only update the values AFTER the colon
+# Please only update the values AFTER the double colon
 #
 # Define the name of the currency used in the game in the line below:
   Currency name::		 Gold

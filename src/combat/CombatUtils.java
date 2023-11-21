@@ -166,7 +166,7 @@ public class CombatUtils {
         return genRandomNum(0, 100) <= getChanceToCrit(thisDex, otherDex, attackType);
     }
     public static int calcDamageAfterArmour(int hitVal, int armourVal) {
-        int hitAmount = (int)(hitVal * (30. / (30. + armourVal)));
+        int hitAmount = (int)Math.round(hitVal * (30. / (30. + armourVal)));
         return hitAmount > 0 ? hitAmount : 1;
     }
 
@@ -235,7 +235,7 @@ public class CombatUtils {
         int[] rollWeightz;
         rollWeightz = switch (attackType) {
             case 0:
-                yield new int[]{50, 20, 5, 25};
+                yield new int[]{45, 15, 5, 35};
             case 1:
                 yield new int[]{28, 24, 20, 28};
             case 2:
@@ -316,13 +316,13 @@ public class CombatUtils {
         Map<String, Integer> foeMap = new LinkedHashMap<>();
         while (true) {
             StoryDisplayer.displayCombatants(combatant);
-            System.out.println("\n>> How do you proceed?");
+            System.out.println("\n" + GlobalConf.getStoryTextPrefix() + "How do you proceed?");
             atkChoice = StoryDisplayer.awaitChoiceInputFromOptions(genAttackChoices(combatant));
             isAHit = rollForHit(thisDex, otherDex, thisStr, otherStr, atkChoice);
             if (isAHit) {
                 processHit(combatant, thisDex, otherDex, atkChoice, thisStr, otherStr);
             } else {
-                System.out.println(">> By luck, or by skill, " + combatant.getName() +
+                System.out.println(GlobalConf.getStoryTextPrefix() + "By luck, or by skill, " + combatant.getName() +
                         " evades your attack!");
             }
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
@@ -336,7 +336,7 @@ public class CombatUtils {
             }
             if (genRandomNum(1, 100) <= combatant.getSpecialAttackChance()) {
                 isEnemySpecialAttacking = true;
-                System.out.println(">> " + combatant.specialAttackPreProc());
+                System.out.println(GlobalConf.getStoryTextPrefix() + combatant.specialAttackPreProc());
             }
             for (int i = 0; i < combatant.getNumAttacksPerTurn(); i++) {
                 foeMap.putAll(combatant.launchAttack());
@@ -350,24 +350,28 @@ public class CombatUtils {
                         return -1;
                     }
                 } else {
-                    System.out.println(">> You dodge " + combatant.getName() + "'s attack!");
+                    System.out.println(GlobalConf.getStoryTextPrefix() + "You dodge " +
+                            combatant.getName() + "'s attack!");
                 }
             }
             StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         }
-        System.out.println(">> " + combatant.getName() + " lies dead before you. You have gained " +
+        System.out.println(GlobalConf.getStoryTextPrefix() + combatant.getName() +
+                " lies dead before you. You have gained " +
                 combatant.getXpYield() + " " + PlayerKeywordz.getxPAbbr() + " and now have " +
                 (PlayerClass.getPlayerStat("curXP") + combatant.getXpYield()) +
                 " out of " + PlayerClass.getPlayerStat("neededXP") + " " + PlayerKeywordz.getxPAbbr() +
                 " needed to reach " + PlayerKeywordz.getLevelName().toLowerCase() + " " +
                 (PlayerClass.getPlayerStat("playerLevel") + 1));
-        System.out.println(">> " + combatant.getName() + " dropped " + combatant.getGoldDrop() + " " +
+        System.out.println(GlobalConf.getStoryTextPrefix() +
+                combatant.getName() + " dropped " + combatant.getGoldDrop() + " " +
                 PlayerKeywordz.getCurrencyName().toLowerCase() + "!");
         PlayerClass.incrementPlayerCurrency(combatant.getGoldDrop(), true);
         PlayerClass.refillHealthAndMana();
         if (combatant.getXpYield() + PlayerClass.getPlayerStat("curXP") >=
             PlayerClass.getPlayerStat("neededXP")){
-            System.out.println(">> You level up!");
+            System.out.println(GlobalConf.getStoryTextPrefix() +
+                    "You level up!");
         }
         StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         return combatant.getXpYield();
@@ -381,10 +385,12 @@ public class CombatUtils {
                 combatant.getArmour());
         combatant.increaseHealth(-dmgDealt);
         if (isACrit) {
-            System.out.println(">> You deal a dizzying critical blow to " + combatant.getName() +
+            System.out.println(GlobalConf.getStoryTextPrefix() +
+                    "You deal a dizzying critical blow to " + combatant.getName() +
                     " for " + dmgDealt + "!");
         } else {
-            System.out.println(">> You strike " + combatant.getName() + " for " + dmgDealt + "!");
+            System.out.println(GlobalConf.getStoryTextPrefix() +
+                    "You strike " + combatant.getName() + " for " + dmgDealt + "!");
         }
     }
     public static int processEnemyHit(Map<String, Integer> foeMap, Foe combatant) throws Exception {
@@ -404,7 +410,7 @@ public class CombatUtils {
                         true);
                 yield null;
         };
-        String dmgText = ">> " + combatant.getName() + enemyAtkFlavour + "for " +
+        String dmgText = GlobalConf.getStoryTextPrefix() + combatant.getName() + enemyAtkFlavour + "for " +
                 foeMap.get("damageOut") + " damage";
         if (foeMap.get("damageBlocked") != 0) {
             dmgText += " (" + foeMap.get("damageBlocked") + " blocked)";

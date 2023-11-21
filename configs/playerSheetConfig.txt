@@ -7,3 +7,6 @@ LOGS_SHOW_ERRORS
 LOGS_SHOW_WARNINGS
 LOGS_SHOW_INFO
 [LoggingLevel] LOGS_COMPLETE_SUPPRESSION
+[storyTextPrefix] ">> "
+[promptTextPrefix] "> "
+[inventoryTextPrefix] "|> "
