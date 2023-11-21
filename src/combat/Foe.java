@@ -25,6 +25,11 @@ public abstract class Foe {
     private int goldDrop;
     private String specialAttackMsg;
 
+    private Map<String, String> messageKeysMap = new LinkedHashMap<>();
+
+    public Map<String, String> getMessageKeysMap() {
+        return messageKeysMap;
+    }
     public String getSpecialAttackMsg() {
         return specialAttackMsg;
     }
@@ -234,7 +239,7 @@ public abstract class Foe {
         this.numAttacksPerTurn = another.getNumAttacksPerTurn();
         this.specialAttackChance = another.getSpecialAttackChance();
     }
-    public abstract String specialAttackPreProc();
+    public abstract String specialAttackPreProc() throws Exception;
     public abstract void specialAttackPostProc();
     protected int genLevelDivisorVal(int levelDivisor) {
         return levelDivisor == 0 ? 0 : getLevel() / levelDivisor;
@@ -245,6 +250,9 @@ public abstract class Foe {
     public String parseSpecialAtkMsg() {
         String thisMsg = getSpecialAttackMsg();
         thisMsg = thisMsg.replaceAll("foeName", this.getName());
+        for (Map.Entry<String, String> curEntry: getMessageKeysMap().entrySet()) {
+            thisMsg = thisMsg.replaceAll(curEntry.getKey(), curEntry.getValue());
+        }
         return thisMsg;
     }
     public Map<String, Integer> launchAttack() throws Exception {

@@ -3,6 +3,7 @@ package foeTypes;
 import combat.Foe;
 import player.PlayerClass;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ArmourBooster extends Foe {

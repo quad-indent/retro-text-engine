@@ -2,6 +2,7 @@ package foeTypes;
 
 import combat.Foe;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class MultiAttacker extends Foe {

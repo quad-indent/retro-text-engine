@@ -22,7 +22,7 @@
   specialAttackType:: 			MultiTalented
 # In the message, you can use foeName, and it will be replaced with the specific foe's name (as per textAdv.txt file) in-game
   armourBoosterMessage:: 		foeName reassembles its plates, increasing armour from normalArmour to increasedArmour for the next round!
-  multiAttackerMessage::		foeName winds up for multi-attackz!
+  lifeLeecherMessage:: 			foeName gets ready to suck the life outta you, and heals for lifeLeeched!
 #  armourShredderMessage
 # armourBoosterMessage
 # specialAttackMessage may feature special values. Include those special values where applicable:
@@ -31,3 +31,4 @@
   attacksWhenMultiAttacking:: 		3
 # armourShredVal:: 			75
   armourBoostVal:: 			150
+  lifeLeechPercentage::			90

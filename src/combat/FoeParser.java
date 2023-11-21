@@ -64,6 +64,7 @@ public class FoeParser {
             case "multiattacker" -> new MultiAttacker(parsedValz);
             case "armourbooster" -> new ArmourBooster(parsedValz);
             case "armourshredder" -> new ArmourShredder(parsedValz);
+            case "lifeleecher" -> new LifeLeecher(parsedValz);
             case "multitalented" -> new MultiTalented(parsedValz);
             default -> new BasicFoe(parsedValz);
         };

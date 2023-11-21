@@ -35,8 +35,12 @@ public class MultiTalented extends Foe {
             getTalentz().add(armShredTalent);
         }
         if (argz.containsKey("armourBoosterMessage")) {
-            ArmourBooster armBoostTalen = new ArmourBooster(prepareBespokeMap(argz, "armourbooster"));
-            getTalentz().add(armBoostTalen);
+            ArmourBooster armBoostTalent = new ArmourBooster(prepareBespokeMap(argz, "armourbooster"));
+            getTalentz().add(armBoostTalent);
+        }
+        if (argz.containsKey("lifeLeechPercentage")) {
+            LifeLeecher leechTalent = new LifeLeecher(prepareBespokeMap(argz, "lifeleecher"));
+            getTalentz().add(leechTalent);
         }
     }
 
@@ -52,6 +56,9 @@ public class MultiTalented extends Foe {
             case "armourshredder":
                 returnal.put("specialAttackMessage", returnal.get("armourShredderMessage"));
                 break;
+            case "lifeleecher":
+                returnal.put("specialAttackMessage", returnal.get("lifeLeecherMessage"));
+                break;
             default:
                 GlobalConf.issueLog("Could not retrieve corresponding value whilst " +
                         "initialising a MultiTalented foe!", GlobalConf.SEVERITY_LEVEL_ERROR, true);
@@ -59,7 +66,7 @@ public class MultiTalented extends Foe {
         return returnal;
     }
     @Override
-    public String specialAttackPreProc() {
+    public String specialAttackPreProc() throws Exception {
         int choice = CombatUtils.genRandomNum(0, getTalentz().size() - 1);
         this.setCurrentMimic(choice);
         getTalentz().get(choice).mimicAnother(this);
