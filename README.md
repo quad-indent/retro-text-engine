@@ -39,3 +39,7 @@ So, if you want branching story lines, a sense of progression for the player thr
 If you're looking for resources on how to use the engine, best head over to [my wiki page](https://github.com/Jan-bog/oldtimey-rpg-engine/wiki)!
 
 Also, head over to the [releases page](https://github.com/Jan-bog/oldtimey-rpg-engine/releases), download the latest release, unzip it, and begin editing! To launch your project, simply launch oldtimey_rpg_engine.exe!
+
+## Acknowledgements
+
+Many, many thanks to [Boann](https://stackoverflow.com/a/26227947) over at Stack Overflow for their class that I incorporated into the engine, that makes it infinitely easier to compute equations that are passed as a String
