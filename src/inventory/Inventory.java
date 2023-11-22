@@ -601,8 +601,14 @@ public class Inventory {
             return;
         }
         try {
+            boolean immediateBreakFlag = itemIDLinez[0].split(" ")[0].isEmpty();
             for (String curStrID : itemIDLinez[0].split(" ")) {
                 // this is equipment
+                if (immediateBreakFlag) {
+                    GlobalConf.issueLog("Equipment is either empty (this is more likely) or malformed!",
+                            GlobalConf.SEVERITY_LEVEL_WARNING, false);
+                    break;
+                }
                 int curID = Integer.parseInt(curStrID);
                 List<String> curItemSpecs = InventoryCache.getItem(curID);
                 switch (strToEqCat(curItemSpecs.get(0).toLowerCase())) {

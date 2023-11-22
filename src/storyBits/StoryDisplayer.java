@@ -95,6 +95,7 @@ public class StoryDisplayer {
                     } else {
                         Inventory.removeInventoryItem(curObj.getStatVal().get(rawChoicePicked), false);
                     }
+                    PlayerClass.saveCharacter(StoryDisplayer.getCurIndex());
                 } else if (!relevantStat.matches("^-?[0-9]\\d*$")) {
                     // if it's not numeric, i.e., if it's not an item
                     PlayerClass.incrementPlayerStat(relevantStat,

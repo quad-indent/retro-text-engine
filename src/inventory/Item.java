@@ -129,7 +129,7 @@ public class Item {
     public static Map<String, Integer> assembleStatBoonz(List<String> rawStatz) {
         Map<String, Integer> returnal = new LinkedHashMap<>();
         for (String stat : rawStatz) {
-            if (StoryBlockMaster.stringContainsAny(stat, new char[]{'+', '-'})) {
+            if (StoryBlockMaster.stringContainsAny(stat, new char[]{'+', '-'}) && !stat.equals("-1")) {
                 String[] splittie = stat.split("[+-]");
                 assert splittie.length == 2 : "Misconfigured item named " + rawStatz.get(1) +
                         " in configs/itemTable.txt found!";
