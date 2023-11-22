@@ -130,7 +130,7 @@ public class GlobalConf {
                 logStr.append("#").append(i).append(", ");
             }
             logStr = new StringBuilder(logStr.substring(0, logStr.length() - 2));
-            logStr.insert(0, "Non-unique story text IDs found! ");
+            logStr.insert(0, "Non-unique (overlapping) story text IDs found! ");
             shouldThrow = true;
         }
         if (!missingIDs.isEmpty()) {

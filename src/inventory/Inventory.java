@@ -356,7 +356,7 @@ public class Inventory {
         for (String word : strToSplit.split(" ")) {
             if (loopStr.length() + word.length() > maxWidth) {
                 returnalList.add(loopStr.toString());
-                loopStr = new StringBuilder(word);
+                loopStr = new StringBuilder(word).append(" ");
                 continue;
             }
             loopStr.append(word).append(" ");

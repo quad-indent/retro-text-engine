@@ -1,50 +1,176 @@
-[0][Tune:sleepy_plessow] You awake, cold and alone. Do you 
-[0.1] Scream
-[0.1] Cry
-[1] Regardless, your attempts have no effect. You should do something useful. Do you
-[1.2] Get up
-[1.3] Scream
-[2] You now stand up and look around the room. Darkness all around. Do you
-[2.4] Look for a door
-[2.5] Look for a light source
-[3][Tune:baroness_descends] You really should stop it and try something else. Do you
-[3.2] Get up
-[3.6] Scream yet again
-[4] Every part of every wall feels like it's made of solid bricks. No handle in sight
-[4.2] Oh well.
-[5] You manage to find something that feels like candle and some flint
-[5.7] You strike the candle alight
-[6][Tune:bolt_action_love,loop] Your scream awakes something mean!
-[6.8][jackofalltrades][Rob] Prepare for trouble!
-[7][Tune:triumphant_byte] The match is struck, a blazing starlight ahead!
-[7.END] Woo!
-[8][Tune:triumphant_byte] What a fight that was!
-[8.9] Woo!
-[9][Tune:village_disco] Reward time
-[9.10][Intellect+1] Take a scroll
-[9.10][curHealth+5] Take a sip from the fountain
-[9.10][curHealth+max] Jump into the fountain
-[9.11][Subterfuge>1][hidden] Find out what powers up the fountain
-[9.12][Subterfuge>2] Pry open the fountain
-[9.13][has:0] Offer some shit
-[9.17][Currency>20][hidden] Offer some gold
-[9.18][ephemeral]Do something fun
-[18]Define your idea of fun
-[18.9]idk
-[17] Now, out with the gold!
-[17.13][Currency-20] SIR YES SIR!!!
-[10] Well, look at you go!
-[10.END] What a fun story this was!
-[11] You undearth fuckall!
-[11.END] Shit
-[12] Look at you, aren't you clever! Now what?
-[12.13][Subterfuge>3][hidden] I succeed
-[12.9][Subterfuge<4][hidden] You struggle and fail. Loser
-[13] Hellz yeah brother
-[13.14] Hellz yeah GM
-[14] Say a prayer NOW!!!
-[14.15][curXP+240] Okay
-[15] Combat time
-[15.16][Goblin][Fuckamole] Skibadee skibadanger!
-[16] The end
-[16.END] The end indeed
+[0][tune:baroness_descends]You awaken, exhausted, from a dreamless sleep. You don't recognise this place - your bed, if it even is a bed, feels cold and hard. The air is thick with dust and the stench of decay. The moonlight, beaming through the iron-barred window. Your only source of light. You feel a sense of dread
+[0.1]Get up
+[1]You're standing in the middle of this darkened room
+[1.2]Inspect the window
+[1.3]Inspect the door
+[1.4]Inspect the bed
+[1.8][ephemeral]Look around
+[8]Amid all the junk, you spot a dagger. It's rusted, but may offer a slight combat advantage
+[8.9][item+0]Take the dagger
+[9]Received: Rusted Dagger
+[9.1]Back
+[2]The window is barred, and even if it weren't, it'd be too small for you to squeeze through
+[2.1]Back
+[4]What you thought was a bed is just a slab of stone
+[4.5]Lie down
+[4.1]Back
+[5]You don't feel safe here. Best not fall asleep again
+[5.4]Back
+[3]The door looks flimsy enough. Perhaps you could break it
+[3.6][Strength>11]Try to break the door
+[3.7][Dexterity>1]Try the handle
+[6]You brace yourself for impact with the door, and then...
+[6.8][Strength>11][hidden]Break the door
+[6.10][Strength<12][hidden]Fail
+[10]Not only that, you now feel a sharp pain in your shoulder
+[10.1][curHealth-5]Continue
+[7]Although the handle feels stuck at first, with enough persistence you manage to pull it down and realise that the door wasn't locked. You exit the room
+[7.11]You walk out into a corridor
+[11]You are by the door to your chamber, which was located at the end of the corridor. It stretches beyond what the eye can see, seemingly endless, yet lit with uncountable, tall candelabra placed by the walls
+[11.12]Walk forward
+[12][tune:baroness_descends]You are at an intersection. There are two doors, to your left and to your right. The corridor continues forward
+[12.11]Go back
+[12.13][ephemeral]Go through the left door
+[12.14]Go through the right door
+[12.15]March on
+[13][tune:bolt_action_love]As soon as you walk through the door, a stone gargoyle descends upon you!
+[13.16][gargoyle][Stone Gargoyle]Defend yourself!
+[16][tune:irritability]To your horror, the debris of the gargoyle you just destroyed begins to reassemble itself. . .
+[16.17][Dexterity>11][hidden]Find a place to hide
+[16.18][Strength>13][hidden]Hold the debris apart to prevent it from reassembling itself
+[16.19]Brace yourself as it's building itself anew
+[19]Though dazed and confused, the gargoyle speaks as quickly as it seemingly can: "Attack me no more...I am friend...I must obey the Baroness...The tyrant...The betrayer...She feasts upon you...We can overcome..."
+[19.21]Let it collect itself and make its case properly
+[17]Just before it seems to regain consciousness, you hide in an alcove. You hear it murmur to itself "...Where did they go...A glimmer of hope for us...Need to work together..."
+[17.20][gargoyle][Dazed Gargoyle]Ambush the wicked creature
+[20]This time, the gargoyle shatters in a violent explosion. The room begins to collapse! You make it out just before the door is sealed with the debris
+[20.12]Continue
+[18]You feel your strength wane, the forces pulling it together too great. Before it rises again, however, you hear it speak: "Friend...I am not foe...The Baroness commands me...Work together...Destroy her...We overcome..."
+[18.20][gargoyle][Dazed Gargoyle]Destroy the creature as you did before
+[18.21]Let it make its plea
+[21][tune:attention_deficit_dirge]You wait for it to regain whatever faculties it might have. Eventually, the gargoyle begins to speak: "Ah, yes, thanks! Y'know, for not destroying me completely. Apologies about my attempt on your life. See, we don't get many, er, any, visitors here"
+[21.22]Go on?
+[22]"I'm one of the prison guardians, but even as a guardian, this place has become my prison, my tomb. And with the Baroness's schemes, well, I thought you were an assassin sent to kill poor old me! Wanna be friends?"
+[22.23]Ask who the Baroness is
+[22.24]Ask who the other guardians are
+[22.25]Ask why someone would assassinate a gargoyle
+[22.26]Befriend the gargoyle
+[22.27]Tell the gargoyle that you don't befriend just anyone
+[23]"She is older than all of us here, older than this accursed place even! Nobody knows her name. Nobody knows her story, except that she's reclusive, powerful, and absolutely ruthless. She made me and the other guardians. And she occasionally goes out to hunt. You were her latest prey. Surprised you're still alive, what with all the blood she drank from you! It really got her blood pumping! Oh. Forgive the pun"
+[23.28]And you want to rise up against this tyrannical being?
+[23.22]Turn to other matters
+[28]"Lower your voice! Do you want to get us both killed? But, yes, maybe not overthrow or kill her, but, y'know, rise up just enough to get out of here and be my own gargoyle! Did you know there's other places? And things called mountains that are just so so high and made of stone, too? I would love to visit them! Oh, and you probably have some...flesh friends to go back to as well?"
+[28.29]Do you have an army? Allies? A plan?
+[28.22]Turn to other matters
+[29]"Yeah! The plan was to have Grunty smuggle some blood to your cell to keep you alive, and lo, the plan worked out! Now, the plan is for you to come up with one!"
+[29.30]Who's Grunty?
+[29.31]Is that the extent of your tactical insight?
+[31]"Hey, catch yourself on! It has worked so far, hasn't it?"
+[31.29]About that plan...
+[31.22]Turn to other matters
+[30]"Oh, he's a skeleton. The Baroness employs some necromancer and he does all sorts of tricks. He made Grunty. Grunty doesn't grunt though, but I imagine he would if he could. He's a good skeleton, though, and a good friend!"
+[30.31]Can Grunty help us with that plan of yours?
+[32]"See, they all think Grunty is dumb and perfectly obedient, but he's not! He can walk around the castle freely. That's useful!"
+[32.22]Turn to other matters
+[24]"Oh, most of them are way less hospitable than me. Funny you should ask, actually. There's one guarding us, the guards! A big bloke. Dunno his name. He's big, though. Not very friendly"
+[24.33]Will he let us be?
+[33]"Mate, the second he sees you, he'll bash your head in! And mine, if he sees me with you"
+[33.22]Thanks for the insight. As for the other matters...
+[25]"I'm not paranoid! See, you need blood. We need anima. The Baroness breathes it into us and we come alive. This necromancer of hers, though, devised a new automaton, and said it'll need a LOT of anima! Some guardians started disappearing. I think she's salvaging them for anima. She won't salvage me, though, not without a fight!"
+[25.34]Is this new automaton complete?
+[34]"What, do you think I pay attention to the gossip? Cause I absolutely do! No, it's not complete yet, but apparently they're close to assembling it! I dread the day..."
+[34.22]Turn to other matters
+[27]"What! You can't be serious! Please don't be serious! Are you sure? Absolutely completely sure?"
+[27.22]Reconsider
+[27.35]You are, in fact, absolutely completely sure
+[35][tune:irritability]"Bah! Fine, then! It's not like I liked you anyway! It's not like we could've been BEST OF FRIENDS!"
+[35.36]Continue
+[36]With those words, the Gargoyle shoos you out of its room and slams the door
+[36.12]Continue
+[26]"YES! I knew I could count on you when I first saw you in your half-dead state! Alright. I have something for this occasion. I'm not the only one who's unhappy with the Baroness. Take this Obol. If someone accosts you, might as well show it to them, and tell them you're a friend of Dorothy. If they're with us, they'll stand down, maybe even help you out. If not, well, you better kill them!"
+[26.37][item+10]Take the Obol
+[37]"Oh, and since we're pretty much best friends now, take a look at this vest I nicked off some poor sod from one of Baroness' previous hunts!"
+[37.38][item+3]Take the vest
+[38]"Look at you! From rags to riches, and so quickly, too! Hey. Check this out". With these words, the gargoyle pushes you out of the room and somehow causes and explosion. The room collapses
+[38.39]Continue
+[39]"See? I faked my very own death! Or destruction I guess. I'm not alive technically. Point is, I need to go into hiding, sort some things out, too. We will meet again, but for now - good luck!"
+[39.12]The gargoyle flies off into the distance at a speed much higher than you expected
+Inspecting the right door
+[14]You carefully open the door, so as not to alert whoever might be inside
+[14.40][Subterfuge>1][hidden]You don't make a sound
+[14.41][Subterfuge<2][hidden]The door creaks with a sound that would make the dead come alive!
+[40]Valiant as your effort may have been, the room is empty. Still, your alertness is sure to pay off eventually
+[40.42]Continue
+[41]Much to your relief, the room is empty. No corposes to spring back to life, either
+[41.42]Continue
+[42]The room is only lit by the half-light of the candelabra outside. There is just enough for you to make out that it's uncomfortably small
+[42.43][hasnot:9]Look around
+[42.44][has:9]Look around
+[42.12]Go back
+[43]Upon the floor, you notice a leather-bound tome
+[43.45][item+9]Pick it up
+[45]Esteban's Journal picked up
+[45.42]Back
+[44]Nothing of interest remains
+[44.42]Back
+Marching on
+[15]You wander the corridor. What, or whom, will you encounter? Will you make it out of this place alive? Are you even still alive? You press on
+[15.68][hasnot:11]Continue
+[15.67][has:11]Continue
+[67]"Ah, thou hast returned!"
+[67.56]"Hello, Esteban"
+[68]Eventually, you begin to see a tall, looming figure. As you approach it, you start to make out its features: it's not made of stone, but its bare skin, unadorned by any external armour, looks like it would be nearly impossible to pierce. It stands proud, holding a formidable halberd in just one hand, as if it were a small hatchet. It lifts it up, and abruptly smashes it against the floor. You can feel the ground shake beneath you
+[68.46]Continue
+[46]"And who might thou be?"
+[46.47]Introduce yourself
+[46.48]"I am your undoing"
+[46.49]Ask the beast what, or who, it is
+[49]"Clearly, proper decorum is a concept alien to thee. One is not to respond to an enquiry with one of their own. I, however, am an ogre of great patience. Let me ask again, then"
+[49.46]Continue
+[48]"Come then, insolent whelp. Thou shalt not pass"
+[48.50]Prepare for combat!
+[50]Before you even manage to get within range of the beast, it simply grabs you around the waist, lifts you up to its eyes, and shakes its head disapprovingly, before releasing you and placing you back on the ground
+[50.51]Continue
+[51]"I would oft meet such affront with a swift decapitation. These days, though, company is such a rare pleasure. Come, then, let us not quarrel. I shall ask thee again"
+[51.46]Continue
+[47]"Ah, ^PLAYERNAME^. It is a pleasure indeed to meet thee. I am Esteban, at thy service. But, lest I forget!"
+[47.52]Yes?
+[52]"As I am certain thou hast divined, I am a servant, first and foremost, of the law of this castle. Do not presume that thou hast fooled me, for it is clear as the Baroness' radiant countenance that thou art an escaped convict! Thy charms may be lacking somewhat, yet I am feeling charitable still. I shall do naught but issue thee a warning - for now"
+[52.53][item+11]Take the written warning
+[53]"Pray tell, then, ^PLAYERNAME^, dost thou wish to pass?"
+[53.54]State that you very much would
+[53.55]Not particularly, no
+[55]"I bid thee an endless night. Or, well, since thou art human, a short one, I suppose. My apologies, I mostly converse with the undead"
+[55.12]You return to wandering the corridor
+[54]"Dost thou jest? My patience may be great, but it is not without limit. Amuse me, then, little ^PLAYERNAME^
+[54.56]Continue
+[56]Make thy case"
+[56.57][has:10]Tell Esteban that you're a friend of Dorothy
+[56.58][Diplomacy>1]"Thou and I are kindred spirits. Let us not bicker so"
+[56.61]Threaten Esteban
+[56.63]Beg Esteban
+[56.64][has:9]"I know that you're an illiterate idiot, Esteban. Drop the act"
+[56.65][has:9]"I know how important your duty is to you, Esteban"
+[64]"I have shown thee kindness and patience, and you dare to insult me so? Wicked thing, to steal my precious journal; and to make such accusations!" For the first time in your conversation, Esteban appears genuinely angry. And...hurt? Even though he could easily extinguish your life, he only slaps you across the face, which is still enough to throw you back a few feet. "Let us converse in a more mature manner!"
+[64.56][curHealth-10]<Take 10 damage> Get up
+[65]"Indeed? But how- thou hast found my journal! And thou hast kept it? No matter. Thou hast seen the scribblings of what was then a young ogre, still bathing in mud, and interpreted them with kindness, and not scorn!"
+[65.66]Continue
+[66]"Truly, ever since I was as miniscule as thou art, it was my dream to watch over something. To protect it. Yes, little ^PLAYERNAME^, I have fulfilled that dream. I am happy to be here. Thank you- thee- no. Thank you for reminding me of those dreams of youth. Go, then, traverse the door. But, wait. I cannot just let you pass...Perhas..."
+[66.62]Continue
+[63]"Do not prostrate thyself before me, little ^PLAYERNAME^. Such conduct is unbecoming. Arise and make thy case!"
+[63.56]Continue
+[57]"I know not a Dorothy, and I fail to see...Wait. Is that an obol? Art thou conspiring with that gargoyle miscreant? No, let us speak of this no more"
+[57.56]Try a different approach
+[58]"Indeed? Prithee, reveal how thou hast reach such conclusion"
+[58.59]"Thy conduct is impeccable, as I strive for mine to be"
+[58.60]"Thy resolve is clearly unshakable. Thou art a beast of principle"
+[58.61]"Even mine own might comes second to thine"
+[60]"So I am. Surely, then, thou realise that I shan't 'shake' my resolve for thee"
+[60.56]That didn't seem to work
+[61]Esteban lets out a chuckle that sends the floor beneath you quaking. "Thou doth have spirit, but thy form to mine is akin to that of an ant before a lion!"
+[61.56]Ouch
+[59]"Do you- doth thou speak true? Though I know thee not, ^PLAYERNAME^, thy words...Thank you. Each day and night, I strive to appease the Baroness, to carry myself well. She never says a single word of appreciation. Still, I cannot let you pass. But what if..."
+[59.62]Continue
+[62]"Yes! My shift ends soon, and another guard will arrive. You will have a small window when the door to the lower chambers won't be guarded. Cross then, and it will be no one's fault!"
+[62.69]"Thank you, Esteban"
+[69][tune:triumphant_byte]You wait for Esteban's shift to end. Once he departs, you go through the momentarily-unguarded door. You've reached the lower chambers!

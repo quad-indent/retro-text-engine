@@ -24,5 +24,6 @@
 [6][junk][Hair brush][Seems used. You'd rather not touch it][1]
 [7][quest][The Orb][What a pleasant hum it's emitting][-1]
 [8][armour][Bucket helmet][Is that really what it's called?][40][Helmet][3]
-[9][armour][Leather vest][Comfy!][50][Chest][7][Subterfuge+1][Dexterity>15]
-[10][quest][Obol][An apparent token of trust in some circles][-1]
+[9][quest][Esteban's Journal][Written inside is: DIER DAIARI. AI EM GUD GARD. LYEV, LAF, LAV - ESTEBAN][-1]
+[10][quest][Obol][An apparent token of trust in some circles. Has the words "A friend of Dorothy" scribbled on it][-1]
+[11][quest][A warning][Manners maketh man. It does one well to live by this motto -Esteban][-1]
