@@ -140,15 +140,15 @@ public class StoryBlock {
     public void initChoices(List<String> tempChoices, List<Integer> tempChoiceDestinations, List<String[]> tempCombatantInfo,
                             List<Boolean> tempIsEnding, List<Boolean> tempAreStatChecks, List<Boolean> tempAreHiddenChecks,
                             List<Integer> tempStatVal, List<String> tempRelevantStat, List<Boolean> tempEphemeralStat) {
-        choices = new ArrayList<>(tempChoices);
-        choiceDestinations = new ArrayList<>(tempChoiceDestinations);
-        combatantInfo = new ArrayList<>(tempCombatantInfo);
-        isEnding = new ArrayList<>(tempIsEnding);
-        areHiddenStatChecks = new ArrayList<>(tempAreHiddenChecks);
-        areStatChecks = new ArrayList<>(tempAreStatChecks);
-        statVal = new ArrayList<>(tempStatVal);
-        relevantStat = new ArrayList<>(tempRelevantStat);
-        ephemeralChoices = new ArrayList<>(tempEphemeralStat);
+        this.choices = new ArrayList<>(tempChoices);
+        this.choiceDestinations = new ArrayList<>(tempChoiceDestinations);
+        this.combatantInfo = new ArrayList<>(tempCombatantInfo);
+        this.isEnding = new ArrayList<>(tempIsEnding);
+        this.areHiddenStatChecks = new ArrayList<>(tempAreHiddenChecks);
+        this.areStatChecks = new ArrayList<>(tempAreStatChecks);
+        this.statVal = new ArrayList<>(tempStatVal);
+        this.relevantStat = new ArrayList<>(tempRelevantStat);
+        this.ephemeralChoices = new ArrayList<>(tempEphemeralStat);
     }
 
     public int getChoiceDestinationAtID(int ID) {
@@ -244,14 +244,20 @@ public class StoryBlock {
                 addAppendage = true;
                 continue;
             }
-            if (this.getRelevantStat().get(i).matches("^[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
+            if (this.getRelevantStat().get(i).matches("^-?[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
                 // if item-check
-                Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
-                // does not have requisite item
-                if (itemInQuestion == null) {
-                    continue;
+                if (this.getStatVal().get(i) == -1) {
+                    // if check requires NOT having an item
+                    if (Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i))) == null) {
+                        addAppendage = true;
+                    }
+                } else {
+                    Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
+                    if (itemInQuestion == null) {
+                        continue;
+                    }
+                    addAppendage = true;
                 }
-                addAppendage = true;
             } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
                 // if unknown (to player) stat check
                 addAppendage = true;
@@ -281,14 +287,21 @@ public class StoryBlock {
             } else if (prettifiedStat.equalsIgnoreCase("curMana")) {
                 prettifiedStat = "Current Mana";
             }
-            if (this.getRelevantStat().get(i).matches("^[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
+            if (this.getRelevantStat().get(i).matches("^-?[0-9]\\d*$") && this.getAreHiddenStatChecks().get(i)) {
                 // if item-check
-                Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
-                if (itemInQuestion == null) {
-                    GlobalConf.issueLog("Failed to retrieve item info!", GlobalConf.SEVERITY_LEVEL_ERROR,
-                            true);
+                if (this.getStatVal().get(i) == -1) {
+                    // if check requires NOT having an item
+                    if (Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i))) == null) {
+                        returnChoices.add(this.getRawChoices().get(i));
+                    }
+                } else {
+                    Item itemInQuestion = Inventory.getInventoryItemByItemID(Integer.parseInt(getRelevantStat().get(i)));
+                    if (itemInQuestion == null) {
+                        GlobalConf.issueLog("Failed to retrieve item info!", GlobalConf.SEVERITY_LEVEL_ERROR,
+                                true);
+                    }
+                    returnChoices.add("[requires " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
                 }
-                returnChoices.add("[give " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
             } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
                 // if unknown (to player) stat check
                 returnChoices.add("[" + prettifiedStat + "] " + this.getRawChoices().get(i));

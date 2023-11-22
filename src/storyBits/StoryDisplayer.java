@@ -89,15 +89,20 @@ public class StoryDisplayer {
                 String relevantStat = curObj.getRelevantStat().get(rawChoicePicked);
                 if (relevantStat.equals("curXP")) {
                     PlayerClass.incrementXP(curObj.getStatVal().get(rawChoicePicked));
-                } else if (relevantStat.equalsIgnoreCase("item")) {
-                    Inventory.addItemToInventory(Item.smartItemInit(curObj.getStatVal().get(rawChoicePicked)));
-                } else if (!relevantStat.matches("^[0-9]\\d*$")) {
+                } else if (relevantStat.contains("item")) {
+                    if (relevantStat.contains("+")) {
+                        Inventory.addItemToInventory(Item.smartItemInit(curObj.getStatVal().get(rawChoicePicked)));
+                    } else {
+                        Inventory.removeInventoryItem(curObj.getStatVal().get(rawChoicePicked), false);
+                    }
+                } else if (!relevantStat.matches("^-?[0-9]\\d*$")) {
                     // if it's not numeric, i.e., if it's not an item
                     PlayerClass.incrementPlayerStat(relevantStat,
                             curObj.getStatVal().get(rawChoicePicked));
                 } else {
                     // if is an item requirement (which has been passed, else the choice wouldn't be displayed
-                    Inventory.removeInventoryItem(Integer.parseInt(relevantStat), false);
+                    // Inventory.removeInventoryItem(Integer.parseInt(relevantStat), false);
+                    // no inventory removal anymore!
                 }
             }
             curObj = storyObj.get(getCurIndex()).refineCurStoryBlock();

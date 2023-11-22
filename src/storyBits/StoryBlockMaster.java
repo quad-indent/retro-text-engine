@@ -34,6 +34,14 @@ public class StoryBlockMaster {
                     tempIsStatCheck, tempIsHiddenCheck, tempStatValue, tempRelevantStat,
                     tempEphemeralChoices, tempStoryBit, tempStoryID);
         }
+        if (tempStoryID >= storyObj.size()) {
+            GlobalConf.issueLog("Mismatch of story text IDs and actual story text length! " +
+                            "Total story text size is " + storyObj.size() + " blocks, but attempting to parse ID #" +
+                            tempStoryID + " (last ID should be #" + (storyObj.size() - 1) +
+                            ")! Please double-check all your IDs!",
+                    GlobalConf.SEVERITY_LEVEL_ERROR,
+                    true);
+        }
         storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
                 tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
                 tempStatValue, tempRelevantStat, tempEphemeralChoices);
@@ -60,8 +68,9 @@ public class StoryBlockMaster {
         if (thisTempStoryID != tempStoryID) {
             if (tempStoryID >= storyObj.size()) {
                 GlobalConf.issueLog("Mismatch of story text IDs and actual story text length! " +
-                        "Total story text size is " + storyObj.size() + " blocks, but attempting to parse ID #" +
-                        tempStoryID + "! Please double-check all your IDs!",
+                                "Total story text size is " + storyObj.size() + " blocks, but attempting to parse ID #" +
+                                tempStoryID + " (last ID should be #" + (storyObj.size() - 1) +
+                                ")! Please double-check all your IDs!",
                         GlobalConf.SEVERITY_LEVEL_ERROR,
                         true);
             }
@@ -103,13 +112,17 @@ public class StoryBlockMaster {
         String[] statsInfo = tempStoryBit.get(2).split("[<>+-]");
         int statValModifier = -1;
         boolean isThisStatCheck = stringContainsAny(tempStoryBit.get(2), new char[]{'>', '<'});
-        boolean isThisItemCheck = tempStoryBit.get(2).toLowerCase().contains("has:");
+        boolean isThisItemCheck = tempStoryBit.get(2).toLowerCase().contains("has:") ||
+                tempStoryBit.get(2).toLowerCase().contains("hasnot:");
+        boolean hasCheck = tempStoryBit.get(2).toLowerCase().contains("has:");
         tempIsStatCheck.add(isThisStatCheck);
         if (isThisItemCheck) {
             tempIsHiddenCheck.add(true);
-            tempStatValue.add(0);
+            tempStatValue.add((hasCheck ? 1 : -1));
+            // tempStatValue.add(0);
             //adds item ID
-            tempRelevantStat.add(StoryDisplayer.removeWhiteSpace(tempStoryBit.get(2).split("has:")[1]));
+            String itemID = StoryDisplayer.removeWhiteSpace(tempStoryBit.get(2).split((hasCheck ? "has:" : "hasnot:"))[1]);
+            tempRelevantStat.add(itemID);
         } else if (isThisStatCheck) {
             // is a stat check
             if (tempStoryBit.size() == 5) {
@@ -126,11 +139,18 @@ public class StoryBlockMaster {
             statValModifier = tempStoryBit.get(2).charAt(statsInfo[0].length()) == '+' ? 1 : -1;
             if (statsInfo[1].equals("max")) {
                 tempStatValue.add(statValModifier == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE);
+            } else if (statsInfo[0].equalsIgnoreCase("item")) {
+                //adding (or unadding) item
+                tempStatValue.add(Integer.parseInt(statsInfo[1]));
             } else {
                 tempStatValue.add(Integer.parseInt(statsInfo[1]) * statValModifier);
             }
             tempIsHiddenCheck.add(false);
-            tempRelevantStat.add(statsInfo[0]);
+            if (statsInfo[0].equalsIgnoreCase("item")) {
+                tempRelevantStat.add(statsInfo[0] + tempStoryBit.get(2).charAt(statsInfo[0].length()));
+            } else {
+                tempRelevantStat.add(statsInfo[0]);
+            }
         }
         tempCombatant.add(null);
         return tempStoryID;

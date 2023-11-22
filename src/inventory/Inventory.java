@@ -892,10 +892,10 @@ public class Inventory {
         if (itemInQuestion instanceof WeaponItem tempie) {
             if (!tempie.isShield()) {
                 itemDescFieldz.set(0, itemDescFieldz.get(0) + " (Weapon)");
-                itemDescFieldz.add("+" + tempie.getMinDmg() + "-" + tempie.getMinDmg() + " damage");
+                itemDescFieldz.add("+" + tempie.getMinDmg() + "-" + tempie.getMaxDmg() + " damage");
             } else {
                 itemDescFieldz.set(0, itemDescFieldz.get(0) + " (Shield)");
-                itemDescFieldz.add(tempie.getMinDmg() + "-" + tempie.getMinDmg() + " flat damage absorption");
+                itemDescFieldz.add(tempie.getMinDmg() + "-" + tempie.getMaxDmg() + " flat damage absorption");
             }
             itemDescFieldz.add((tempie.isIs1H() ? "One-handed" : "Two-handed"));
             itemDescFieldz.add(tempie.getScalingStat() + " scaling");

@@ -404,7 +404,7 @@ public class CombatUtils {
         }
         System.out.println(dmgText);
         PlayerClass.incrementHealth(-foeMap.get("damageOut"));
-        if (PlayerClass.checkForDeath(true)) {
+        if (PlayerClass.checkForDeath(false)) {
             return -1;
         }
         return 0;
