@@ -16,6 +16,7 @@ public class StoryBlockMaster {
             System.out.println("File could not be parsed!");
             return;
         }
+        GlobalConf.verifyStoryIntegrity(storyData);
         List<ArrayList<String>> tempStoryBits = genTempStoryBits(storyData);
 
         int tempStoryID = 0;

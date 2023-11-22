@@ -1,6 +1,6 @@
 package storyBits;
 
-import java.util.Map;
+import java.util.*;
 
 public class GlobalConf {
     private static String storyTextPrefix;
@@ -106,5 +106,43 @@ public class GlobalConf {
             finalIdx--;
         }
         return returnal.substring(0, finalIdx);
+    }
+
+    public static void verifyStoryIntegrity(List<String> storyData) throws Exception {
+        List<Integer> pureStoryTextz = storyData.stream().filter(it -> it.matches("\\[\\d+][^]]*")).
+        map(it -> Integer.parseInt(it.substring(1).split("]")[0])).sorted().toList();
+        Set<Integer> nonUniquez = new HashSet<>();
+        List<Integer> missingIDs = new ArrayList<>();
+        for (int i = 1; i < pureStoryTextz.size(); i++) {
+            if (Objects.equals(pureStoryTextz.get(i - 1), pureStoryTextz.get(i))) {
+                nonUniquez.add(pureStoryTextz.get(i));
+            }
+            if (pureStoryTextz.get(i) != (pureStoryTextz.get(i - 1) + 1)) {
+                for (int missID = pureStoryTextz.get(i - 1) + 1; missID < pureStoryTextz.get(i); missID++) {
+                    missingIDs.add(missID);
+                }
+            }
+        }
+        boolean shouldThrow = false;
+        StringBuilder logStr = new StringBuilder();
+        if (!nonUniquez.isEmpty()) {
+            for (int i : nonUniquez) {
+                logStr.append("#").append(i).append(", ");
+            }
+            logStr = new StringBuilder(logStr.substring(0, logStr.length() - 2));
+            logStr.insert(0, "Non-unique story text IDs found! ");
+            shouldThrow = true;
+        }
+        if (!missingIDs.isEmpty()) {
+            for (int i : missingIDs) {
+                logStr.append("#").append(i).append(", ");
+            }
+            logStr = new StringBuilder(logStr.substring(0, logStr.length() - 2));
+            logStr.insert(0, "Missing IDs detected! You may have forgotten to include ");
+            shouldThrow = true;
+        }
+        if (shouldThrow) {
+            issueLog(String.valueOf(logStr), SEVERITY_LEVEL_ERROR, true);
+        }
     }
 }
