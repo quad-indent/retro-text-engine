@@ -239,7 +239,8 @@ public class StoryBlock {
                 break;
             }
             addAppendage = false;
-            if (!(this.getAreHiddenStatChecks().get(i) || this.isStatCheckAtChoiceID(i))) {
+            if (!(this.getAreHiddenStatChecks().get(i) || this.isStatCheckAtChoiceID(i) ||
+                    this.getRelevantStat().get(i).equalsIgnoreCase("item-"))) {
                 // If not any kind of stat check, just append to list
                 addAppendage = true;
                 continue;
@@ -258,6 +259,12 @@ public class StoryBlock {
                     }
                     addAppendage = true;
                 }
+            } else if (this.getRelevantStat().get(i).equalsIgnoreCase("item-")) {
+                // if the choice is an item decrement, check if the player has that item
+                if (Inventory.getInventoryItemByItemID(this.getStatVal().get(i)) == null) {
+                    continue;
+                }
+                addAppendage = true;
             } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
                 // if unknown (to player) stat check
                 addAppendage = true;
