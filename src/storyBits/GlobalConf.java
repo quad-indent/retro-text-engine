@@ -134,11 +134,15 @@ public class GlobalConf {
             shouldThrow = true;
         }
         if (!missingIDs.isEmpty()) {
+            if (shouldThrow) {
+                logStr.append("\n\n");
+            }
+            int offsettee = logStr.length();
             for (int i : missingIDs) {
                 logStr.append("#").append(i).append(", ");
             }
             logStr = new StringBuilder(logStr.substring(0, logStr.length() - 2));
-            logStr.insert(0, "Missing IDs detected! You may have forgotten to include ");
+            logStr.insert(offsettee, "Missing IDs detected! You may have forgotten to include ");
             shouldThrow = true;
         }
         if (shouldThrow) {
