@@ -395,27 +395,13 @@ public class CombatUtils {
     }
     public static int processEnemyHit(Map<String, Integer> foeMap, Foe combatant) throws Exception {
         boolean isACrit = foeMap.get("isCrit") == 1;
-        String enemyAtkFlavour = isACrit ? " fiercely" : "";
-        enemyAtkFlavour += switch (foeMap.get("attackType")) {
-            case 0:
-                yield " strikes you with a quick jab ";
-            case 1:
-                yield " attacks you ";
-            case 2:
-                yield " launches a mighty swing at you ";
-            default:
-                GlobalConf.issueLog("Foe attack type mismatch! Expected 0, 1, or 2, got "
-                        + foeMap.get("attackType"),
-                        GlobalConf.SEVERITY_LEVEL_ERROR,
-                        true);
-                yield null;
-        };
-        String dmgText = GlobalConf.getStoryTextPrefix() + combatant.getName() + enemyAtkFlavour + "for " +
-                foeMap.get("damageOut") + " damage";
+        String enemyAtkFlavour = combatant.getCombatMessagez()[foeMap.get("attackType") + (isACrit ? 3 : 0)];
+        enemyAtkFlavour = enemyAtkFlavour.replaceAll("foeName", combatant.getName());
+        enemyAtkFlavour = enemyAtkFlavour.replaceAll("damageOut", String.valueOf(foeMap.get("damageOut")));
+        String dmgText = GlobalConf.getStoryTextPrefix() + enemyAtkFlavour;
         if (foeMap.get("damageBlocked") != 0) {
             dmgText += " (" + foeMap.get("damageBlocked") + " blocked)";
         }
-        dmgText += "!";
         System.out.println(dmgText);
         PlayerClass.incrementHealth(-foeMap.get("damageOut"));
         if (PlayerClass.checkForDeath(true)) {

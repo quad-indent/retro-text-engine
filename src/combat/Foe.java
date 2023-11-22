@@ -24,6 +24,11 @@ public abstract class Foe {
     private int specialAttackChance;
     private int goldDrop;
     private String specialAttackMsg;
+    private String[] combatMessagez;
+
+    public String[] getCombatMessagez() {
+        return combatMessagez;
+    }
 
     private Map<String, String> messageKeysMap = new LinkedHashMap<>();
 
@@ -186,6 +191,7 @@ public abstract class Foe {
         }
     }
     public Foe (Map<String, String> argz) {
+        this.combatMessagez = new String[6];
         this.name = argz.get("name");
         this.level = Integer.parseInt(argz.get("level"));
         this.curHealth = Integer.parseInt(argz.get("health"));
@@ -203,6 +209,12 @@ public abstract class Foe {
         this.numAttacksPerTurn = Integer.parseInt(argz.get("numAttacksPerTurn"));
         this.specialAttackChance = Integer.parseInt(argz.get("specialAttackChance"));
         this.specialAttackMsg = argz.getOrDefault("specialAttackMessage", "");
+        this.combatMessagez[0] = argz.get("quickAttackMessage");
+        this.combatMessagez[1] = argz.get("normalAttackMessage");
+        this.combatMessagez[2] = argz.get("strongAttackMessage");
+        this.combatMessagez[3] = argz.get("crit_quickAttackMessage");
+        this.combatMessagez[4] = argz.get("crit_normalAttackMessage");
+        this.combatMessagez[5] = argz.get("crit_strongAttackMessage");
     }
     public Foe(String name, int level, int curHealth, int maxHealth, int mana, int maxMana,
                int xpYield, int strength, int dexterity, int intellect, int armour, int goldDrop,
