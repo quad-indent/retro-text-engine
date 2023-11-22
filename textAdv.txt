@@ -28,6 +28,9 @@
 [9.12][Subterfuge>2] Pry open the fountain
 [9.13][has:0] Offer some shit
 [9.17][Currency>20][hidden] Offer some gold
+[9.18][ephemeral]Do something fun
+[18]Define your idea of fun
+[18.9]idk
 [17] Now, out with the gold!
 [17.13][Currency-20] SIR YES SIR!!!
 [10] Well, look at you go!

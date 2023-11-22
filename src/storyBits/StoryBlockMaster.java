@@ -27,14 +27,16 @@ public class StoryBlockMaster {
         List<Boolean> tempIsHiddenCheck = new ArrayList<>();
         List<Integer> tempStatValue = new ArrayList<>();
         List<String> tempRelevantStat = new ArrayList<>();
+        List<Boolean> tempEphemeralChoices = new ArrayList<>();
         for (ArrayList<String> tempStoryBit : tempStoryBits) {
             // iterates over story-bits that are not just prompts, i.e. have choices to pick from
             tempStoryID = processPrompt(tempChoices, tempDestinationBlocks, tempCombatant, tempIsEnding,
-                    tempIsStatCheck, tempIsHiddenCheck, tempStatValue, tempRelevantStat, tempStoryBit, tempStoryID);
+                    tempIsStatCheck, tempIsHiddenCheck, tempStatValue, tempRelevantStat,
+                    tempEphemeralChoices, tempStoryBit, tempStoryID);
         }
         storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
                 tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
-                tempStatValue, tempRelevantStat);
+                tempStatValue, tempRelevantStat, tempEphemeralChoices);
         // init results of last iteration
     }
 
@@ -46,6 +48,7 @@ public class StoryBlockMaster {
                             List<Boolean> tempIsHiddenCheck,
                             List<Integer> tempStatValue,
                             List<String> tempRelevantStat,
+                            List<Boolean> tempEphemeralStat,
                             ArrayList<String> tempStoryBit,
                                int tempStoryID) {
         int thisTempStorySize = tempStoryBit.size();
@@ -54,7 +57,7 @@ public class StoryBlockMaster {
             // if loop hits a new story block, update the old storyObj before moving on to this next, new one
             storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
                     tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
-                    tempStatValue, tempRelevantStat);
+                    tempStatValue, tempRelevantStat, tempEphemeralStat);
             tempStoryID = thisTempStoryID;
             tempChoices.clear();
             tempDestinationBlocks.clear();
@@ -64,11 +67,14 @@ public class StoryBlockMaster {
             tempIsHiddenCheck.clear();
             tempStatValue.clear();
             tempRelevantStat.clear();
+            tempEphemeralStat.clear();
         }
         tempDestinationBlocks.add(getNextStoryStep(tempStoryBit.get(1))); // 1st index contains story destination
         tempChoices.add(tempStoryBit.get(thisTempStorySize - 1)); // Last element is always text to guide player
         tempIsEnding.add(tempStoryBit.get(1).equals("END")); // whether it's an end option
 
+        tempEphemeralStat.add((tempStoryBit.get(2).equalsIgnoreCase("ephemeral") ||
+                (tempStoryBit.size() > 3 && tempStoryBit.get(3).equalsIgnoreCase("ephemeral"))));
         if (!stringContainsAny(tempStoryBit.get(2), new char[]{'+', '-', '<', '>', ':'}) ||
                 tempStoryBit.size() == 3) {
             // combat info and stat boosts or checks are always >3 in size

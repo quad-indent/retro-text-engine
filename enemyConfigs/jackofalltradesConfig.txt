@@ -10,13 +10,13 @@
   armour:: 				15 + getLevel / 1.1 + genRandomNum(getLevel / 1.1, getLevel * 3)
   gold drop:: 				51 + genRandomNum(getLevel * 2, getLevel * 5)
   numAttacksPerTurn:: 			1
-  specialAttackChance:: 		100
   quickAttackMessage::			foeName strikes you with a quick jab for damageOut damage!
   normalAttackMessage::			foeName attacks you for damageOut damage!
   strongAttackMessage::			foeName launches a mighty swing at you for damageOut damage!
   crit_quickAttackMessage::		foeName lands a vicious stab for damageOut damage!
   crit_normalAttackMessage::		foeName critically strikes you for damageOut damage!
   crit_strongAttackMessage::		foeName lands a devastating blow for damageOut damage!
+  specialAttackChance:: 		100
 # Available special attacks type (precisely ONE HAS to be declared):
 # # BasicFoe - no special attacks
 # # MultiAttacker - has a special attack where it strikes multiple times

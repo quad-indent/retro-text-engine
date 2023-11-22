@@ -67,6 +67,10 @@ public class StoryDisplayer {
             nextChoice = curObj.getChoiceDestinationAtID(rawChoicePicked); // getChoiceDestinationAtChoiceStr(currentChoicez.get(rawChoicePicked));
             if (nextChoice == -1)
                 return;
+            if (curObj.getEphemeralChoices().get(rawChoicePicked)) {
+                // tempObj.popChoice(rawChoicePicked);
+                storyObj.get(getCurIndex()).popChoice(currentChoicez.get(rawChoicePicked));
+            }
             setCurIndex(nextChoice);
 
             if (curObj.getCombatantInfo().get(rawChoicePicked) != null) { // getCombatantAtChoice(currentChoicez.get(rawChoicePicked)) != null) {

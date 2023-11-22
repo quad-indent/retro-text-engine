@@ -16,6 +16,7 @@ public class StoryBlock {
     private List<Boolean> areStatChecks = new ArrayList<>();
     private List<Integer> statVal = new ArrayList<>();
     private List<String> relevantStat = new ArrayList<>();
+    private List<Boolean> ephemeralChoices = new ArrayList<>();
     private String tuneToPlay;
 
     public void setTuneToPlay(String tune) { this.tuneToPlay = tune; }
@@ -97,6 +98,10 @@ public class StoryBlock {
         return statVal;
     }
 
+    public List<Boolean> getEphemeralChoices() {
+        return ephemeralChoices;
+    }
+
     public void setStatVal(List<Integer> statVal) {
         this.statVal = statVal;
     }
@@ -116,11 +121,25 @@ public class StoryBlock {
         statVal = new ArrayList<>();
         relevantStat = new ArrayList<>();
         tuneToPlay = tempTuneToPlay;
+        ephemeralChoices = new ArrayList<>();
+    }
+    public StoryBlock(StoryBlock obj) {
+        this.promptText = obj.getPromptText();
+        this.choices = obj.getRawChoices();
+        this.combatantInfo = obj.getCombatantInfo();
+        this.isEnding = obj.getIsEnding();
+        this.choiceDestinations = obj.getChoiceDestinations();
+        this.areHiddenStatChecks = obj.getAreHiddenStatChecks();
+        this.areStatChecks = obj.getAreStatChecks();
+        this.statVal = obj.getStatVal();
+        this.relevantStat = obj.getRelevantStat();
+        this.tuneToPlay = obj.getTuneToPlay();
+        this.ephemeralChoices = obj.getEphemeralChoices();
     }
 
     public void initChoices(List<String> tempChoices, List<Integer> tempChoiceDestinations, List<String[]> tempCombatantInfo,
                             List<Boolean> tempIsEnding, List<Boolean> tempAreStatChecks, List<Boolean> tempAreHiddenChecks,
-                            List<Integer> tempStatVal, List<String> tempRelevantStat) {
+                            List<Integer> tempStatVal, List<String> tempRelevantStat, List<Boolean> tempEphemeralStat) {
         choices = new ArrayList<>(tempChoices);
         choiceDestinations = new ArrayList<>(tempChoiceDestinations);
         combatantInfo = new ArrayList<>(tempCombatantInfo);
@@ -129,6 +148,7 @@ public class StoryBlock {
         areStatChecks = new ArrayList<>(tempAreStatChecks);
         statVal = new ArrayList<>(tempStatVal);
         relevantStat = new ArrayList<>(tempRelevantStat);
+        ephemeralChoices = new ArrayList<>(tempEphemeralStat);
     }
 
     public int getChoiceDestinationAtID(int ID) {
@@ -149,6 +169,28 @@ public class StoryBlock {
         return -1;
     }
 
+    public void popChoice(String choiceStr) throws Exception {
+        int popIndex = -1;
+        for (int i = 0; i < this.getRawChoices().size(); i++) {
+            if (this.getRawChoices().get(i).equalsIgnoreCase(choiceStr)) {
+                popIndex = i;
+                break;
+            }
+        }
+        if (popIndex == -1) {
+            GlobalConf.issueLog("Couldn't process the ephemeral choice " + choiceStr + "!",
+                    GlobalConf.SEVERITY_LEVEL_ERROR, true);
+        }
+        getRawChoices().remove(popIndex);
+        getChoiceDestinations().remove(popIndex);
+        getCombatantInfo().remove(popIndex);
+        getIsEnding().remove(popIndex);
+        getAreHiddenStatChecks().remove(popIndex);
+        getAreStatChecks().remove(popIndex);
+        getStatVal().remove(popIndex);
+        getRelevantStat().remove(popIndex);
+        getEphemeralChoices().remove(popIndex);
+    }
     public String getPromptText() {
         return promptText;
     }
@@ -162,6 +204,7 @@ public class StoryBlock {
                                 List<Boolean> tempAreStatChecks,
                                 List<Boolean> tempAreHiddenStatChecks,
                                 List<Integer> tempStatVal,
+                                List<Boolean> tempEphemeralVal,
                                 List<String> tempRelevantStat,
                                 int i) {
         tempChoices.add(this.getRawChoices().get(i));
@@ -172,6 +215,7 @@ public class StoryBlock {
         tempAreHiddenStatChecks.add(this.getAreHiddenStatChecks().get(i));
         tempStatVal.add(this.getStatVal().get(i));
         tempRelevantStat.add(this.getRelevantStat().get(i));
+        tempEphemeralVal.add(this.getEphemeralChoices().get(i));
     }
     public StoryBlock refineCurStoryBlock() {
         StoryBlock tempie = new StoryBlock(this.getPromptText(), this.getTuneToPlay());
@@ -183,12 +227,13 @@ public class StoryBlock {
         List<Boolean> tempAreHiddenStatChecks = new ArrayList<>();
         List<Integer> tempStatVal = new ArrayList<>();
         List<String> tempRelevantStat = new ArrayList<>();
+        List<Boolean> tempEphemeralStat = new ArrayList<>();
         boolean addAppendage = false;
         for (int i=0; i<this.getRawChoices().size() + 1; i++) {
             if (addAppendage) {
                 appendBlockCopy(tempChoices, tempChoiceDestinations, tempCombatantInfo,
                         tempIsEnding, tempAreStatChecks, tempAreHiddenStatChecks, tempStatVal,
-                        tempRelevantStat, i-1);
+                        tempEphemeralStat, tempRelevantStat, i-1);
             }
             if (i == this.getRawChoices().size()) {
                 break;
@@ -216,7 +261,7 @@ public class StoryBlock {
             }
         }
         tempie.initChoices(tempChoices, tempChoiceDestinations, tempCombatantInfo, tempIsEnding,
-                tempAreStatChecks, tempAreHiddenStatChecks, tempStatVal, tempRelevantStat);
+                tempAreStatChecks, tempAreHiddenStatChecks, tempStatVal, tempRelevantStat, tempEphemeralStat);
         return tempie;
     }
     public List<String> getChoices() throws Exception {
