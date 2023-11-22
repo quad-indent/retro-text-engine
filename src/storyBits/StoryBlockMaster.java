@@ -37,6 +37,10 @@ public class StoryBlockMaster {
         storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
                 tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
                 tempStatValue, tempRelevantStat, tempEphemeralChoices);
+        if (storyObj.get(storyObj.size() - 1).getRawChoices().isEmpty()) {
+            GlobalConf.issueLog("Final story text has no choices! This might indicate that you have " +
+                    "some overlapping (non-unique) story IDs!", GlobalConf.SEVERITY_LEVEL_WARNING, false);
+        }
         // init results of last iteration
     }
 

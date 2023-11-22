@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class PlayerClass {
-    private static final String DEFAULT_PLAYER_FILE_NAME = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
+    public static final String DEFAULT_PLAYER_FILE_NAME = "playerSheet.storyData"; // pitiful obfuscation of format, marginally better than nothing
     private static String desiredSaveDest = "";
     private static Map<String, Integer> playerBaseVals = new LinkedHashMap<>();
     private static Map<String, Integer> playerAtts = new LinkedHashMap<>();

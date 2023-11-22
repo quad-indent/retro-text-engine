@@ -6,6 +6,7 @@ import inventory.InventoryCache;
 import inventory.Item;
 import player.PlayerClass;
 
+import java.io.File;
 import java.util.*;
 import audio.ClipPlayer;
 import player.PlayerKeywordz;
@@ -102,6 +103,8 @@ public class StoryDisplayer {
             curObj = storyObj.get(getCurIndex()).refineCurStoryBlock();
             PlayerClass.saveCharacter(getCurIndex());
             if (PlayerClass.checkForDeath(true)) {
+                File playerFile = new File(PlayerClass.DEFAULT_PLAYER_FILE_NAME);
+                playerFile.delete();
                 return;
             }
         }
