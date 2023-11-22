@@ -50,10 +50,17 @@ public class StoryBlockMaster {
                             List<String> tempRelevantStat,
                             List<Boolean> tempEphemeralStat,
                             ArrayList<String> tempStoryBit,
-                               int tempStoryID) {
+                               int tempStoryID) throws Exception {
         int thisTempStorySize = tempStoryBit.size();
         int thisTempStoryID = Integer.parseInt(tempStoryBit.get(0));
         if (thisTempStoryID != tempStoryID) {
+            if (tempStoryID >= storyObj.size()) {
+                GlobalConf.issueLog("Mismatch of story text IDs and actual story text length! " +
+                        "Total story text size is " + storyObj.size() + " blocks, but attempting to parse ID #" +
+                        tempStoryID + "! Please double-check all your IDs!",
+                        GlobalConf.SEVERITY_LEVEL_ERROR,
+                        true);
+            }
             // if loop hits a new story block, update the old storyObj before moving on to this next, new one
             storyObj.get(tempStoryID).initChoices(tempChoices, tempDestinationBlocks,
                     tempCombatant, tempIsEnding, tempIsStatCheck, tempIsHiddenCheck,
