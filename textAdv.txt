@@ -25,7 +25,9 @@
 [10]Not only that, you now feel a sharp pain in your shoulder
 [10.1][curHealth-5]Continue
 [7]Although the handle feels stuck at first, with enough persistence you manage to pull it down and realise that the door wasn't locked. You exit the room
-[7.11]You walk out into a corridor
+[7.69]You walk out into a corridor
+[69][tune:bolt_action_love]As you were trying to get out, something else was trying to get in. Before you stands a withered vampiric thrall. Judging by its looks, it's starving and desperate for a meal. It must've been hoping to get nourishment from your flesh
+[69.11][hungeringThrall][Hungering Thrall]Defend yourself!
 [11]You are by the door to your chamber, which was located at the end of the corridor. It stretches beyond what the eye can see, seemingly endless, yet lit with uncountable, tall candelabra placed by the walls
 [11.12]Walk forward
 [12][tune:baroness_descends]You are at an intersection. There are two doors, to your left and to your right. The corridor continues forward
@@ -43,60 +45,62 @@
 [19.21]Let it collect itself and make its case properly
 [17]Just before it seems to regain consciousness, you hide in an alcove. You hear it murmur to itself "...Where did they go...A glimmer of hope for us...Need to work together..."
 [17.20][gargoyle][Dazed Gargoyle]Ambush the wicked creature
+[17.21]Step out the shadows and let it speak
 [20]This time, the gargoyle shatters in a violent explosion. The room begins to collapse! You make it out just before the door is sealed with the debris
 [20.12]Continue
 [18]You feel your strength wane, the forces pulling it together too great. Before it rises again, however, you hear it speak: "Friend...I am not foe...The Baroness commands me...Work together...Destroy her...We overcome..."
 [18.20][gargoyle][Dazed Gargoyle]Destroy the creature as you did before
 [18.21]Let it make its plea
-[21][tune:attention_deficit_dirge]You wait for it to regain whatever faculties it might have. Eventually, the gargoyle begins to speak: "Ah, yes, thanks! Y'know, for not destroying me completely. Apologies about my attempt on your life. See, we don't get many, er, any, visitors here"
+[21][tune:attention_deficit_dirge]You wait for it to regain whatever faculties it might have. Eventually, the gargoyle begins to speak: "Ah, yes, thanks! Y'know, for not destroying me completely. Apologies for my attempt on your life. See, we don't get many, er, any, visitors here"
 [21.22]Go on?
-[22]"I'm one of the prison guardians, but even as a guardian, this place has become my prison, my tomb. And with the Baroness's schemes, well, I thought you were an assassin sent to kill poor old me! Wanna be friends?"
+[22][tune:attention_deficit_dirge]"I'm one of the prison guardians, but even as a guardian, this place has become my prison, my tomb. And with the Baroness's schemes, well, I thought you were an assassin sent to kill poor old me! Wanna be friends?"
 [22.23]Ask who the Baroness is
 [22.24]Ask who the other guardians are
 [22.25]Ask why someone would assassinate a gargoyle
 [22.26]Befriend the gargoyle
 [22.27]Tell the gargoyle that you don't befriend just anyone
-[23]"She is older than all of us here, older than this accursed place even! Nobody knows her name. Nobody knows her story, except that she's reclusive, powerful, and absolutely ruthless. She made me and the other guardians. And she occasionally goes out to hunt. You were her latest prey. Surprised you're still alive, what with all the blood she drank from you! It really got her blood pumping! Oh. Forgive the pun"
+[23][tune:attention_deficit_dirge]"She is older than all of us here, older than this accursed place even! Nobody knows her name. Nobody knows her story, except that she's reclusive, powerful, and absolutely ruthless. She made me and the other guardians. And she occasionally goes out to hunt. You were her latest prey. It's a miracle you managed to stay alive, even with my help, what with all the blood she drank from you! It really got her blood pumping! Oh. Forgive the pun"
+[23.29]Your help? You just tried to kill me!
 [23.28]And you want to rise up against this tyrannical being?
 [23.22]Turn to other matters
-[28]"Lower your voice! Do you want to get us both killed? But, yes, maybe not overthrow or kill her, but, y'know, rise up just enough to get out of here and be my own gargoyle! Did you know there's other places? And things called mountains that are just so so high and made of stone, too? I would love to visit them! Oh, and you probably have some...flesh friends to go back to as well?"
+[28][tune:attention_deficit_dirge]"Lower your voice! Do you want to get us both killed? But, yes, maybe not overthrow or kill her, but, y'know, rise up just enough to get out of here and be my own gargoyle! Did you know there's other places? And things called mountains that are just so so high and made of stone, too? I would love to visit them! Oh, and you probably have some...flesh friends to go back to as well?"
 [28.29]Do you have an army? Allies? A plan?
 [28.22]Turn to other matters
-[29]"Yeah! The plan was to have Grunty smuggle some blood to your cell to keep you alive, and lo, the plan worked out! Now, the plan is for you to come up with one!"
+[29][tune:attention_deficit_dirge]"Yeah! The plan was to have Grunty smuggle some blood to your cell to keep you alive, and lo, the plan worked out! Now, the plan is for you to come up with one!"
 [29.30]Who's Grunty?
 [29.31]Is that the extent of your tactical insight?
-[31]"Hey, catch yourself on! It has worked so far, hasn't it?"
+[31][tune:attention_deficit_dirge]"Hey, catch yourself on! It has worked so far, hasn't it?"
 [31.29]About that plan...
 [31.22]Turn to other matters
-[30]"Oh, he's a skeleton. The Baroness employs some necromancer and he does all sorts of tricks. He made Grunty. Grunty doesn't grunt though, but I imagine he would if he could. He's a good skeleton, though, and a good friend!"
-[30.31]Can Grunty help us with that plan of yours?
-[32]"See, they all think Grunty is dumb and perfectly obedient, but he's not! He can walk around the castle freely. That's useful!"
+[30][tune:attention_deficit_dirge]"Oh, he's a skeleton. The Baroness employs some necromancer and he does all sorts of tricks. He made Grunty. Grunty doesn't grunt though, but I imagine he would if he could. He's a good skeleton, though, and a good friend!"
+[30.32]Can Grunty help us with that plan of yours?
+[32][tune:attention_deficit_dirge]"See, they all think Grunty is dumb and perfectly obedient, but he's not! He can walk around the castle freely. That's useful!"
 [32.22]Turn to other matters
-[24]"Oh, most of them are way less hospitable than me. Funny you should ask, actually. There's one guarding us, the guards! A big bloke. Dunno his name. He's big, though. Not very friendly"
+[24][tune:attention_deficit_dirge]"Oh, most of them are way less hospitable than me. Funny you should ask, actually. There's one guarding us, the guards! A big bloke. Dunno his name. He's big, though. Not very friendly"
 [24.33]Will he let us be?
-[33]"Mate, the second he sees you, he'll bash your head in! And mine, if he sees me with you"
+[33][tune:attention_deficit_dirge]"Mate, the second he sees you, he'll bash your head in! And mine, if he sees me with you"
 [33.22]Thanks for the insight. As for the other matters...
-[25]"I'm not paranoid! See, you need blood. We need anima. The Baroness breathes it into us and we come alive. This necromancer of hers, though, devised a new automaton, and said it'll need a LOT of anima! Some guardians started disappearing. I think she's salvaging them for anima. She won't salvage me, though, not without a fight!"
+[25][tune:attention_deficit_dirge]"I'm not paranoid! See, you need blood. We need anima. The Baroness breathes it into us and we come alive. This necromancer of hers, though, devised a new automaton, and said it'll need a LOT of anima! Some guardians started disappearing. I think she's salvaging them for anima. She won't salvage me, though, not without a fight!"
 [25.34]Is this new automaton complete?
-[34]"What, do you think I pay attention to the gossip? Cause I absolutely do! No, it's not complete yet, but apparently they're close to assembling it! I dread the day..."
+[34][tune:attention_deficit_dirge]"What, do you think I pay attention to the gossip? Cause I absolutely do! No, it's not complete yet, but apparently they're close to assembling it! I dread the day..."
 [34.22]Turn to other matters
-[27]"What! You can't be serious! Please don't be serious! Are you sure? Absolutely completely sure?"
+[27][tune:attention_deficit_dirge]"What! You can't be serious! Please don't be serious! Are you sure? Absolutely completely sure?"
 [27.22]Reconsider
 [27.35]You are, in fact, absolutely completely sure
 [35][tune:irritability]"Bah! Fine, then! It's not like I liked you anyway! It's not like we could've been BEST OF FRIENDS!"
 [35.36]Continue
-[36]With those words, the Gargoyle shoos you out of its room and slams the door
+[36][tune:irritability]With those words, the Gargoyle shoos you out of its room and slams the door
 [36.12]Continue
-[26]"YES! I knew I could count on you when I first saw you in your half-dead state! Alright. I have something for this occasion. I'm not the only one who's unhappy with the Baroness. Take this Obol. If someone accosts you, might as well show it to them, and tell them you're a friend of Dorothy. If they're with us, they'll stand down, maybe even help you out. If not, well, you better kill them!"
+[26][tune:attention_deficit_dirge]"YES! I knew I could count on you when I first saw you in your half-dead state! Alright. I have something for this occasion. I'm not the only one who's unhappy with the Baroness. Take this Obol. If someone accosts you, might as well show it to them, and tell them you're a friend of Dorothy. If they're with us, they'll stand down, maybe even help you out. If not, well, you better kill them!"
 [26.37][item+10]Take the Obol
-[37]"Oh, and since we're pretty much best friends now, take a look at this vest I nicked off some poor sod from one of Baroness' previous hunts!"
+[37][tune:attention_deficit_dirge]"Oh, and since we're pretty much best friends now, take a look at this vest I nicked off some poor sod from one of Baroness' previous hunts!"
 [37.38][item+3]Take the vest
-[38]"Look at you! From rags to riches, and so quickly, too! Hey. Check this out". With these words, the gargoyle pushes you out of the room and somehow causes and explosion. The room collapses
+[38][tune:attention_deficit_dirge]"Look at you! From rags to riches, and so quickly, too! Hey. Check this out". With these words, the gargoyle pushes you out of the room and somehow causes and explosion. The room collapses
 [38.39]Continue
-[39]"See? I faked my very own death! Or destruction I guess. I'm not alive technically. Point is, I need to go into hiding, sort some things out, too. We will meet again, but for now - good luck!"
+[39][tune:attention_deficit_dirge]"See? I faked my very own death! Or destruction I guess. I'm not alive technically. Point is, I need to go into hiding, sort some things out, too. We will meet again, but for now - good luck!"
 [39.12]The gargoyle flies off into the distance at a speed much higher than you expected
 Inspecting the right door
-[14]You carefully open the door, so as not to alert whoever might be inside
+[14][tune:attention_deficit_dirge]You carefully open the door, so as not to alert whoever might be inside
 [14.40][Subterfuge>1][hidden]You don't make a sound
 [14.41][Subterfuge<2][hidden]The door creaks with a sound that would make the dead come alive!
 [40]Valiant as your effort may have been, the room is empty. Still, your alertness is sure to pay off eventually
@@ -172,5 +176,5 @@ Marching on
 [59]"Do you- doth thou speak true? Though I know thee not, ^PLAYERNAME^, thy words...Thank you. Each day and night, I strive to appease the Baroness, to carry myself well. She never says a single word of appreciation. Still, I cannot let you pass. But what if..."
 [59.62]Continue
 [62]"Yes! My shift ends soon, and another guard will arrive. You will have a small window when the door to the lower chambers won't be guarded. Cross then, and it will be no one's fault!"
-[62.69]"Thank you, Esteban"
-[69][tune:triumphant_byte]You wait for Esteban's shift to end. Once he departs, you go through the momentarily-unguarded door. You've reached the lower chambers!
+[62.70]"Thank you, Esteban"
+[70][tune:triumphant_byte]You wait for Esteban's shift to end. Once he departs, you go through the momentarily-unguarded door. You've reached the lower chambers!

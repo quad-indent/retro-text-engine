@@ -70,7 +70,10 @@ public class StoryDisplayer {
                 return;
             if (curObj.getEphemeralChoices().get(rawChoicePicked)) {
                 // tempObj.popChoice(rawChoicePicked);
-                storyObj.get(getCurIndex()).popChoice(currentChoicez.get(rawChoicePicked));
+                int rawPopIdx = storyObj.get(getCurIndex()).popChoice(currentChoicez.get(rawChoicePicked));
+                if (rawPopIdx != -1) {
+                    StoryBlockMaster.getPoppedEphemeralz().add(new Integer[]{getCurIndex(), rawPopIdx});
+                }
             }
             setCurIndex(nextChoice);
 

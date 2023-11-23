@@ -77,6 +77,9 @@ public class MultiTalented extends Foe {
     @Override
     public void specialAttackPostProc() {
         int choice = this.getCurrentMimic();
+        getTalentz().get(choice).setCurHealth(this.getCurHealth());
+        getTalentz().get(choice).setCurMana(this.getCurMana());
+        // otherwise damage wouldn't really be dealt to the enemy
         getTalentz().get(choice).specialAttackPostProc();
         this.mimicAnother(getTalentz().get(choice));
         this.setCurrentMimic(-1);

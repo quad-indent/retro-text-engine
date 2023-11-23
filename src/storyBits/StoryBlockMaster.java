@@ -5,10 +5,20 @@ import java.util.Comparator;
 import java.util.List;
 
 public class StoryBlockMaster {
+    private static List<Integer[]> poppedEphemeralz = new ArrayList<>();
     private ArrayList<StoryBlock> storyObj;
     public ArrayList<StoryBlock> getStoryObj() {
         return storyObj;
     }
+
+    public static List<Integer[]> getPoppedEphemeralz() {
+        return poppedEphemeralz;
+    }
+
+    public static void setPoppedEphemeralz(List<Integer[]> poppedEphemeralz) {
+        StoryBlockMaster.poppedEphemeralz = poppedEphemeralz;
+    }
+
     public StoryBlockMaster(String storyFile) throws Exception {
         storyObj = new ArrayList<>();
         List<String> storyData = FileParser.parseFile(storyFile, "[", false);
@@ -18,7 +28,6 @@ public class StoryBlockMaster {
         }
         GlobalConf.verifyStoryIntegrity(storyData);
         List<ArrayList<String>> tempStoryBits = genTempStoryBits(storyData);
-
         int tempStoryID = 0;
         List<String> tempChoices = new ArrayList<>();
         List<Integer> tempDestinationBlocks = new ArrayList<>();
@@ -245,5 +254,15 @@ public class StoryBlockMaster {
         if (storyStepID.equals("END"))
             return -1;
         return Integer.parseInt((storyStepID));
+    }
+
+    public static ArrayList<StoryBlock> massPopEphemeralz(List<Integer[]> pops, ArrayList<StoryBlock> storyObj) {
+        if (pops == null) {
+            return storyObj;
+        }
+        for (Integer[] curPop: pops) {
+            storyObj.get(curPop[0]).popChoice(curPop[1]);
+        }
+        return storyObj;
     }
 }

@@ -50,6 +50,9 @@ public class CombatUtils {
         if (minOut == maxOut)
             return minOut;
         if (maxOut - minOut == 1) {
+            if (qWeightz.length < 3) {
+                GlobalConf.issueLog("Mismatch of qWeightz!", GlobalConf.SEVERITY_LEVEL_ERROR, true);
+            }
             // 2 possibilities
             if (qWeightz[2] > 0 && qWeightz[3] > 0) {
                 qWeightz = new int[]{qWeightz[0] + qWeightz[1], qWeightz[2] + qWeightz[3]};
@@ -57,6 +60,9 @@ public class CombatUtils {
                 qWeightz = new int[]{qWeightz[0], qWeightz[1]};
             }
         } else if (maxOut - minOut == 2) {
+            if (qWeightz.length < 4) {
+                GlobalConf.issueLog("Mismatch of qWeightz!", GlobalConf.SEVERITY_LEVEL_ERROR, true);
+            }
             // 3 possibilities
             if (qWeightz[3] > 0) {
                 double tempie = (double) qWeightz[3] / 3;
@@ -74,6 +80,9 @@ public class CombatUtils {
                 }
             }
             qWeightz = new int[]{qWeightz[0], qWeightz[1], qWeightz[3]};
+        }
+        if (qWeightz.length == 0) {
+            GlobalConf.issueLog("qWeightz empty!", GlobalConf.SEVERITY_LEVEL_ERROR, true);
         }
         int qRoll = genRandomNum(0, 100);
         int qPicked = qWeightz.length-1;
@@ -333,6 +342,7 @@ public class CombatUtils {
                 // or raises combatant's armour, let player's attack go thru first
                 // no harm either if special attack is purely offensive
                 combatant.specialAttackPostProc();
+                isEnemySpecialAttacking = false;
             }
             if (genRandomNum(1, 100) <= combatant.getSpecialAttackChance()) {
                 isEnemySpecialAttacking = true;

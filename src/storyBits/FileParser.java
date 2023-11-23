@@ -1,5 +1,6 @@
 package storyBits;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -14,6 +15,12 @@ public class FileParser {
     public static List<String> parseFile(String fileName, String hasToStartWith, boolean negateStartStr) throws Exception {
         if (fileName == null || fileName.isEmpty()) {
             fileName = "textAdv.txt";
+        }
+        File prelimCheck = new File(fileName);
+        if (!prelimCheck.exists() || prelimCheck.isDirectory()) {
+            GlobalConf.issueLog("The provided file, " + fileName + ", does not exist!",
+                    GlobalConf.SEVERITY_LEVEL_ERROR,
+                    true);
         }
         boolean shouldSkipLine;
         try {

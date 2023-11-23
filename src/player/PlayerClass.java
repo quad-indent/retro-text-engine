@@ -324,6 +324,7 @@ public class PlayerClass {
         printWriter.println(getPlayerName());
         if (GlobalConf.isMinimalConfig()) {
             printWriter.println(curPage);
+            saveEphemeralz(printWriter);
             return printWriter;
         }
         printWriter.println(curPage); // starts at story index 0
@@ -378,7 +379,27 @@ public class PlayerClass {
         for (Integer statLv : getPlayerAtts().values())
             printWriter.println(statLv);
 
+        saveEphemeralz(printWriter);
+
         return printWriter;
+    }
+
+    private static void saveEphemeralz(PrintWriter printWriter) {
+        List<Integer[]> ephsCopy = StoryBlockMaster.getPoppedEphemeralz();
+        if (ephsCopy == null) {
+            printWriter.println("");
+            return;
+        }
+        StringBuilder lineToWrite = new StringBuilder();
+        for (Integer[] integers : ephsCopy) {
+            lineToWrite.append(integers[0]).append(".").append(integers[1]).append(" ");
+        }
+        if (lineToWrite.isEmpty()) {
+            printWriter.println("");
+            return;
+        }
+        lineToWrite = new StringBuilder(lineToWrite.substring(0, lineToWrite.length() - 1));
+        printWriter.println(lineToWrite);
     }
 
     public static int loadCharacter() throws Exception {
@@ -406,10 +427,12 @@ public class PlayerClass {
                 Inventory.populateInventoryFromSave(storyReader);
                 getPlayerBaseVals().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
                 getPlayerAtts().replaceAll((n, v) -> Integer.parseInt(storyReader.nextLine()));
+//                StoryBlockMaster.setPoppedEphemeralz(procureEphemeralz(storyReader));
             } else {
                 setPlayerName(storyReader.nextLine());
                 playerStoryPage = Integer.parseInt(storyReader.nextLine());
             }
+            StoryBlockMaster.setPoppedEphemeralz(procureEphemeralz(storyReader));
             storyReader.close();
             return playerStoryPage;
         } catch (IOException e) {
@@ -419,6 +442,31 @@ public class PlayerClass {
         }
     }
 
+    private static List<Integer[]> procureEphemeralz(Scanner storyReader) throws Exception {
+        List<Integer[]> returnal = new ArrayList<>();
+        String rawie = storyReader.nextLine();
+        if (rawie.isEmpty()) {
+            return new ArrayList<>();
+        }
+        int storyVal, promptVal;
+        String[] miniTempie;
+        for (String curBit: rawie.split(" ")) {
+            try {
+                miniTempie = curBit.split("\\.");
+                if (miniTempie.length != 2) {
+                    throw new Exception();
+                }
+                storyVal = Integer.parseInt(miniTempie[0]);
+                promptVal = Integer.parseInt(miniTempie[1]);
+                returnal.add(new Integer[]{storyVal, promptVal});
+            } catch (Exception e) {
+                GlobalConf.issueLog("Error trying to parse ephemeral choices data from save file!",
+                        GlobalConf.SEVERITY_LEVEL_WARNING,
+                        false);
+            }
+        }
+        return returnal;
+    }
     public static void storyStatPicker() throws Exception { // 6 major, 4 minor points to assign
         Map<String, Integer> playerAttsOld = new LinkedHashMap<>(getPlayerAtts());
         StoryBlockMaster creatorBlock = new StoryBlockMaster(FileParser.joinConfigFolder("charCreatorPrompts.txt"));

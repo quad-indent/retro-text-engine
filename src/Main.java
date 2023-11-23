@@ -22,6 +22,7 @@ public class Main {
         StoryBlockMaster bard = new StoryBlockMaster(null);
         PlayerKeywordz.initAllNamez(null);
         int playerStoryPage = PlayerClass.initPlayer(null);
+        StoryBlockMaster.massPopEphemeralz(StoryBlockMaster.getPoppedEphemeralz(), bard.getStoryObj());
         StoryDisplayer.storyLoop(bard.getStoryObj(), playerStoryPage, false);
     }
 }

@@ -1,0 +1,23 @@
+  name:: 				Hungering Thrall
+  level:: 				playerLevel
+  health::				56 + playerLevel * genRandomNum(1, 3)
+  mana:: 				0
+  experience yield:: 			default
+  strength:: 				1 + playerLevel / 1.2 + genRandomNum(1, getLevel * 2)
+  dexterity:: 				3 + playerLevel / 2 + genRandomNum(2, getLevel / 5)
+  intellect:: 				1 + playerLevel / 2 + genRandomNum(2, getLevel / 5)
+  armour:: 				1 + getLevel / 1.1 + genRandomNum(getLevel / 1.1, getLevel * 3)
+  gold drop:: 				70 + genRandomNum(getLevel * 2, getLevel * 5)
+  numAttacksPerTurn:: 			1
+  specialAttackChance:: 		80
+  quickAttackMessage::			foeName strikes you with a quick jab for damageOut damage!
+  normalAttackMessage::			foeName attacks you for damageOut damage!
+  strongAttackMessage::			foeName launches a mighty swing at you for damageOut damage!
+  crit_quickAttackMessage::		foeName lands a vicious stab for damageOut damage!
+  crit_normalAttackMessage::		foeName critically strikes you for damageOut damage!
+  crit_strongAttackMessage::		foeName lands a devastating blow for damageOut damage!
+  specialAttackType:: 			MultiTalented
+  lifeLeecherMessage:: 			foeName bites into your flesh, healing themselves for lifeLeeched health!
+  lifeLeechPercentage:: 		100
+  multiAttackerMessage::		foeName begins to pummel you with a flurry of attacks!
+  attacksWhenMultiAttacking::		3

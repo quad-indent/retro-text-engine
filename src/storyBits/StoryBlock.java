@@ -169,7 +169,18 @@ public class StoryBlock {
         return -1;
     }
 
-    public void popChoice(String choiceStr) throws Exception {
+    public void popChoice(int absoluteChoice) {
+        getRawChoices().remove(absoluteChoice);
+        getChoiceDestinations().remove(absoluteChoice);
+        getCombatantInfo().remove(absoluteChoice);
+        getIsEnding().remove(absoluteChoice);
+        getAreHiddenStatChecks().remove(absoluteChoice);
+        getAreStatChecks().remove(absoluteChoice);
+        getStatVal().remove(absoluteChoice);
+        getRelevantStat().remove(absoluteChoice);
+        getEphemeralChoices().remove(absoluteChoice);
+    }
+    public int popChoice(String choiceStr) throws Exception {
         int popIndex = -1;
         for (int i = 0; i < this.getRawChoices().size(); i++) {
             if (this.getRawChoices().get(i).equalsIgnoreCase(choiceStr)) {
@@ -190,6 +201,7 @@ public class StoryBlock {
         getStatVal().remove(popIndex);
         getRelevantStat().remove(popIndex);
         getEphemeralChoices().remove(popIndex);
+        return popIndex;
     }
     public String getPromptText() {
         return promptText;
