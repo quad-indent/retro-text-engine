@@ -109,7 +109,7 @@ public class GlobalConf {
     }
 
     public static void verifyStoryIntegrity(List<String> storyData) throws Exception {
-        List<Integer> pureStoryTextz = storyData.stream().filter(it -> it.matches("\\[\\d+][^]]*")).
+        List<Integer> pureStoryTextz = storyData.stream().filter(it -> it.matches("\\[\\d+][^]]*.*")).
         map(it -> Integer.parseInt(it.substring(1).split("]")[0])).sorted().toList();
         Set<Integer> nonUniquez = new HashSet<>();
         List<Integer> missingIDs = new ArrayList<>();

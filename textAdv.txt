@@ -116,7 +116,7 @@ Inspecting the right door
 Marching on
 [15]You wander the corridor. What, or whom, will you encounter? Will you make it out of this place alive? Are you even still alive? You press on
 [15.68][hasnot:11]Continue
-[15.67][has:11]Continue
+[15.67][has:11][hidden]Continue
 [67]"Ah, thou hast returned!"
 [67.56]"Hello, Esteban"
 [68]Eventually, you begin to see a tall, looming figure. As you approach it, you start to make out its features: it's not made of stone, but its bare skin, unadorned by any external armour, looks like it would be nearly impossible to pierce. It stands proud, holding a formidable halberd in just one hand, as if it were a small hatchet. It lifts it up, and abruptly smashes it against the floor. You can feel the ground shake beneath you

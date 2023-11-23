@@ -307,7 +307,13 @@ public class StoryBlock {
                         GlobalConf.issueLog("Failed to retrieve item info!", GlobalConf.SEVERITY_LEVEL_ERROR,
                                 true);
                     }
-                    returnChoices.add("[requires " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
+                    if (this.getCombatantInfo().get(i) != null) {
+                        if (this.getCombatantInfo().get(i)[0].equalsIgnoreCase("hiddenimus")) {
+                            returnChoices.add(this.getRawChoices().get(i));
+                        }
+                    } else {
+                        returnChoices.add("[requires " + itemInQuestion.getName() + "] " + this.getRawChoices().get(i));
+                    }
                 }
             } else if (this.isStatCheckAtChoiceID(i) && !this.getAreHiddenStatChecks().get(i)) {
                 // if unknown (to player) stat check

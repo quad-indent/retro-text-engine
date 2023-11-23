@@ -116,8 +116,10 @@ public class StoryBlockMaster {
         boolean isThisItemCheck = tempStoryBit.get(2).toLowerCase().contains("has:") ||
                 tempStoryBit.get(2).toLowerCase().contains("hasnot:");
         boolean hasCheck = tempStoryBit.get(2).toLowerCase().contains("has:");
+        boolean hiddenItemCheck = false;
         tempIsStatCheck.add(isThisStatCheck);
         if (isThisItemCheck) {
+            hiddenItemCheck = tempStoryBit.get(3).equalsIgnoreCase("hidden");
             tempIsHiddenCheck.add(true);
             tempStatValue.add((hasCheck ? 1 : -1));
             // tempStatValue.add(0);
@@ -153,7 +155,11 @@ public class StoryBlockMaster {
                 tempRelevantStat.add(statsInfo[0]);
             }
         }
-        tempCombatant.add(null);
+        if (!hiddenItemCheck) {
+            tempCombatant.add(null);
+        } else {
+            tempCombatant.add(new String[]{"hiddenimus"});
+        }
         return tempStoryID;
     }
 
