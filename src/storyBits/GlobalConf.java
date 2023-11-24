@@ -63,6 +63,10 @@ public class GlobalConf {
                 lilPreamble = "";
             }
             if (shouldRaiseException) {
+                System.out.println(lilPreamble + message);
+                System.out.println("Press any button to continue . . .");
+                Scanner tiny = new Scanner(System.in);
+                tiny.nextLine();
                 throw new Exception(lilPreamble + message);
             }
             System.out.println(lilPreamble + message);
@@ -126,26 +130,28 @@ public class GlobalConf {
         boolean shouldThrow = false;
         StringBuilder logStr = new StringBuilder();
         if (!nonUniquez.isEmpty()) {
+            logStr.append("\n");
             for (int i : nonUniquez) {
                 logStr.append("#").append(i).append(", ");
             }
             logStr = new StringBuilder(logStr.substring(0, logStr.length() - 2));
-            logStr.insert(0, "Non-unique (overlapping) story text IDs found! ");
+            logStr.insert(1, "Non-unique (overlapping) story text IDs found: ");
             shouldThrow = true;
         }
         if (!missingIDs.isEmpty()) {
             if (shouldThrow) {
-                logStr.append("\n\n");
+                logStr.append("\n");
             }
             int offsettee = logStr.length();
             for (int i : missingIDs) {
                 logStr.append("#").append(i).append(", ");
             }
             logStr = new StringBuilder(logStr.substring(0, logStr.length() - 2));
-            logStr.insert(offsettee, "Missing IDs detected! You may have forgotten to include ");
+            logStr.insert(offsettee, "\nMissing IDs detected! You may have forgotten to include ");
             shouldThrow = true;
         }
         if (shouldThrow) {
+            logStr.append("\n");
             issueLog(String.valueOf(logStr), SEVERITY_LEVEL_ERROR, true);
         }
     }

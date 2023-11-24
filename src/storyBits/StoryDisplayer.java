@@ -77,7 +77,8 @@ public class StoryDisplayer {
             }
             setCurIndex(nextChoice);
 
-            if (curObj.getCombatantInfo().get(rawChoicePicked) != null) { // getCombatantAtChoice(currentChoicez.get(rawChoicePicked)) != null) {
+            if (curObj.getCombatantInfo().get(rawChoicePicked) != null &&
+                    !curObj.getCombatantInfo().get(rawChoicePicked)[0].equalsIgnoreCase("hiddenimus")) { // getCombatantAtChoice(currentChoicez.get(rawChoicePicked)) != null) {
                 // is combat
                 Foe currentFoe = getFoe(curObj, rawChoicePicked);
                 try {
