@@ -1,7 +1,10 @@
 ### IntelliJ IDEA ###
 out/
+jre/
+src/META-INF/
 !**/src/main/**/out/
 !**/src/test/**/out/
-.iml
-
+*.iml
+*.exe
+*.rar
 README.md
