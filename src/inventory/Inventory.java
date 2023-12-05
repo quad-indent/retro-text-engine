@@ -34,20 +34,6 @@ public class Inventory {
         NECKZ
     }
 
-    public static eqCats strToEqCat(String tempCat) {
-        return switch (tempCat.toLowerCase()) {
-            case "armour", "armor":
-                yield eqCats.ARMOUR;
-            case "weapon", "weapons", "weaponz", "wep", "wepz", "weps":
-                yield eqCats.WEAPONZ;
-            case "trinket", "trinketz", "trinkets":
-                yield eqCats.TRINKETZ;
-            case "neck", "necklace", "necks", "neckz", "necklaces", "necklacez":
-                yield eqCats.NECKZ;
-            default:
-                yield eqCats.INVENTORY;
-        };
-    }
     public static boolean isMalformedInv() {
         return malformedInv;
     }
@@ -84,6 +70,10 @@ public class Inventory {
         return null;
     }
 
+    /**
+     * Removes inventory item(s) matching provided item ID
+     * @return the item removed, or null if no item was found
+     */
     public static Item removeInventoryItem(int itemID, boolean removeAllInstances) {
         List<Item> inventorySpaceCopy = new ArrayList<>(getInventorySpace());
         Item returnal;
@@ -108,6 +98,9 @@ public class Inventory {
             return getInventorySpace().remove(invIdxOfInterest);
         }
 
+    /**
+     * Returns max characters per column with respect to margin size
+     */
     public static int getMaxColWidth(int columnsAccepted, int marginSpace) {
         return (MAX_CONSOLE_CHARS - (columnsAccepted - 1) * marginSpace) / columnsAccepted;
     }
@@ -235,10 +228,36 @@ public class Inventory {
         }
     }
 
+    /**
+     * Takes in a string and returns corresponding matching enum
+     */
+    public static eqCats strToEqCat(String tempCat) {
+        return switch (tempCat.toLowerCase()) {
+            case "armour", "armor":
+                yield eqCats.ARMOUR;
+            case "weapon", "weapons", "weaponz", "wep", "wepz", "weps":
+                yield eqCats.WEAPONZ;
+            case "trinket", "trinketz", "trinkets":
+                yield eqCats.TRINKETZ;
+            case "neck", "necklace", "necks", "neckz", "necklaces", "necklacez":
+                yield eqCats.NECKZ;
+            default:
+                yield eqCats.INVENTORY;
+        };
+    }
+
     interface Purifier {
         int purify(String a);
     }
 
+    /**
+     * Takes in a list of lists of strings, where the sub-list is a single entry, and displays them
+     * split into columns in the console based upon how many columns were requested, with respect to margin space
+     * @param textz list of lists of stringz
+     * @param columnzToUse how many columns per row
+     * @param marginSpace how much space should be kept between the columnz
+     * @param featureLilArrowz whether each line should begin with whatever display prefix is provided (e.g. '>')
+     */
     public static void displaySideBySide(List<List<String>> textz, int columnzToUse, int marginSpace,
                                          boolean featureLilArrowz) {
         // The list of lists here is assumed to be UN-SPLIT texts
@@ -306,12 +325,25 @@ public class Inventory {
                 return;
         }
     }
+
+    /**
+     * Pads a string forming a single row in a column to the requisite length so that all the columns begin
+     * at the same length. E.g., if a string of length 10 is provided, and each column is to take up 30 characters of
+     * space, the returned string will be the original with 20 spaces added
+     */
     public static String padString(String originalStr, int columnsAccepted, int marginSpace) {
         int maxWidth = getMaxColWidth(columnsAccepted, marginSpace);
         StringBuilder originalStrBuilder = new StringBuilder(originalStr);
         originalStrBuilder.append(" ".repeat(Math.max(0, maxWidth + marginSpace - originalStrBuilder.length())));
         return originalStrBuilder.toString();
     }
+
+    /**
+     * Converts a string into a list of strings based upon maximum acceptable width per column. I.e.,
+     * makes one long string into a neat column
+     * @param isStoryWrapping specifies whether the display prefix (like '>' or '>> ' etc) should match the
+     *                        declared story or inventory prefix
+     */
     public static List<String> simpleStringWrapper(String strToSplit, int maxWidth, boolean isStoryWrapping) {
         if (maxWidth == -1) {
             maxWidth = MAX_CONSOLE_CHARS - 3;
@@ -334,6 +366,10 @@ public class Inventory {
         }
         return returnalList;
     }
+
+    /**
+     * Similar to simpleStringWrapper, but also runs calcs to get maxWidth without it being specified
+     */
     public static List<String> stringWrapper(String strToSplit, int columnsAccepted, int marginSpace) {
         // If opting to display text in several columns,
         // split whatever's being displayed so that it's wrapped nicely
@@ -393,6 +429,12 @@ public class Inventory {
         };
     }
 
+    /**
+     * Attempts to find an equipment ID without anything equipped in it
+     * @param equipmentType type of equipment to crawl
+     * @param ignoreThisID ID that should be disregarded even if empty
+     * @return index of specific equipment category that's empty or -1 if none found
+     */
     public static int getAvailableEquipmentID(String equipmentType, int ignoreThisID) {
         return switch (strToEqCat(equipmentType.toLowerCase())) {
             case WEAPONZ -> {
@@ -473,6 +515,11 @@ public class Inventory {
         }
         return 0;
     }
+
+    /**
+     *
+     * Returns the sum of either minimum or maximum weapon damage bonus, optionally scaled
+     */
     public static int getEquippedWeaponBoonz(boolean returnMinDmg, boolean applyScaling) {
         int tally = 0;
         int idToSkip = -1;
@@ -674,6 +721,14 @@ public class Inventory {
         populateInventoryFromSave(saveValz);
     }
 
+    /**
+     *
+     * Returns an item array depending on what's happening:<br>
+     * - If the player is simply viewing inventory, if an equipment category is provided, returns
+     * inventory items of specific category. Otherwise, returns all inventory items<br>
+     * - If the player isEqupping, returns inventory items that the player can equip, belonging to the provided
+     * (non-optional in this case) category
+     */
     public static Item[] craftItemArray(eqCats eqCat, boolean isEquipping, String armourCat) {
         Item[] arrTempie = new Item[]{};
         if (isEquipping) {
@@ -745,6 +800,13 @@ public class Inventory {
                 yield getInventorySpace().toArray(Item[]::new);
         });
     }
+
+    /**
+     * Assembles a list of lists of strings, where each sub-list contains a detailed item description
+     * @param startingInvID the inventory index at which to begin display preparation
+     * @param entriesToDisplay amount of entries to include
+     * @param provideItemz if instead of crawling inventory you wish to provide your own array of items
+     */
     public static List<List<String>> prepareItemSeriesDisplay(int startingInvID, int entriesToDisplay,
                                                               eqCats itemCat, Item[] provideItemz,
                                                               String armourCat) throws Exception {
@@ -794,6 +856,11 @@ public class Inventory {
         return preparedItemz;
     }
 
+    /**
+     * Prepares and returns a list of choices for the player depending on what they're doing<br>
+     * - If no item is provided, it's assumed to be an empty equipment slot<br>
+     * - If an item is not provided, no option to swap is presented<br>
+     */
     public static List<String> inspectionChoiceMaker(int itemID, boolean isEquipping) {
         List<String> optionz = new ArrayList<>();
         if (itemID != -1 && isEquipping) {
@@ -849,6 +916,11 @@ public class Inventory {
         }
         addItemToInventory(tempieItem);
     }
+
+    /**
+     * Handles display of a single item's full info. This inspection method also allows the player to perform
+     * equipping of an item if the player is inspecting an empty slot
+     */
     public static List<String> inspectItem(Item itemInQuestion, boolean includedLilArrowz,
                                            boolean returnList, int rawIndex,
                                            eqCats itemCat, String armourCat) throws Exception {

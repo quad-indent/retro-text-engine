@@ -12,8 +12,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-public class CombatUtils {
 
+/**
+ * Helper functionz for handling of combat
+ */
+public class CombatUtils {
+    /**
+     * Takes a look at player's equipped shieldz and returns randomised flat damage block value based upon that
+     * @return int representing damage blocked
+     */
     public static int calcDamageShieldBlocked() {
         if (Arrays.stream(Inventory.getEquippedWeapons()).filter(Objects::nonNull).noneMatch(WeaponItem::isShield)) {
             return 0;
@@ -24,19 +31,42 @@ public class CombatUtils {
                 .filter(it -> it != null && it.isShield()).mapToInt(WeaponItem::getMaxDmg).sum();
         return genRandomNum(minBlock, maxBlock);
     }
+
+
+    /**
+     * Takes in a damage value and a scaling stat, then returns the scaled damage value
+     * @return scaled wep damage
+     */
     public static int scaleWepDmg(int dmgVal, String scalingStat) {
         int valToScale = PlayerClass.getPlayerStat(scalingStat);
         double returnal = dmgVal * Math.log10(10 + 8 * (valToScale - 10));
         return (int) Math.round(returnal);
     }
+    /**
+     * Takes in a damage value and the weapon being used, then returns the scaled damage value
+     * @return scaled wep damage
+     */
     public static int scaleWepDmg(int dmgVal, WeaponItem wep) {
         return scaleWepDmg(dmgVal, wep.getScalingStat());
     }
+
+    /**
+     * Returns random int between specified min and max (inclusive). If
+     * min >= max, returns min
+     */
     public static int genRandomNum(int minOut, int maxOut) {
         if (minOut >= maxOut)
             return minOut;
         return ThreadLocalRandom.current().nextInt(minOut, maxOut + 1);
     }
+
+    /**
+     * Similar to genRandomNum, except also takes an up to 4-elem array of weightz, representing quartiles
+     * or thirds or whatever the fuck your heart desires so long as it's <= 4 elementz, and then it does a roll
+     * based upon these values to pick the quartile, and then returns a random num in that chosen range
+     * @param qWeightz an array of integer weightz, have to add up to 100. Contains oddz of respective quartile
+     *                 (or whatever) being chosen
+     */
     public static int genRandomNumWeighted(int minOut, int maxOut, int[] qWeightz) throws AssertionError, Exception {
         // the weightz are expected to be {chance for lowest quartile of range, chance for 2nd, 3rd, and top quartile}
         // thirds or halves can be used as well, and regardless they need to sum up to 100
@@ -100,10 +130,20 @@ public class CombatUtils {
         return Math.min(resultar, rMax);
     }
 
+    /**
+     * Make an educated guess
+     */
     public static int getMean(int[] numz) {
         return (int)Arrays.stream(numz).average().getAsDouble();
     }
 
+    /**
+     * This method's a bit fucky and really needs to be balanced cause rn it's a bit of a joke <br>
+     * Takes in dex of a creature and its combatant, and str of creature and its combatant, and creature's attack type
+     * (ie, creature can be both player and enemy depending on whose turn it is)
+     * @return chance to hit represented by percentage ranging from 0 to 100, where 0 is a guaranteed miss and 100
+     * a guaranteed hit
+     */
     public static int getChanceToHit(int thisDex, int otherDex, int thisStr, int otherStr, int attackType) {
         // high strength - high chance is atk type 2
         // high dex - high chance at atk type 0
@@ -148,6 +188,11 @@ public class CombatUtils {
         }
         return 1;
     }
+
+    /**
+     * Calculates crit chance represented as int ranging from 0-100 where 0 is guaranteed non-crit, based
+     * upon dex of creature and its combatant (ie, creature can be both player and enemy depending on whose turn it is)
+     */
     public static int getChanceToCrit(int thisDex, int otherDex, int attackType) {
         int statDiff = Math.abs(thisDex - otherDex);
         int critChance = 0;
@@ -166,19 +211,39 @@ public class CombatUtils {
         return trimValue(critChance, 0, 100);
     }
 
+    /**
+     * Considers hit chance and then outputs a bool based upon random roll. If the roll ends up lower or equal
+     * to hit chance, returns true (hit)
+     */
     public static boolean rollForHit(int thisDex, int otherDex,
                                      int thisStr, int otherStr, int attackType) {
         return genRandomNum(0, 100) <= getChanceToHit(thisDex, otherDex, thisStr, otherStr, attackType);
     }
 
+    /**
+     * Considers crit chance and then outputs a bool based upon random roll. If the roll ends up lower or equal
+     * to hit chance, returns true (crit)
+     */
     public static boolean rollForCrit(int thisDex, int otherDex, int attackType) {
         return genRandomNum(0, 100) <= getChanceToCrit(thisDex, otherDex, attackType);
     }
+
+    /**
+     * @return final damage after armour absorption
+     */
     public static int calcDamageAfterArmour(int hitVal, int armourVal) {
         int hitAmount = (int)Math.round(hitVal * (30. / (30. + armourVal)));
         return hitAmount > 0 ? hitAmount : 1;
     }
 
+    /**
+     * Returns raw (unmitigated) damage based upon stat differences, crit, and attacktype. Can be made to return
+     * unrandomised minimum or max damage (useful for telling player how much damage their attacks CAN do
+     * prior to launching attack
+     * @param attackType 0: quick attack, 1: normal attack, 2: strong attack
+     * @param returnMinDmg whether to return min possible damage
+     * @param returnMaxDmg whether to retun max possible damage
+     */
     public static int calcDamage(int thisDex, int otherDex, int thisStr, int otherStr,
                                      int attackType, boolean isCrit,
                                      boolean returnMinDmg, boolean returnMaxDmg) throws Exception {
@@ -263,12 +328,21 @@ public class CombatUtils {
             ((Foe)obj).increaseHealth(-byHowMuch);
         }
     }
+
+    /**
+     * If provided val is lower than lowest or higher than highest, returns specified extreme, e.g. if you
+     * wanna trim 120 and lowest is 0 and highest is 100, you'll get 100
+     */
     public static int trimValue(int curValue, int lowestAcceptable, int highestAcceptable) {
         if (curValue < lowestAcceptable)
             return lowestAcceptable;
         return Math.min(curValue, highestAcceptable);
     }
 
+    /**
+     * Takes a look at a combatant foe and returns a 3-element array of strings representing player's
+     * attack choices alongside their possible damage values and crit chances
+     */
     public static String[] genAttackChoices(Foe combatant) throws Exception {
         // thisDex and thisStr will always be the player's, as the enemy
         // doesn't need to see its options
@@ -314,6 +388,13 @@ public class CombatUtils {
         }
         return absoluteOffset;
     }
+
+    /**
+     * Takes in a combatant and loops as long as both player and combatant are alive, processing hits, crits,
+     * shits, enemy pwoer-ups etc etc<br>
+     * Once combat is over, if player has survived, their health and mana get restored
+     * @return -1 if player expires in battle, or XP they got
+     */
     public static int combatLoop(Foe combatant) throws Exception {
         int atkChoice = -1;
         int thisDex = PlayerClass.getPlayerStat(PlayerKeywordz.getDexterityName());
@@ -386,6 +467,12 @@ public class CombatUtils {
         StoryDisplayer.awaitChoiceInputFromOptions(new String[]{"Continue"});
         return combatant.getXpYield();
     }
+
+    /**
+     *
+     * Calcz and processes damage dealt to enemy from a player attack (it assumes that the attack has connected).
+     * Also handles crit chancez
+     */
     public static void processHit(Foe combatant, int thisDex, int otherDex, int atkChoice,
                                   int thisStr, int otherStr) throws Exception {
         boolean isACrit = rollForCrit(thisDex, otherDex, atkChoice);
@@ -403,6 +490,11 @@ public class CombatUtils {
                     "You strike " + combatant.getName() + " for " + dmgDealt + "!");
         }
     }
+
+    /**
+     * Decrements player's health based upon foe's damage
+     * @return 0 if player lives, -1 if player gets disintegrated
+     */
     public static int processEnemyHit(Map<String, Integer> foeMap, Foe combatant) throws Exception {
         boolean isACrit = foeMap.get("isCrit") == 1;
         String enemyAtkFlavour = combatant.getCombatMessagez()[foeMap.get("attackType") + (isACrit ? 3 : 0)];

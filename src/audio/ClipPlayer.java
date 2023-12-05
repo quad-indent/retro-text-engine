@@ -13,10 +13,14 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+/**
+ * Handles playback of soundz
+ */
 public class ClipPlayer {
-    private final static Path tunezPath;
-    private final static Clip djBooth;
-    private static String currentTune = "";
+    private final static Path tunezPath; // tunez subdir
+    private final static Clip djBooth; // player
+    private static String currentTune = ""; // current tune filename
     public static String getCurrentTune() {
         return currentTune;
     }
@@ -37,6 +41,11 @@ public class ClipPlayer {
     public static Clip getDjBooth() {
         return djBooth;
     }
+
+    /**
+     * Produces tune info from story text, returning a 2-elem array where 0 is tune name (without format)
+     * and 1 is loop/noloop
+     */
     public static String[] getTuneInfo(String rawTune) throws Exception {
         String[] splitz = new String[]{"", "loop"};
         String[] actualSplitz = rawTune.split(",");
@@ -48,6 +57,11 @@ public class ClipPlayer {
         }
         return splitz;
     }
+
+    /**
+     * Crawlz tunez subdir to check the file format of specified tune title
+     * @Returns format, without the "." (e.g. "wav", "mp3")
+     */
     public static String getFileFormatOfTune(String tuneName) {
         List<File> filezInDir = Arrays.stream(Objects.requireNonNull(getTunezPath().toFile().listFiles())).
                 filter(file -> !file.isDirectory()).toList();
@@ -62,6 +76,10 @@ public class ClipPlayer {
         }
         return matchesFound.get(0).split("\\.")[1];
     }
+
+    /**
+     * Takes in the raw string representing tune, e.g. "irritability,noloop" and plays it in accord with specz
+     */
     public static void playTune(String tuneName) throws Exception {
         String[] parsedTune = getTuneInfo(tuneName);
         String loopOption = parsedTune[1];

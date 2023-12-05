@@ -20,10 +20,8 @@
 [3.6][Strength>11]Try to break the door
 [3.7][Dexterity>1]Try the handle
 [6][tune:baroness_descends]You brace yourself for impact with the door, and then...
-[6.71][Strength>11][hidden]Break the door
+[6.8][Strength>11][hidden]Break the door
 [6.10][Strength<12][hidden]Fail
-[71][tune:baroness_descends]The door shatters in your wake. You gather yourself and prepare to step outside
-[71.69]Continue
 [10][tune:baroness_descends]Not only that, you now feel a sharp pain in your shoulder
 [10.1][curHealth-5]Continue
 [7][tune:baroness_descends]Although the handle feels stuck at first, with enough persistence you manage to pull it down and realise that the door wasn't locked. You exit the room
@@ -102,7 +100,7 @@
 [39][tune:attention_deficit_dirge]"See? I faked my very own death! Or destruction I guess. I'm not alive technically. Point is, I need to go into hiding, sort some things out, too. We will meet again, but for now - good luck!"
 [39.12]The gargoyle flies off into the distance at a speed much higher than you expected
 Inspecting the right door
-[14][tune:baroness_descends]You carefully open the door, so as not to alert whoever might be inside
+[14][tune:attention_deficit_dirge]You carefully open the door, so as not to alert whoever might be inside
 [14.40][Subterfuge>1][hidden]You don't make a sound
 [14.41][Subterfuge<2][hidden]The door creaks with a sound that would make the dead come alive!
 [40][tune:baroness_descends]Valiant as your effort may have been, the room is empty. Still, your alertness is sure to pay off eventually
@@ -111,7 +109,7 @@ Inspecting the right door
 [41.42]Continue
 [42][tune:baroness_descends]The room is only lit by the half-light of the candelabra outside. There is just enough for you to make out that it's uncomfortably small
 [42.43][hasnot:9]Look around
-[42.44][has:9][hidden]Look around
+[42.44][has:9]Look around
 [42.12]Go back
 [43][tune:baroness_descends]Upon the floor, you notice a leather-bound tome
 [43.45][item+9]Pick it up
@@ -157,11 +155,11 @@ Marching on
 [56.63]Beg Esteban
 [56.64][has:9]"I know that you're an illiterate idiot, Esteban. Drop the act"
 [56.65][has:9]"I know how important your duty is to you, Esteban"
-[64][tune:baroness_descends]"I have shown thee kindness and patience, and you dare to insult me so? Wicked thing, to steal my precious journal; and to make such accusations!" For the first time in your conversation, Esteban appears genuinely angry. And...hurt? Even though he could easily extinguish your life, he only slaps you across the face, which is still enough to throw you back a few feet. "Let us converse in a more mature manner!"
+[64][tune:baroness_descends]"I have shown thee kindness and patience, and thou darest to insult me so? Wicked thing, to steal my precious journal; and to make such accusations!" For the first time in your conversation, Esteban appears genuinely angry. And...hurt? Even though he could easily extinguish your life, he only slaps you across the face, which is still enough to throw you back a few feet. "Let us converse in a more mature manner!"
 [64.56][curHealth-10]<Take 10 damage> Get up
 [65][tune:baroness_descends]"Indeed? But how- thou hast found my journal! And thou hast kept it? No matter. Thou hast seen the scribblings of what was then a young ogre, still bathing in mud, and interpreted them with kindness, and not scorn!"
 [65.66]Continue
-[66][tune:baroness_descends]"Truly, ever since I was as miniscule as thou art, it was my dream to watch over something. To protect it. Yes, little ^PLAYERNAME^, I have fulfilled that dream. I am happy to be here. Thank you- thee- no. Thank you for reminding me of those dreams of youth. Go, then, traverse the door. But, wait. I cannot just let you pass...Perhas..."
+[66][tune:baroness_descends]"Truly, ever since I was as miniscule as thou art, it was my dream to watch over something. To protect it. Yes, little ^PLAYERNAME^, I have fulfilled that dream. I am happy to be here. Thank you- thee- no. Thank you for reminding me of those dreams of youth. Go, then, traverse the door. But, wait. I cannot just let you pass...Perhaps..."
 [66.62]Continue
 [63][tune:baroness_descends]"Do not prostrate thyself before me, little ^PLAYERNAME^. Such conduct is unbecoming. Arise and make thy case!"
 [63.56]Continue

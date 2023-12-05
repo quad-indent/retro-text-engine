@@ -8,6 +8,24 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Base Foe class. Contains:<br>
+ * * name:String<br>
+ * * level:int<br>
+ * * curHealth:int<br>
+ * * maxHealth:int<br>
+ * * curMana:int<br>
+ * * maxMana:int<br>
+ * * xpYield:int<br>
+ * * strength:int<br>
+ * * dexterity:int<br>
+ * * armour:int<br>
+ * * numAttacksPerTurn:int<br>
+ * * specialAttackChance:int<br>
+ * * goldDrop:int<br>
+ * * specialAttackMsg:String<br>
+ * * combatMessagez:String[]
+ */
 public abstract class Foe {
     private String name;
     private int level;
@@ -235,6 +253,9 @@ public abstract class Foe {
         this.specialAttackChance = specialAttackChance;
     }
 
+    /**
+     * Copies another foe's stats. Useful for MultiTalented child
+     */
     public void mimicAnother(Foe another) {
         this.name = another.getName();
         this.level = another.getLevel();
@@ -251,7 +272,16 @@ public abstract class Foe {
         this.numAttacksPerTurn = another.getNumAttacksPerTurn();
         this.specialAttackChance = another.getSpecialAttackChance();
     }
+
+    /**
+     * To be used to buff its stats as part of special attack, e.g. to raise num of attacks per turn to 3 from 1
+     */
     public abstract String specialAttackPreProc() throws Exception;
+
+    /**
+     * To be used to bring foe to its "default" state after special attack has happened. This method is called
+     * in combatloop right after player's attack and right before the foe's turn
+     */
     public abstract void specialAttackPostProc();
     protected int genLevelDivisorVal(int levelDivisor) {
         return levelDivisor == 0 ? 0 : getLevel() / levelDivisor;
@@ -267,6 +297,18 @@ public abstract class Foe {
         }
         return thisMsg;
     }
+
+    /**
+     *
+     * @return a map of valz:<br>
+     * <ul>
+     *  <li>"isCrit": 0: non-crit; 1: crit</li>
+     *  <li>"isHit"</b>: 0: miss; 1: hit</li>
+     *  <li>"damageOut": final mitigated damage, first by shieldz then by armour</li>
+     *  <li>"damageBlocked": how much damage was absorbed by shieldz</li>
+     *  <li>"attackType": 0: quick; 1: normal; 2: special</li>
+     * </ul>
+     */
     public Map<String, Integer> launchAttack() throws Exception {
         // attackType = 0 for quick, 1 for normal, 2 for strong
         // isCrit = 0 for non-crit, 1 for crit
@@ -303,6 +345,10 @@ public abstract class Foe {
         xpModifier = Math.max(0.2, xpModifier);
         return (int)((double) PlayerClass.getPlayerStat("neededXP") / xpModifier);
     }
+
+    /**
+     * Returns randomised enemy attack type that favours its highest stat
+     */
     public int genAttackType() {
         int[] weightz = new int[]{getDexterity(), CombatUtils
                 .getMean(new int[]{getStrength(), getDexterity(), getIntellect()}),

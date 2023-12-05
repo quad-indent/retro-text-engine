@@ -12,6 +12,9 @@ import java.util.Map;
 
 public class FoeParser {
 
+    /**
+     * Performs random number generation upon argz specified by string
+     */
     public static String handleRandomNumz(String rawStr) throws Exception {
         String methodName = "genRandomNum";
         if (!rawStr.contains(methodName)) {
@@ -32,6 +35,10 @@ public class FoeParser {
         return rawStr;
     }
 
+    /**
+     * When parsing genRandomNum call on string, this method extracts the part with the arguments being provided to
+     * method
+     */
     private static String getString(String rawStr, String methodName) {
         int indexOfOpenBracket = rawStr.indexOf(methodName) + methodName.length() + 1;
         int indexOfClosedBracket = -1;
@@ -51,6 +58,11 @@ public class FoeParser {
         return rawStr.substring(indexOfOpenBracket, indexOfClosedBracket);
     }
 
+    /**
+     * Takes in the default foe name as per the .txt file with its config (e.g. for "gnomeConfig.txt", you'd be
+     * expected to provide "gnome" as this argument). Optionally you can provide another name to be displayed as in-game.
+     * @return parsed foe of its proper class
+     */
     public static Foe parseFoe(String foeName, String overrideDispName) throws Exception {
         List<String> parsedLinez = verifyAndOpenFile(foeName);
         Map<String, String> parsedValz = new LinkedHashMap<>();
@@ -69,6 +81,11 @@ public class FoeParser {
             default -> new BasicFoe(parsedValz);
         };
     }
+
+    /**
+     * Expects a foe config file, and attempts to parse it
+     * @return String list of lines inside the specified file
+     */
     private static List<String> verifyAndOpenFile(String fileName) throws Exception {
         if (!fileName.endsWith("Config.txt")) {
             fileName += "Config.txt";
@@ -83,6 +100,11 @@ public class FoeParser {
         }
         return parsedLinez;
     }
+
+    /**
+     * Takes in the string line and a map of parsedValz that will be used to initialise foe. Replaces
+     * keywordz with proper valuez as well for proper displaying in-game
+     */
     private static void processLine(String curLine, Map<String, String> parsedValz) throws Exception {
         String[] splitz = curLine.split("::");
         String tempKey, tempVal;

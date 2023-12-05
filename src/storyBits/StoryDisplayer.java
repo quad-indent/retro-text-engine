@@ -30,6 +30,23 @@ public class StoryDisplayer {
     public static String replaceTxtWithKeywordz(String raw) {
         return raw.replaceAll("\\^PLAYERNAME\\^", PlayerClass.getPlayerName());
     }
+    /**
+     * The storyLoop function is the main function that runs the game. It takes in a list of StoryBlock objects,
+     * which are essentially nodes in a graph, and it allows you to traverse through them by picking choices.
+     * The storyLoop function also handles combat and stat changes (such as XP gain).
+
+     *
+     * @param ArrayList&lt;StoryBlock&gt; storyObj Store the story
+     * @param int beginAt Determine where in the story to begin
+     * @param boolean suppressInvAndEq Suppress the display of inventory and equipment
+    public static void storyloop(arraylist&lt;storyblock&gt; storyobj, int beginat) throws exception {
+            setcurindex(beginat);
+            storyblock curobj = storyobj
+     *
+     * @return Nothing
+     *
+     * @docauthor Trelent
+     */
     public static void storyLoop(ArrayList<StoryBlock> storyObj, int beginAt, boolean suppressInvAndEq) throws Exception {
         setCurIndex(beginAt);
         StoryBlock curObj = storyObj.get(getCurIndex()).refineCurStoryBlock();

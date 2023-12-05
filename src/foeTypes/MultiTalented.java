@@ -22,7 +22,7 @@ public class MultiTalented extends Foe {
     public List<Foe> getTalentz() {
         return talentz;
     }
-
+    
     public MultiTalented(Map<String, String> argz) throws Exception {
         super(argz);
         talentz = new ArrayList<>();

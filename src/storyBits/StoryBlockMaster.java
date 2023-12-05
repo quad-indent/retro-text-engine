@@ -19,6 +19,12 @@ public class StoryBlockMaster {
         StoryBlockMaster.poppedEphemeralz = poppedEphemeralz;
     }
 
+    /**
+     * Initialises a list of StoryBlocks that is then used to traverse the story in accord with user input
+     * @param storyFile specifies the relative path to the textAdv.txt file
+     * @throws Exception if parsing fails
+     *
+     */
     public StoryBlockMaster(String storyFile) throws Exception {
         storyObj = new ArrayList<>();
         List<String> storyData = FileParser.parseFile(storyFile, "[", false);
@@ -62,6 +68,39 @@ public class StoryBlockMaster {
         // init results of last iteration
     }
 
+    /**
+     * The processPrompt function is a helper function for the StoryDisplayer class.
+     * The tempStoryBit list contains information that allows the updating of the other lists
+     * that are then used to initialise a partly-initialised storyBlock in the storyObj list
+     * returns the tempStoryID so that the very final storyObj element may be initialised
+     * @param List&lt;String&gt; tempChoices Store the choices that are displayed to the player
+
+     * @param List&lt;Integer&gt; tempDestinationBlocks Store the destination block of each choice
+        private int getnextstorystep(string nextdestination) {
+            if (nextdestination
+     * @param List&lt;String[]&gt; tempCombatant Store the information about a combatant
+
+     * @param List&lt;Boolean&gt; tempIsEnding Store whether the story option is an ending
+     * @param List&lt;Boolean&gt; tempIsStatCheck Determine whether the current choice is a stat check
+        private string[] producecombatantinfo(arraylist&lt;string&gt; tempstorybit) {
+            if (tempstorybit
+     * @param List&lt;Boolean&gt; tempIsHiddenCheck Store whether the stat check is hidden or not
+     * @param List&lt;Integer&gt; tempStatValue Store the stat value of each story option
+     * @param List&lt;String&gt; tempRelevantStat Store the relevant stat for each choice
+        private void processstoryblock(list&lt;string&gt; tempchoices,
+                                       list&lt;integer&gt; tempdestinationblocks,
+                                       list&lt;string[]&gt; tempcombatant,
+                                       list&lt;boolean&gt; tempisending,
+                                       list&lt;boolean&gt; tempisstatcheck,
+                                       list&lt;boolean&gt; tempishiddencheck,
+     * @param List&lt;Boolean&gt; tempEphemeralStat Determine whether the stat change is temporary or permanent
+     * @param ArrayList&lt;String&gt; tempStoryBit Store the current story text block
+        private int getnextstorystep(string nextstep) throws exception {
+            if (nextstep
+     * @param int tempStoryID Keep track of which story block we're currently parsing
+     *
+     * @return The story id of the next prompt to be processed
+     */
     private int processPrompt(List<String> tempChoices,
                             List<Integer> tempDestinationBlocks,
                             List<String[]> tempCombatant,
@@ -180,6 +219,18 @@ public class StoryBlockMaster {
         }
     }
 
+    /**
+     * The produceCombatantInfo function takes in an ArrayList of Strings and returns a String array containing the
+     * information about the combatant. The function will return null if there is not enough information to produce
+     * a combatant, otherwise it will return an array with 2 or 3 values depending on whether or not the level was specified.
+
+     *
+     * @param ArrayList&lt;String&gt; tempStoryBit Store the story bit
+     *
+     * @return A string array with a length of 2 or 3
+     *
+     * @docauthor Trelent
+     */
     public String[] produceCombatantInfo(ArrayList<String> tempStoryBit) {
         int tempStorySize = tempStoryBit.size();
         if (tempStorySize < ReturnsAndDataEnums.COMBAT_PROMPT.val) {
@@ -195,6 +246,14 @@ public class StoryBlockMaster {
         return combatantInfo;
     }
 
+    /**
+     * Performs rudimentary partial initialisation of the storyObj by filling it with story texts. I.e., does not
+     * process prompts (choices) associated with the story text
+     *
+     * @param List&lt;String&gt; storyData Pass the storydata list from the readstoryfile function
+     * @return A list of arraylists, each containing a single storybit
+     *
+     */
     public List<ArrayList<String>> genTempStoryBits(List<String> storyData) {
         List<ArrayList<String>> tempStoryBits = new ArrayList<>();
         List<ArrayList<String>> splitResultz = new ArrayList<>();

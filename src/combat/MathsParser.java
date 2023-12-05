@@ -6,7 +6,6 @@ public class MathsParser {
     public static double eval(final String str) {
         return new Object() {
             int pos = -1, ch;
-
             void nextChar() {
                 ch = (++pos < str.length()) ? str.charAt(pos) : -1;
             }
