@@ -37,7 +37,7 @@ So, if you want branching story lines, a sense of progression for the player thr
 
 If you're looking for resources on how to use the engine, best head over to [my wiki page](https://github.com/quad-indent/retro-text-engine/wiki)!
 
-Also, head over to the [releases page](https://github.com/quad-indent/retro-text-engine/releases), download the latest release, unzip it, and begin editing! To launch your project, simply launch oldtimey_rpg_engine.exe!
+Also, head over to the [releases page](https://github.com/quad-indent/retro-text-engine/releases), download the latest release, unzip it, and begin editing! To launch your project, simply launch retro_text_engine.exe!
 
 ## Acknowledgements
 
